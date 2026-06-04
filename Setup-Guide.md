@@ -41,7 +41,7 @@ Also you can optionally toggle `Check Harmful Domains` as a second safeguard. Th
 
 ## Spam Filter
 ### Spam Filter
-<p align="center"><img alt="grafik" src="https://github.com/user-attachments/assets/f1bd0cef-e210-4c14-bf2e-647cc7d8aa82" /></p>
+<p align="center"><img alt="grafik" src="https://github.com/user-attachments/assets/7661f784-1121-4ea8-a9e5-a1953a090358" /></p>
 
 `Spam Filter` detects all the typical spam messages that occure in twitch chat, such as `"Cheap viewers  streamboo .com (remove the space)  @hAhstXIb"` and other typical scam.
 You can toggle some detections if there are issues or you don't want to filter that strict.
@@ -49,14 +49,19 @@ The `Score Setting` is the new mechanic behind `Spam Filter` that weight all par
 While some patterns can accumulate score points, others won't. This way false-positives are basically impossible as they not just rely on specific keywords but everything together need to hit the threshold
 
 ### Spam Learner
-<p align="center"><img alt="grafik" src="https://github.com/user-attachments/assets/60168af8-15d6-4078-ab7a-d0317c1fb204" /></p>
+<p align="center"><img alt="grafik" src="https://github.com/user-attachments/assets/663c6cda-67b8-4321-8c2a-d284fb3d618c" /></p>
 
 `Spam Learner` is still a WIP Project but does work very well already. It tracks every message that was deleted for any reason and uses a weigtes TF-IDF scoring for each recognized keyword, pattern, TLD and see
 if they build up a history. Currently per default `Spam Learner` won't add proven sections to the `spam.json` which is used to track down spam in `Spam Filter`, so you need to manually review the `spam-suggestion.txt`
 from time to time.
 
+### Spam Suggestions
+<p align="center"><img alt="grafik" src="https://github.com/user-attachments/assets/1921ca64-e0fb-4481-9a98-518c94fcab1b" /></p>
+
+`Spam Suggestions` let you review all the stuff `Spam Learner` has catched and stored. You can inspect it, add it to `Spam Pattern` and clear the file if necessary.
+
 ### Spam Patterns
-<p align="center"><img alt="grafik" src="https://github.com/user-attachments/assets/b03b98c0-be3c-4c8c-a83a-36b213385d25" /></p>
+<p align="center"><img alt="grafik" src="https://github.com/user-attachments/assets/efa4b8ac-4ed3-4093-b996-8f6c4341e579" /></p>
 
 `Spam Patterns` let you edit the current content of `spam.json` fast and easily if you need to add/remove something quick. Just don't forget to hit `Save` ;)
 
