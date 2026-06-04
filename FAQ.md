@@ -36,3 +36,14 @@ Not necessarily. You choose the strictness and the action: delete, timeout or ba
 
 ### Can I review what it blocked?
 Yes. The project includes logging support, including action logs and violation logs, so you can review what was detected and how it was handled.
+
+### Is TwitchSentry an AI Slop?
+Partially it is. This script has been developed with input from the streamer.bot community and is support by AI.
+But i spend a lot of time putting heart and soul in it and my goal was to create a robust and valid moderation tool for everyone and easy to use.
+I understand that people, especially IT savvy people, will dislike the project because of the use of AI and i absolutely understand and support their point of view.
+But i had a lot of fun making it and with all my other projects, so i used it to "learn" coding and using AI for something valuable. 
+
+---
+
+AI can create bugs and i am not a developer in classical terms. But i spend a reasonable amount of time fixing any bugs that occured while testing.
+If you still find bugs or have something to say, please let me hear it :)
