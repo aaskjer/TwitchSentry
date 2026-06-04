@@ -69,7 +69,7 @@ Configure it once, let it run in the background, and focus on what matters most:
 
 [aaskjer on Twitch](https://twitch.tv/aaskjer)
 
-[TwitchSentry on SB Discord]( )
+[TwitchSentry on SB Discord](https://discord.com/channels/834650675224248362/1512133095246270616)
 
 [Streamer.bot/nate1280](https://streamer.bot/)
 
