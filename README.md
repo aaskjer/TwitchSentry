@@ -62,3 +62,17 @@ Configure it once, let it run in the background, and focus on what matters most:
 ---
 
 [Frequently Asked Questions](https://github.com/aaskjer/TwitchSentry/blob/main/FAQ.md)
+
+---
+
+## Credits & Links
+
+[aaskjer on Twitch](https://twitch.tv/aaskjer)
+
+[TwitchSentry on SB Discord]( )
+
+[Streamer.bot/nate1280](https://streamer.bot/)
+
+[enNemMesS](https://extensions.streamer.bot/u/ennemmess/summary)
+
+YOU ♡
