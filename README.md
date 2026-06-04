@@ -59,7 +59,7 @@ Over time, it learns what normal conversation looks like in your channel and imp
 If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** integrates directly into your existing setup.
 Configure it once, let it run in the background, and focus on what matters most: **your stream and your community**.
 
----
+[Setup Guide](https://github.com/aaskjer/TwitchSentry/blob/main/Setup-Guide.md)
 
 [Frequently Asked Questions](https://github.com/aaskjer/TwitchSentry/blob/main/FAQ.md)
 
