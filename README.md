@@ -28,18 +28,18 @@ Over time, it learns what normal conversation looks like in your channel and imp
 - **AutoMod backup**  
   Works alongside Twitch AutoMod to catch messages that slip through.
 
-- **Allows your Chat to interakt**  
-  As your chat grows, more people will attend and some aren't a fan of you. Sometimes even your moderators can't handle everything.
+- **Allows your Chat to interact**  
+  As your chat grow over time, more people will attend and some may aren't particually a fan of you. And sometimes even your moderators can't handle everything.
   That's where TwitchSentry steps in and allows your chat to vote against them and collectively throw them out permanently if necessary.
 
 - **Flexible moderation control**  
-  Configure exemptions to protect friends or whole roles from moderation, adjust responses such as warnings, timeouts or set escalation steps instead of immediate bans.
+  Configure exemptions to protect friends, roles or whole groups from moderation, adjust responses such as warnings, timeouts or set escalation steps instead of immediate bans.
 
 - **Set it and forget it**  
-  Runs quietly inside Streamer.bot without requiring extra tools or infrastructure.
+  Runs quietly inside Streamer.bot without requiring to prepare extra tools, dlls or infrastructure.
 
 - **Easy to configure**  
-  Adjust behavior directly inside Streamer.bot—no with a settings GUI easy to understand, no coding required.
+  Adjust behavior directly inside Streamer.bot, open the GUI and change settings instantly - no coding or sub-action hassle required.
 
 - **Learns your chat**  
   The more you stream, the better it understands your community. This means fewer and fewer false positives and better spam detection.
@@ -49,7 +49,7 @@ Over time, it learns what normal conversation looks like in your channel and imp
 ## Who Is This For
 
 - Streamers tired of manually moderating spam  
-- Moderators who want additional support during busy streams  
+- Streamer with a lot of viewers who want additional support for their moderators during busy streams  
 - Streamer.bot users who want safer, cleaner chats  
 
 ---
