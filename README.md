@@ -11,10 +11,10 @@ Spam ruins the vibe. One minute you're reacting to a hilarious donation, and the
 
 TwitchSentry is a spam filter that lives inside **[Streamer.bot](https://streamer.bot/)** and watches your chat for you.
 
-It automatically detects:
-- Bad or suspicious links
-- Repetitive scam messages
-- Bot-like or abnormal behavior
+Main Features:
+- Removes bad or suspicious links
+- Learns and prevent repetitive scam messages
+- Flag bot-like or abnormal behavior
 
 Over time, it learns what normal conversation looks like in your channel and improves its detection accuracy.
 
