@@ -41,7 +41,7 @@ Yes. The project includes logging support, including action logs and violation l
 Partially it is. This script has been developed with input from the streamer.bot community and is support by AI.
 But i spend a lot of time putting heart and soul in it and my goal was to create a robust and valid moderation tool for everyone and easy to use.
 I understand that people, especially IT savvy people, will dislike the project because of the use of AI and i absolutely understand and support their point of view.
-But i had a lot of fun making it and with all my other projects, so i used it to "learn" coding and using AI for something valuable. 
+But i had a lot of fun making it as with all my other projects, so i used it to "learn" coding and using AI for something valuable. 
 
 ---
 
