@@ -7,20 +7,7 @@ Spam ruins the vibe. One minute you're reacting to a hilarious donation, and the
 
 ---
 
-## What It Does
-
-TwitchSentry is a spam filter that lives inside **[Streamer.bot](https://streamer.bot/)** and watches your chat for you.
-
-Main Features:
-- Removes bad or suspicious links
-- Learns and prevent repetitive scam messages
-- Flag bot-like or abnormal behavior
-
-Over time, it learns what normal conversation looks like in your channel and improves its detection accuracy.
-
----
-
-## Why Streamers Will Love It
+# Overview
 
 - **Instant link protection**  
   Suspicious URLs are checked before viewers ever see them, reducing the risk of phishing and malware.
@@ -46,18 +33,9 @@ Over time, it learns what normal conversation looks like in your channel and imp
 
 ---
 
-## Who Is This For
-
-- Streamers tired of manually moderating spam  
-- Streamer with a lot of viewers who want additional support for their moderators during busy streams  
-- Streamer.bot users who want safer, cleaner chats  
-
----
-
 ## Get Started
 
 If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** integrates directly into your existing setup.
-Configure it once, let it run in the background, and focus on what matters most: **your stream and your community**.
 
 [Setup Guide](https://github.com/aaskjer/TwitchSentry/blob/main/Setup-Guide.md)
 
