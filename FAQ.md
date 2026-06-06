@@ -24,12 +24,12 @@ Yes. TwitchSentry can act on AutoMod-held messages and either deny or approve th
 Yes. The permit system allows moderators to temporarily grant a user permission to post links, and the permit can expire automatically or be revoked manually.
 
 ### Does it need an internet connection?
-Some modules do. Link scanning such as VirusTotal need a internet connection to check your input against their own database, depending on what you enable.
-The settings action also check occasionally for updates and inform users if a new TwitchSentry update is found.
+Some modules do. `LinkFilter` such as `CheckLink` need a internet connection to check your input against their own database.
+The core settings action also check occasionally for updates and inform users if a new TwitchSentry update is found.
 Basic moderation and config-driven filtering still work without those optional online features.
 
 ### Can I customize the chat messages it sends?
-Yes. Most moderation replies, warnings, permit messages, voting messages, and scan responses are configurable in the message files.
+Yes. Almost every reply is configurable in the GUI or message file.
 
 ### Will it delete every suspicious message?
 Not necessarily. You choose the strictness and the action: delete, timeout or ban.
