@@ -51,7 +51,7 @@ If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** i
 
 [TwitchSentry on SB Discord](https://discord.com/channels/834650675224248362/1512133095246270616)
 
-[Streamer.bot/nate1280](https://streamer.bot/)
+[Streamer.bot](https://streamer.bot) / [nate1280](https://www.patreon.com/c/nate1280/home)
 
 [enNemMesS](https://extensions.streamer.bot/u/ennemmess/summary)
 
