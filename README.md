@@ -1,4 +1,3 @@
-
 <p align="center"><img src="https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Assets/TwitchSentry-full.png" alt="TwitchSentry banner" width="400" height="400"></p>
 <p align="center"><b>Your smart chat bodyguard. Built for Streamer.bot.</b></p>
 
@@ -40,6 +39,9 @@ If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** i
 [Setup Guide](https://github.com/aaskjer/TwitchSentry/blob/main/Setup-Guide.md)
 
 [Frequently Asked Questions](https://github.com/aaskjer/TwitchSentry/blob/main/FAQ.md)
+[Import String for streamer.bot](https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Import-String.md)
+
+[Download](https://github.com/aaskjer/TwitchSentry/releases) ![GitHub Release](https://img.shields.io/github/v/release/aaskjer/TwitchSentry)
 
 ---
 
