@@ -2,39 +2,36 @@
 <p align="center"><b>Your smart chat bodyguard. Built for Streamer.bot.</b></p>
 
 Spam ruins the vibe. One minute you're reacting to a hilarious donation, and the next your chat is flooded with fake gift links, sketchy URLs or copy-paste scam.
-**TwitchSentry** stops that mess before it ever reaches your viewers, so you can focus on streaming instead of babysitting chat.
+**TwitchSentry** stops that mess, so you can focus on streaming instead of babysitting chat.
 
 ---
 
 # Overview
 
 - **Instant link protection**  
-  Suspicious URLs are checked before viewers ever see them, reducing the risk of phishing and malware.
+  Intuitive ways to flag and detect suspicious URLs instantly, reducing the risk of phishing and malware.
 
 - **AutoMod backup**  
   Works alongside Twitch AutoMod to catch messages that slip through.
 
 - **Allows your Chat to interact**  
-  As your chat grow over time, more people will attend and some may aren't particually a fan of you. And sometimes even your moderators can't handle everything.
-  That's where TwitchSentry steps in and allows your chat to vote against them and collectively throw them out permanently if necessary.
+  As your chat grow over time, more people will attend and some may aren't particually a fan of you and sometimes your moderators can't handle everything at once.
+  That's where **TwitchSentry** steps in and gives your viewers the power to vote against bad users and collectively throw them out permanently if necessary.
 
 - **Flexible moderation control**  
   Configure exemptions to protect friends, roles or whole groups from moderation, adjust responses such as warnings, timeouts or set escalation steps instead of immediate bans.
 
-- **Set it and forget it**  
-  Runs quietly inside Streamer.bot without requiring to prepare extra tools, dlls or infrastructure.
-
 - **Easy to configure**  
-  Adjust behavior directly inside Streamer.bot, open the GUI and change settings instantly - no coding or sub-action hassle required.
+  Adjust behavior directly in the GUI and change settings instantly - no coding or sub-action hassle required.
 
 - **Learns your chat**  
-  The more you stream, the better it understands your community. This means fewer and fewer false positives and better spam detection.
+  The more you stream, the better it understands your community.
 
 ---
 
 ## Get Started
 
-If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** integrates directly into your existing setup.
+If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** is just an import away.
 
 [Setup Guide](https://github.com/aaskjer/TwitchSentry/blob/main/Setup-Guide.md)
 
