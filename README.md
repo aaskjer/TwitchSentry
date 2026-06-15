@@ -36,6 +36,7 @@ If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** i
 [Setup Guide](https://github.com/aaskjer/TwitchSentry/blob/main/Setup-Guide.md)
 
 [Frequently Asked Questions](https://github.com/aaskjer/TwitchSentry/blob/main/FAQ.md)
+
 [Import String for streamer.bot](https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Import-String.md)
 
 [Download](https://github.com/aaskjer/TwitchSentry/releases) ![GitHub Release](https://img.shields.io/github/v/release/aaskjer/TwitchSentry)
