@@ -1,4 +1,4 @@
-## TwitchSentry import string for streamer.bot - v1.0.1
+## TwitchSentry import string for streamer.bot - v1.0.2
 ![GitHub Release Date](https://img.shields.io/github/release-date/aaskjer/TwitchSentry)
 
 ```bash
