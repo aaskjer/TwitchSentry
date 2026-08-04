@@ -221,11 +221,16 @@ These are always recognized as commands (never scanned as regular chat) regardle
 
 ---
 
-## 🔄 Updates
 
-**Q: How do I know if a new version is out?**
+## 🔔 Update Notifications
 
-Every time you open the Settings GUI, TwitchSentry checks GitHub's releases for you and shows a banner if a newer version is available. Set your preferred **Update Channel** (Stable or Beta) in the General tab — Beta will notify you about pre-releases too, Stable won't.
+**Q: How do I know when a new version is available?**
+
+Opening the Settings GUI checks GitHub for the latest release tag. If it's newer than what's installed, a popup offers to open the releases page.
+
+**Q: Can I check for updates without opening the Settings window?**
+
+Partially — You still have to trigger the `Test` trigger but if you press `Yes` in the update notification popup, the check won't open the GUI but the GitHub page instead. Running Beta will notify you about pre-releases too, Stable won't.
 
 ---
 
