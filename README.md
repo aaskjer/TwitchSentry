@@ -4,6 +4,12 @@
 Spam ruins the vibe. One minute you're reacting to a hilarious donation, and the next your chat is flooded with fake gift links, sketchy URLs or copy-paste scam.
 **TwitchSentry** stops that mess, so you can focus on streaming instead of babysitting chat.
 
+![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Twitch-grey?label=supported%20platform&color=%236441a5)
+![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-streamer.bot-white?label=tool&color=%230b73ff)
+![GitHub License](https://img.shields.io/github/license/aaskjer/TwitchSentry)
+![GitHub Release](https://img.shields.io/github/v/release/aaskjer/TwitchSentry)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/aaskjer/TwitchSentry/total)
+
 ---
 
 # Overview
@@ -33,13 +39,14 @@ Spam ruins the vibe. One minute you're reacting to a hilarious donation, and the
 
 If you already use **[Streamer.bot](https://streamer.bot/)**, **TwitchSentry** is just an import away.
 
+
 [Setup Guide](https://github.com/aaskjer/TwitchSentry/blob/main/Setup-Guide.md)
 
 [Frequently Asked Questions](https://github.com/aaskjer/TwitchSentry/blob/main/FAQ.md)
 
 [Import String for streamer.bot](https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Import-String.md)
 
-[Download](https://github.com/aaskjer/TwitchSentry/releases) ![GitHub Release](https://img.shields.io/github/v/release/aaskjer/TwitchSentry)
+[Download](https://github.com/aaskjer/TwitchSentry/releases)
 
 ---
 
