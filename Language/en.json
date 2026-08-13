@@ -1,6 +1,7 @@
 {
   "__languageName": "English",
   "__languageCode": "en",
+  "__version": 1,
   "Use Bot Account": "Use Bot Account",
   "When TwitchSentry sends a chat message or takes an action, do it from your bot account instead of your broadcaster account.\n(You need a bot account already set up in Streamer.bot for this to work.)\n\nThis is a global default — every module below uses it unless that module has its own separate setting.": "When TwitchSentry sends a chat message or takes an action, do it from your bot account instead of your broadcaster account.\n(You need a bot account already set up in Streamer.bot for this to work.)\n\nThis is a global default — every module below uses it unless that module has its own separate setting.",
   "Send As Action": "Send As Action",
