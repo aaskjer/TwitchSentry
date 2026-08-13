@@ -221,6 +221,51 @@ These are always recognized as commands (never scanned as regular chat) regardle
 
 ---
 
+## 🌍 Language
+
+**Q: What does the Language setting translate?**
+
+The **settings window only** — page names, labels, checkboxes, buttons, dropdown entries and tooltips. Everything TwitchSentry says *in chat* comes from the **Messages** pages, which you write yourself, so those stay exactly as you typed them. Nothing about moderation behaviour changes.
+
+**Q: Where do I change it?**
+
+**Help → About & Links → Language**, at the bottom of the page. Pick a language from the dropdown and click **Save** — the window closes and reopens in the new language.
+
+**Q: Which languages are available?**
+
+English is built in. Currently published: **Deutsch**, **Español**, **Français** and **Português (Brasil)**. Hit **Get More** next to the dropdown to see the current list — it fetches it live from GitHub, so new translations show up there without needing a TwitchSentry update.
+
+**Q: How does "Get More" work?**
+
+It downloads the list of published translations, shows you the ones you don't already have, and saves the one you pick to `TwitchSentry/Language/<code>.json`. It only offers what's missing — if you already have everything, it'll just tell you so. Then click **Save** to switch to it.
+
+**Q: Do translations update themselves?**
+
+Yes. Whenever you open the settings window with a non-English language selected, TwitchSentry checks GitHub (at most once every 6 hours) and re-downloads the file if a newer version has been published. If the file is missing or damaged it re-fetches immediately, ignoring the 6-hour wait.
+
+If you're offline or GitHub is unreachable, the check is skipped silently — the settings window still opens normally with whatever you already have on disk.
+
+**Q: Some text is still in English. Is it broken?**
+
+No — that's the fallback working as intended. Any string that hasn't been translated yet (or was added in a newer TwitchSentry version than the translation) simply stays English rather than showing a blank or a placeholder. A partial translation is always usable.
+
+Two other things stay English by design: anything **you** typed (settings values, your custom messages, keywords) and the few lines containing clickable links.
+
+**Q: Can I install a translation by hand?**
+
+Yes — use the 📂 button next to the dropdown to open the `Language` folder and drop a `.json` in. It appears in the dropdown the next time you open the settings window. The filename is the language code (`de.json` → `de`), and the display name comes from the `__languageName` field inside the file.
+
+**Q: I want to translate TwitchSentry into my language. How?**
+
+1. Open the `Language` folder and copy `en.json` to `<yourcode>.json` (e.g. `it.json`).
+2. Translate **only the values** — the right-hand side of each pair. The keys are the original English strings and are matched exactly, character for character, so changing one means that string simply won't translate.
+3. Keep escaped line breaks (`\n`) where they appear — they're what makes tooltips readable.
+4. Set `__languageName` (shown in the dropdown), `__languageCode` and `__version` at the top.
+5. Save the file as UTF-8.
+
+If you'd like it published so everyone gets it via **Get More**, [open an issue](https://github.com/aaskjer/TwitchSentry/issues) or send a pull request — bump `__version` whenever you revise it and existing users pick the update up automatically.
+
+---
 
 ## 🔔 Update Notifications
 
