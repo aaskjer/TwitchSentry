@@ -1,6 +1,6 @@
 [
-  { "code": "de", "name": "Deutsch", "version": 1 },
-  { "code": "es", "name": "Español", "version": 1 },
-  { "code": "fr", "name": "Français", "version": 1 },
-  { "code": "pt-BR", "name": "Português (Brasil)", "version": 1 }
+  { "code": "de", "name": "Deutsch", "version": 2 },
+  { "code": "es", "name": "Español", "version": 2 },
+  { "code": "fr", "name": "Français", "version": 2 },
+  { "code": "pt-BR", "name": "Português (Brasil)", "version": 2 }
 ]
