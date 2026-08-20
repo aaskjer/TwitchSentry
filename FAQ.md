@@ -9,15 +9,16 @@
 Everything lives under your Streamer.bot base directory, in a `TwitchSentry` folder:
 
 ```
-TwitchSentry/Settings/configs.json                   ← all module settings
-TwitchSentry/Settings/messages.json                  ← all chat/response messages
-TwitchSentry/Machine Learning/spam.json              ← active keywords, phrases, patterns, TLDs 
-TwitchSentry/Machine Learning/spam-suggestions.json  ← Spam Learner's pending suggestions
-TwitchSentry/Logs/action-log.txt                     ← moderation action history
-TwitchSentry/Logs/violation-log.txt                  ← raw text the Spam Learner mines from
-TwitchSentry/Logs/clean-log.txt                      ← sampled normal chat, used to avoid false positives
-TwitchSentry/Cache/stopwords.txt                     ← downloaded common-word list
-TwitchSentry/Cache/tld_cache.txt                     ← downloaded valid domain-ending list
+TwitchSentry/Settings/configs.json               ← all module settings
+TwitchSentry/Settings/messages.json               ← all chat/response messages
+TwitchSentry/Settings/Language/<code>.json         ← settings-window translations
+TwitchSentry/Machine Learning/spam.json            ← active keywords, phrases, patterns, TLDs
+TwitchSentry/Machine Learning/spam-suggestions.json ← Spam Learner's pending suggestions
+TwitchSentry/Logs/action-log.txt                   ← moderation action history
+TwitchSentry/Logs/violation-log.txt                ← raw text the Spam Learner mines from
+TwitchSentry/Logs/clean-log.txt                    ← sampled normal chat, used to avoid false positives
+TwitchSentry/Cache/stopwords.txt                   ← downloaded common-word list
+TwitchSentry/Cache/tld_cache.txt                    ← downloaded valid domain-ending list
 ```
 
 You should never need to edit these by hand — use the built-in Settings GUI instead.
@@ -48,6 +49,14 @@ Check the Streamer.bot log for the actual error — TwitchSentry logs failures w
 
 It looks at *how* someone is chatting, not specific words: account age, ALL CAPS / repeated-character spam, emote spam, and posting too fast or repeating the same message. Every check that trips adds a bit to a shared score for that message — action is taken once the total score crosses your configured threshold, so a couple of small red flags together can be enough even if none of them alone would be.
 
+**Q: Can a moderator command be deleted or flagged as a violation?**
+
+No. TwitchSentry recognizes commands — both its own built-in ones and anything else you've configured in Streamer.bot — and skips them entirely before any scanning happens, so a command never reaches the Account Age check or any other filter.
+
+**Q: How do I switch the whole Message Filter off?**
+
+Untick its four checks: Account Check, Caps Check, Emote Check and Flood Check. There is no separate module switch — each check carries its own, and a second one sitting above them only made "the module is on but nothing happens" harder to work out.
+
 **Q: What is "Escalation"?**
 
 A chat-wide safety net layered on top of the per-user checks above. If enough *different* users trigger violations within a short window (a spam wave, not one annoying person), TwitchSentry automatically activates a Twitch chat mode (slow mode, follower-only, emote-only, or sub-only) to protect the whole chat, then lifts it automatically once things calm down. Which mode gets picked depends on the dominant spam pattern detected (e.g. an emote-spam wave prefers slow mode; a wave of brand-new accounts prefers follower-only).
@@ -74,7 +83,11 @@ It watches messages that actually get deleted/timed-out/banned and tries to spot
 
 **Q: The Spam Learner suggested a totally normal word (like "google"). Why?**
 
-In older versions, behavior flags don't tell you anything about which words are spam, so unrelated words could slip through. That's fixed now: only genuine content matches feed the learner. On top of that, there's now a permanent **Ignore Terms** list, automatic protection for your broadcaster/bot account names, a "clean chat" sample the learner compares against to avoid flagging everyday words, and a denylist so major brand names (Google, YouTube, Twitch, Discord, etc.) can never be suggested as blocked domain endings.
+Only *content* violations feed the learner — a message that matched a keyword, pattern or link rule. *Behavioral* violations (young account, caps spam, flooding) never contribute words, because the fact that someone typed too fast tells you nothing about which of their words are spam.
+
+Several guards sit on top of that: a permanent **Ignore Terms** list, automatic protection for your broadcaster and bot account names, a "clean chat" sample the learner compares against so everyday words get suppressed, and a denylist that keeps major brand names (Google, YouTube, Twitch, Discord, etc.) from ever being suggested as blocked domain endings.
+
+A word that slips past all of that is still only a *suggestion*. Reject it on the Suggestions tab, and add it to **Ignore Terms** so it can't come back.
 
 **Q: What's the difference between "probation" and "trusted" status?**
 
@@ -92,6 +105,10 @@ Automatic cleanup. When enabled, both active rules and pending suggestions are c
 
 ## 🔗 Link Filter & Whitelist
 
+**Q: Where did the Link Filter settings page go?**
+
+Only the page was dissolved — the module itself is unchanged. **Check Harmful Domains** and its four notification tickboxes are on the **Check Link** page, under "Behavior On Harmful Domains". **Action On Violation** and **Timeout Duration** are at the top of the **Message Filter** page, because the Link Filter, the Spam Filter and the Message Filter have always shared those two. **Whitelisted Domains** is on **General Settings**, where it always was.
+
 **Q: How does the whitelist actually match URLs?**
 
 Three patterns, each behaving differently:
@@ -105,9 +122,11 @@ Three patterns, each behaving differently:
 
 An entry without a trailing `/*` is always an **exact match** — it will not accidentally allow sub-pages, clip links, or anything else nested under it.
 
-**Q: My own channel/clip link got blocked even though I whitelisted my channel. What's going on?**
+**Q: My own clip link got blocked even though I whitelisted my channel. What's going on?**
 
-Make sure your whitelist entry ends in `/*` if you want clip/sub-page links to be covered too (e.g. `twitch.tv/yourname/*`), since a bare `twitch.tv/yourname` entry only matches that exact link.
+Your entry is an exact match. A bare `twitch.tv/yourname` allows that one link and nothing nested under it, so a clip or sub-page URL is still treated as an ordinary link.
+
+Add the wildcard if you want everything under your channel covered: `twitch.tv/yourname/*`. Keep both entries if you also want the bare channel link itself allowed.
 
 **Q: What happens to a link that isn't whitelisted?**
 
@@ -133,6 +152,10 @@ The dominant spam pattern detected during the wave: emote spam prefers slow mode
 
 Twitch's own built-in AutoMod holds back messages it thinks might be harmful and normally waits for a moderator to manually approve or deny each one. This module lets TwitchSentry make that call automatically instead, based on the AutoMod level and categories you configure.
 
+**Q: My held messages are still waiting for a moderator. What did I miss?**
+
+**Use AutoMod**, at the top of the AutoMod page — it ships off, and until it is ticked TwitchSentry leaves held messages alone. (In releases before v1.4.0 that tickbox was ignored and the module acted either way, so an install that has been auto-denying without you ticking anything will go quiet until you do.)
+
 **Q: Can I limit it to specific categories instead of everything AutoMod flags?**
 
 Yes — the **AutoMod Categories** setting lets you list exactly which categories to act on (Profanity, Racism, SmartDetection, etc.). Leave it empty to act on everything AutoMod holds.
@@ -143,7 +166,7 @@ Yes — the **AutoMod Categories** setting lets you list exactly which categorie
 
 **Q: What services does it use to scan links?**
 
-VirusTotal (required — free API key) and, optionally, IPQualityScore (IPQS) for a second opinion, especially good at catching brand-new/throwaway phishing domains. Great if a new user comes in and want you to click on a sketchy link. Run it first through `Check Link` to be safe!
+VirusTotal (required — free API key) and, optionally, IPQualityScore (IPQS) for a second opinion, especially good at catching brand-new/throwaway phishing domains.
 
 **Q: How is the IPQS fraud score threshold chosen?**
 
@@ -159,7 +182,7 @@ Twitch's own built-in warning system — the flagged viewer has to read and clic
 
 **Q: How does escalation to a timeout/ban work?**
 
-Once a viewer racks up enough warnings (*Like a 3-Strikes Rule*), the *next* violation escalates straight to a timeout (or ban, if **Use Ban** is enabled) instead of another warning. Warning counts reset automatically after a configurable number of hours without a new violation.
+Once a viewer racks up enough warnings (**Warn's Before Final Warning**), the *next* violation escalates straight to a timeout (or ban, if **Use Ban** is enabled) instead of another warning. Warning counts reset automatically after a configurable number of hours without a new violation.
 
 ---
 
@@ -167,11 +190,23 @@ Once a viewer racks up enough warnings (*Like a 3-Strikes Rule*), the *next* vio
 
 **Q: What's a permit?**
 
-A temporary, per-user exception that lets someone post a link even while Link Filter would normally block it — useful for letting a specific viewer share something once without changing your whitelist.
+A temporary, per-user exception that lets someone post a link even while Link Filter would normally block it — useful for letting a specific viewer share something once without changing your whitelist. It waives the ordinary link, spam, message and raid checks for that viewer; if **Check Harmful Domains** is on, their links are still scanned for malware.
+
+**Q: Can more than one viewer hold a permit at a time?**
+
+Yes. Each permit runs its own countdown, so permits granted at different moments end at different moments. A permit that is already running is never extended — `!Permit` for someone who already holds one is refused, so end it with `!EndPermit @user` and grant a fresh one. `!EndPermit` with no name ends every active permit at once.
+
+Permits are deliberately not remembered across restarts: closing Streamer.bot clears them all.
+
+**Q: What stops a mistyped duration?**
+
+**Max Permit Duration Seconds** on the Permits page. Any longer time a moderator types is cut back to it, and so is a default or self-permit duration set above it. There is a hard ceiling of 86400 seconds (24 hours) whatever you configure.
 
 **Q: Can viewers grant themselves a permit?**
 
-Yes, if **Allow Self-Permit** is enabled — viewers can redeem a Channel Points reward to grant themselves a one-time, temporary permit without needing a moderator.
+Yes, if **Allow Self-Permit** is enabled — viewers can redeem a Channel Points reward to grant themselves a temporary permit without needing a moderator. Point that reward's Streamer.bot trigger at the same Permit action and put its ID in **Self-Permit Reward ID**.
+
+Set the reward up with **Skip Reward Requests Queue** turned OFF. That is what lets TwitchSentry give the points back when a redemption cannot become a permit — the viewer already holds one, or the feature is off. A reward that skips the queue is spent the moment it is redeemed and Twitch will not allow a refund.
 
 ---
 
@@ -193,9 +228,9 @@ Yes — subscribers and VIPs can be excluded globally, and you can add specific 
 
 Deletions, timeouts, bans, raid escalations, AutoMod holds, malicious/suspicious link scans, TwitchWarn actions, permit grants/revokes, config changes made via chat commands, and Spam Learner auto-applies — each toggled independently in **Discord Mod Notifications**.
 
-**Q: Can i chose the channel where the notifications get send?**
+**Q: What does an alert look like?**
 
-Yes — enter the webhook of your preferred channel in the settings. Also works great for a *Shame Channel* to make bans/timeouts/etc. public
+User, Action, Score, Triggers, Message and the rest arrive as separate labeled fields rather than one dense block, and internal details like raw regex patterns are summarized in plain terms instead of being dumped verbatim.
 
 ---
 
@@ -215,71 +250,71 @@ TwitchSentry ships with these built-in commands for managing its lists from chat
 | `!kwadd` / `!kwremove` / `!kwlist` | Spam Keywords |
 | `!tldadd` / `!tldremove` / `!tldlist` | Spaced-URL TLDs |
 | `!permit @user [seconds]` | Grants a temporary link permit |
+| `!endpermit [@user]` | Ends that viewer's permit, or all of them if no name is given |
 | `!vote @user` | Starts/joins a vote-kick |
 
 These are always recognized as commands (never scanned as regular chat) regardless of how they're wired up in Streamer.bot.
 
 ---
 
-## 🌍 Language
+## 🌍 Language & Translations
 
-**Q: What does the Language setting translate?**
+**Q: Can I use TwitchSentry in my language?**
 
-The **settings window only** — page names, labels, checkboxes, buttons, dropdown entries and tooltips. Everything TwitchSentry says *in chat* comes from the **Messages** pages, which you write yourself, so those stay exactly as you typed them. Nothing about moderation behaviour changes.
+English is built in, and German, Spanish, French and Brazilian Portuguese ship as translations. Pick one from the **Language** dropdown on the General tab and click **Save** — the window closes and reopens in the new language.
 
-**Q: Where do I change it?**
-
-**Help → About & Links → Language**, at the bottom of the page. Pick a language from the dropdown and click **Save** — the window closes and reopens in the new language.
-
-**Q: Which languages are available?**
-
-English is built in. Currently published: **Deutsch**, **Español**, **Français** and **Português (Brasil)**. Hit **Get More** next to the dropdown to see the current list — it fetches it live from GitHub, so new translations show up there without needing a TwitchSentry update.
-
-**Q: How does "Get More" work?**
-
-It downloads the list of published translations, shows you the ones you don't already have, and saves the one you pick to `TwitchSentry/Language/<code>.json`. It only offers what's missing — if you already have everything, it'll just tell you so. Then click **Save** to switch to it.
-
-**Q: Do translations update themselves?**
-
-Yes. Whenever you open the settings window with a non-English language selected, TwitchSentry checks GitHub (at most once every 6 hours) and re-downloads the file if a newer version has been published. If the file is missing or damaged it re-fetches immediately, ignoring the 6-hour wait.
-
-If you're offline or GitHub is unreachable, the check is skipped silently — the settings window still opens normally with whatever you already have on disk.
-
-**Q: Some text is still in English. Is it broken?**
-
-No — that's the fallback working as intended. Any string that hasn't been translated yet (or was added in a newer TwitchSentry version than the translation) simply stays English rather than showing a blank or a placeholder. A partial translation is always usable.
-
-Two other things stay English by design: anything **you** typed (settings values, your custom messages, keywords) and the few lines containing clickable links.
-
-**Q: Can I install a translation by hand?**
-
-Yes — use the 📂 button next to the dropdown to open the `Language` folder and drop a `.json` in. It appears in the dropdown the next time you open the settings window. The filename is the language code (`de.json` → `de`), and the display name comes from the `__languageName` field inside the file.
-
-**Q: I want to translate TwitchSentry into my language. How?**
-
-1. Open the `Language` folder and copy `en.json` to `<yourcode>.json` (e.g. `it.json`).
-2. Translate **only the values** — the right-hand side of each pair. The keys are the original English strings and are matched exactly, character for character, so changing one means that string simply won't translate.
-3. Keep escaped line breaks (`\n`) where they appear — they're what makes tooltips readable.
-4. Set `__languageName` (shown in the dropdown), `__languageCode` and `__version` at the top.
-5. Save the file as UTF-8.
-
-If you'd like it published so everyone gets it via **Get More**, [open an issue](https://github.com/aaskjer/TwitchSentry/issues) or send a pull request — bump `__version` whenever you revise it and existing users pick the update up automatically.
+If your language isn't in the dropdown, click **Get More**. It fetches the published list from GitHub and downloads the one you pick.
 
 ---
 
-## 🔔 Update Notifications
+**Q: I switched language but the bot still writes English in chat.**
 
-**Q: How do I know when a new version is available?**
+That's working as intended. Translations cover the *settings window* — labels, tooltips, tab names, dialogs. Everything TwitchSentry says in chat comes from the **Messages** pages, and those are yours to write: they're your wording, your tone, your language. Nothing translates them for you, because nothing should be putting words in your bot's mouth.
 
-Opening the Settings GUI checks GitHub for the latest release tag. If it's newer than what's installed, a popup offers to open the releases page.
+So to run a German channel, pick Deutsch for the window *and* write your chat messages in German on the Messages pages.
 
-**Q: Can I check for updates without opening the Settings window?**
+---
 
-Partially — You still have to trigger the `Test` trigger but if you press `Yes` in the update notification popup, the check won't open the GUI but the GitHub page instead. Running Beta will notify you about pre-releases too, Stable won't.
+**Q: Where do the language files live, and how do they stay current?**
+
+In `TwitchSentry/Settings/Language/`, one `<code>.json` per language. The 📁 button next to the dropdown opens the folder.
+
+When you open the settings window, TwitchSentry checks GitHub for a newer copy of the language you're using, at most once every six hours. If GitHub is unreachable the window opens anyway, on the copy you already have.
+
+---
+
+**Q: Can I fix or write a translation myself?**
+
+Yes. The files are flat JSON: each key is the exact English string from the window, each value is what gets shown instead.
+
+```json
+{
+  "__languageName": "Nederlands",
+  "__languageCode": "nl",
+  "__version": 1,
+  "Use Bot Account": "Botaccount gebruiken"
+}
+```
+
+`__languageName` is what appears in the dropdown. Drop the file in the Language folder and it shows up in the list — no restart needed beyond reopening the window.
+
+Two things to watch:
+
+- **Keep the placeholders.** If the English text contains `{user}`, `{count}`, `{duration}` or similar, the translation has to contain them too, spelled the same way. They're filled in at runtime; a dropped one is a hole in the message.
+- **Don't edit a shipped language in place.** `de`, `es`, `fr` and `pt-BR` are refreshed from GitHub, so your changes there get overwritten on the next check. Save your version under a code that isn't published and it's left alone permanently. Better still, [open an issue](https://github.com/aaskjer/TwitchSentry/issues) so the fix reaches everyone.
+
+---
+
+## 🔄 Updates
+
+**Q: How do I know if a new version is out?**
+
+Every time you open the Settings GUI, TwitchSentry checks GitHub's releases for you and shows a banner if a newer version is available. Set your preferred **Update Channel** (Stable or Beta) in the General tab — Beta will notify you about pre-releases too, Stable won't.
 
 ---
 
 # Is TwitchSentry an AI Slop?
 
-Partially, yes. This script was built with heavy AI assistance and input from the Streamer.bot community. I'm not a developer in the classical sense, I used this project to actually learn how a real moderation tool comes together, and I put a lot of time and care into it. My goal was to build something robust and genuinely useful for other streamers, not just some half-ass bullshit. The Project learned me a lot and i still have fun maintaining it. I understand that a lot of people, especially more technical skilled people, will look at that and dismiss the project because of the AI involvement, and honestly, I get it. That's a fair and i respect and support it.
-AI-assisted code can and does introduce bugs. I've spent real time testing, breaking, and fixing this thing. If you run into something wrong, or just have feedback, please [open an issue](https://github.com/aaskjer/TwitchSentry/issues) — I'd rather hear about it than have it sit there quietly.
+Partially, yes. This script was built with heavy AI assistance and input from the Streamer.bot community. I'm not a developer in the classical sense, I used this project to actually learn how a real moderation tool comes together, and I put a lot of time and care into it. My goal was to build something robust and genuinely useful for other streamers, not just something that works *meehh*...
+I understand that a lot of people (especially more technical folks) will look at TwitchSentry or my other projects and dismiss the project because of the AI involvement, and honestly, I get it. That's a fair position to hold.
+AI-assisted code can and does introduce bugs. I've spent real time testing, breaking, and fixing this thing. If you run into something wrong, or just have feedback, please [open an issue](https://github.com/aaskjer/TwitchSentry/issues) — I'm always happy to get input :)
