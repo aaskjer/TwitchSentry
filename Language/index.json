@@ -1,6 +1,27 @@
 [
-  { "code": "de", "name": "Deutsch", "version": 3 },
-  { "code": "es", "name": "Español", "version": 2 },
-  { "code": "fr", "name": "Français", "version": 2 },
-  { "code": "pt-BR", "name": "Português (Brasil)", "version": 2 }
+  {
+    "code": "en",
+    "name": "English",
+    "version": 6
+  },
+  {
+    "code": "de",
+    "name": "Deutsch",
+    "version": 5
+  },
+  {
+    "code": "es",
+    "name": "Español",
+    "version": 4
+  },
+  {
+    "code": "fr",
+    "name": "Français",
+    "version": 4
+  },
+  {
+    "code": "pt-BR",
+    "name": "Português (Brasil)",
+    "version": 4
+  }
 ]
