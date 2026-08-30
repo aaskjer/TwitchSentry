@@ -17,7 +17,6 @@
   <b><a href="#install-in-three-steps">Install</a></b> ·
   <a href="Manual.md">Manual</a> ·
   <a href="FAQ.md">FAQ</a> ·
-  <a href="CHANGELOG.md">Changelog</a> ·
   <a href="https://github.com/aaskjer/TwitchSentry/releases">Download</a>
 </p>
 
