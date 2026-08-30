@@ -2,7 +2,7 @@
 
 Every page of the settings window, what each module decides, and why. If you are here to find out what TwitchSentry is or how to install it, start on the **[overview page](README.md)**.
 
-**[Overview](README.md)** · **[FAQ](FAQ.md)** · **[Changelog](CHANGELOG.md)** · **[Report a problem](https://github.com/aaskjer/TwitchSentry/issues)**
+**[Overview](https://github.com/aaskjer/TwitchSentry/tree/main)** · **[FAQ](FAQ.md)** · **[Changelog](CHANGELOG.md)** · **[Report a problem](https://github.com/aaskjer/TwitchSentry/issues)**
 
 Everything is configured from one window. There is no config file you are expected to edit by hand, and nothing to sign up for beyond the two link-scanning services, which are optional and free.
 
