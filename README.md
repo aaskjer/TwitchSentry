@@ -26,7 +26,7 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 
 ---
 
-## What it does
+# What it does
 
 | | |
 |---|---|
