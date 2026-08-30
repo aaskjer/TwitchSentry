@@ -364,6 +364,41 @@ The update channel is `updateChannel` in `configs.json` — `stable` (the defaul
 
 ---
 
+## 💾 Backup & Restore
+
+**Q: What happens to my settings if a file gets corrupted?**
+
+Nothing, if you have a backup. The **Backup & Restore** page under Help writes a dated copy of the
+TwitchSentry folder wherever you point it, and copies it back on request.
+
+Two things in there cannot be recreated: `configs.json` and `messages.json` (every setting in the
+window, and every line TwitchSentry says in chat), and `spam.json` (the keywords, phrases and domain
+endings the Spam Learner has built up from months of your own chat). Everything else — the language
+files, the caches — re-downloads itself, and the logs are a record rather than a setting. Those first
+two are ticked by default; tick all five and you have copied the whole folder.
+
+**Q: Where should I put my backups?**
+
+Somewhere that is not the disk TwitchSentry is on, if you have the option — a second drive, a USB
+stick, or a folder your cloud storage syncs. Left empty, the *Backup Folder* box defaults to a
+`Backups` folder inside TwitchSentry itself, which survives a bad file but not a bad disk.
+
+**Q: Is a restore safe if I pick the wrong backup?**
+
+It is undoable. A copy of the current state is put aside in the same backup folder before anything is
+written, so the state you just replaced is still there. A restore also only touches what that backup
+actually contains and never deletes anything — restoring a settings-only backup leaves your logs and
+learned spam data alone — and a folder that holds no TwitchSentry files is refused rather than copied
+over your install.
+
+**Q: Can I just copy a file back by hand?**
+
+Yes. A backup is a plain folder of ordinary files with the same layout as the TwitchSentry folder, not
+an archive, so you can open it and drag one file back yourself. Streamer.bot re-reads the settings
+when the file changes, so no restart is needed.
+
+---
+
 ## 🛠️ Setup & Configuration
 
 **Q: Where are the config files stored?**
