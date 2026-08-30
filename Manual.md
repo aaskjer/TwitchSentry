@@ -90,7 +90,8 @@ A whitelist entry without a trailing `/*` is an exact match: `twitch.tv/yourname
 
 ## Discord Alerts
 
-<p align="center"><img alt="The Discord Alerts page" src="docs/screenshots/discord-alerts.png" /></p>
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/3146412d-655f-4c92-9ded-5cddbca0e261" />
+
 
 A webhook and one toggle per kind of action: deletions, timeouts, bans, raid escalations, AutoMod holds, link scans, warns, permits, config changes made from chat, and Spam Learner promotions. User, action, score, triggers and message arrive as separate labelled fields rather than one dense block.
 
