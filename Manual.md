@@ -233,6 +233,36 @@ The **Clean Chat Log** is the opposite: a sample of ordinary chat that was delib
 
 ---
 
+# Help
+
+## Backup & Restore
+
+<img width="926" height="1334" alt="grafik" src="https://github.com/user-attachments/assets/47709d01-a4bf-4c3f-abfb-97033f1d6031" />
+
+Everything TwitchSentry knows about your channel is a handful of files in one folder, and two of those
+files are things nothing can give back: your settings and the replies you have written, and the
+keywords, phrases and domain endings the Spam Learner has built up from months of your own chat.
+
+**Backing up** writes a dated folder of ordinary files. Tick what goes in: settings and chat messages,
+learned spam data, language files, logs, cache. The first two are the parts nothing can give back, and
+are ticked by default; all five ticked is the whole TwitchSentry folder, a few hundred kilobytes unless
+you keep long logs. *Backup Folder* is where they go — leave it empty and they land in a `Backups` folder inside
+TwitchSentry itself, which is better than nothing but shares a disk with the thing it is protecting,
+so point it at a second drive or a synced folder if you have one. Pressing **Back Up Now** saves your
+settings first, so the copy is never taken around edits you have not committed.
+
+**Restoring** asks for a backup folder and copies its files back over the ones in use. Only the parts
+that backup actually contains are touched and nothing is ever deleted — a settings-only backup leaves
+your logs and your learned spam data exactly where they are. A copy of the current state is put aside
+first, in the same backup folder, so a restore you did not mean is itself undoable, and the settings
+window reopens afterwards showing what was restored. A folder that is not a TwitchSentry backup is
+refused rather than copied.
+
+Because a backup is a plain folder, you can also open it, read it, and copy a single file back by
+hand — there is no archive to unpack.
+
+---
+
 # Chat commands
 
 Moderator-only unless noted, and always recognised as commands — a command is never scanned as ordinary chat.
