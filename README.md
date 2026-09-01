@@ -14,10 +14,10 @@
 </p>
 
 <p align="center">
-  <b><a href="#install-in-three-steps">Install</a></b> ·
+  <b><a href="https://github.com/aaskjer/TwitchSentry/releases">Download</a></b> ·
   <a href="Manual.md">Manual</a> ·
   <a href="FAQ.md">FAQ</a> ·
-  <a href="https://github.com/aaskjer/TwitchSentry/releases">Download</a>
+  <a href="https://github.com/aaskjer/TwitchSentry/tree/main/Language">Languages</a>
 </p>
 
 ---
