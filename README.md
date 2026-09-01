@@ -17,7 +17,7 @@
   <b><a href="https://github.com/aaskjer/TwitchSentry/releases">Download</a></b> ·
   <a href="Manual.md">Manual</a> ·
   <a href="FAQ.md">FAQ</a> ·
-  <a href="https://github.com/aaskjer/TwitchSentry/tree/main/Language">Languages</a>
+  <a href="https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Import-String.md">Import String</a>
 </p>
 
 ---
