@@ -40,7 +40,7 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 | **[Permits](Manual.md#permits)** | A time-limited link exception for a viewer, granted by you, a moderator, or a Channel Points redeem. |
 | **[Check Link](Manual.md#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
 | **[Voting](Manual.md#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
-| **[Discord Alerts](Manual.md#discord-alerts)** | Posts what happened to a webhook, one toggle per kind of action. |
+| **[Discord Alerts](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#discord-alerts)** | Posts what happened to a webhook, one toggle per kind of action. |
 
 ---
 
