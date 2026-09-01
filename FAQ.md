@@ -399,29 +399,6 @@ when the file changes, so no restart is needed.
 
 ---
 
-## 🛠️ Setup & Configuration
-
-**Q: Where are the config files stored?**
-
-Everything lives under your Streamer.bot base directory, in a `TwitchSentry` folder:
-
-```
-TwitchSentry/Settings/configs.json               ← all module settings
-TwitchSentry/Settings/messages.json               ← all chat/response messages
-TwitchSentry/Settings/Language/<code>.json         ← settings-window translations
-TwitchSentry/Machine Learning/spam.json            ← active keywords, phrases, patterns, TLDs
-TwitchSentry/Machine Learning/spam-suggestions.json ← Spam Learner's pending suggestions
-TwitchSentry/Logs/action-log.txt                   ← moderation action history
-TwitchSentry/Logs/violation-log.txt                ← raw text the Spam Learner mines from
-TwitchSentry/Logs/clean-log.txt                    ← sampled normal chat, used to avoid false positives
-TwitchSentry/Cache/stopwords.txt                   ← downloaded common-word list
-TwitchSentry/Cache/tld_cache.txt                    ← downloaded valid domain-ending list
-```
-
-You should never need to edit these by hand — use the built-in Settings GUI instead.
-
----
-
 # Is TwitchSentry an AI Slop?
 
 Partially, yes. This script was built with heavy AI assistance and input from the Streamer.bot community.
