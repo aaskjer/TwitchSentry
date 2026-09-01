@@ -30,16 +30,16 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 
 | | |
 |---|---|
-| **[Link Filter](Manual.md#general-settings)** | Blocks links from viewers you have not trusted, with a whitelist that matches exactly or by wildcard. Always on. |
-| **[Spam Scoring](Manual.md#spam-scoring)** | Reads a message as an advert with parts (somewhere to go, something on offer, a way to redeem it, a signature) and acts when enough parts fit together. Always on. |
-| **[Message Filter](Manual.md#message-filter)** | Watches *how* someone chats: account age, ALL CAPS, emote spam, flooding and repeats. |
-| **[Raid Protection](Manual.md#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
-| **[Spam Learner](Manual.md#spam-learner)** | Mines what was actually removed for new keywords, phrases and domain endings, and proposes them for review. |
-| **[AutoMod](Manual.md#automod)** | Answers the messages Twitch's own AutoMod holds back, by level and by category. |
-| **[Twitch Warn](Manual.md#twitch-warn)** | Twitch's warning screen, with escalation steps on top of it — a three-strikes rule, if you want one. |
-| **[Permits](Manual.md#permits)** | A time-limited link exception for a viewer, granted by you, a moderator, or a Channel Points redeem. |
-| **[Check Link](Manual.md#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
-| **[Voting](Manual.md#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
+| **[Link Filter](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#general-settings)** | Blocks links from viewers you have not trusted, with a whitelist that matches exactly or by wildcard. Always on. |
+| **[Spam Scoring](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#spam-scoring)** | Reads a message as an advert with parts (somewhere to go, something on offer, a way to redeem it, a signature) and acts when enough parts fit together. Always on. |
+| **[Message Filter](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#message-filter)** | Watches *how* someone chats: account age, ALL CAPS, emote spam, flooding and repeats. |
+| **[Raid Protection](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
+| **[Spam Learner](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#spam-learner)** | Mines what was actually removed for new keywords, phrases and domain endings, and proposes them for review. |
+| **[AutoMod](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#automod)** | Answers the messages Twitch's own AutoMod holds back, by level and by category. |
+| **[Twitch Warn](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#twitch-warn)** | Twitch's warning screen, with escalation steps on top of it — a three-strikes rule, if you want one. |
+| **[Permits](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#permits)** | A time-limited link exception for a viewer, granted by you, a moderator, or a Channel Points redeem. |
+| **[Check Link](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
+| **[Voting](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
 | **[Discord Alerts](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#discord-alerts)** | Posts what happened to a webhook, one toggle per kind of action. |
 
 ---
