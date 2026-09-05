@@ -2,15 +2,24 @@
 
 ---
 
+
+**Q: The Settings GUI won't open or throws an error. What do I do?**
+
+Streamer.bot has a weird bug since 1.0.5 where it adds useless bits to Microsoft .NET reference paths and makes them invalid when imported to another streamer.bot instance. Open up all `NO TOUCHY!` subactions of the project, open `Execute Code`, click `Find Refs` and then `OK`. If it keeps happening, please report it [here](https://github.com/aaskjer/TwitchSentry/issues).
+
+If the window *does* open, the **Status Log** page under Results and check what is written there.
+
+---
+
 **Q: I saved settings but nothing changed. Why?**
 
-Settings are re-read from disk automatically whenever the file's been updated — no Streamer.bot restart needed. Just click **Save** (or **Save & Exit**) and the next chat message will already use the new config.
+Make sure your streamer.bot instance does **not** run as administrator, run from a folder not out of a .zip folder or in a external cloud. If it keeps happening, please report it [here](https://github.com/aaskjer/TwitchSentry/issues).
 
 ---
 
 **Q: How do I reset everything to defaults?**
 
-**Reset everything**, in the ☰ menu. It asks for confirmation, then rewrites both `configs.json` and `messages.json` with factory defaults and reopens the window. This cannot be undone.
+**Reset everything**, in the ☰ menu. It asks for confirmation, then rewrites both `configs.json` and `messages.json` with factory defaults and reopens the window.
 
 If you only want to undo what you did to one page, **Reset this page** is right above it. That one puts the current page's controls back to their defaults and leaves every other page alone — and nothing is written until you press **Save**, so it is safe to look at first.
 
@@ -18,7 +27,7 @@ If you only want to undo what you did to one page, **Reset this page** is right 
 
 **Q: Where did the buttons along the bottom go?**
 
-Into the **☰ menu**, in front of the search box at the top left. It holds expert mode, test mode, *Show hidden notices again*, the language files, the light/dark theme, and both resets. The bottom bar is now only **Save**, **Save & Exit** and **Cancel**, plus the note telling you whether you have unsaved changes.
+If you're coming from an older version, the **☰ menu**, in front of the search box at the top left holds expert mode, test mode, *Show hidden notices again*, the language files, the light/dark theme, and both resets. The bottom bar is now only **Save**, **Save & Exit** and **Cancel**, plus the note telling you whether you have unsaved changes.
 
 ---
 
@@ -43,14 +52,6 @@ Expert mode, in the ☰ menu, is what shows those numbers. They keep working exa
 Yes — the **✕** on it. That is permanent: a notice you have read and answered should not keep coming back every time you open the window.
 
 If you want them back, **Show hidden notices again** in the ☰ menu empties the list and rebuilds the window, so every notice is worked out again from scratch. It greys itself out when nothing is hidden.
-
----
-
-**Q: The Settings GUI won't open or throws an error. What do I do?**
-
-Check the Streamer.bot log for the actual error — TwitchSentry logs failures with a `[TwitchSentry/...]` prefix. If it's a malformed `configs.json`/`messages.json`, the simplest fix is deleting the broken file so a fresh default gets written. If it keeps happening, please report it [here](https://github.com/aaskjer/TwitchSentry/issues).
-
-If the window *does* open, the **Status Log** page under Results shows the same thing without leaving TwitchSentry: it pulls every `[TwitchSentry/...]` line out of the Streamer.bot log, with a "Problems only" tick. That is the page for an API key still on its placeholder, a download that failed, or an action Twitch refused — none of which is announced in chat.
 
 ---
 
