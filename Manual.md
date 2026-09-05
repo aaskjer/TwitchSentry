@@ -16,6 +16,7 @@ Everything is configured from one window. There is no config file you are expect
 | **[Spam Scoring](#spam-scoring)** | Reads a message as an advert with parts — somewhere to go, something on offer, a way to redeem it, a signature — and acts when enough parts fit together. Always on. |
 | **[Message Filter](#message-filter)** | Watches *how* someone chats: account age, ALL CAPS, emote spam, flooding and repeats. |
 | **[Raid Protection](#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
+| **[Follow Protection](#follow-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
 | **[Spam Learner](#spam-learner)** | Mines what was actually removed for new keywords, phrases and domain endings, and proposes them for review. |
 | **[AutoMod](#automod)** | Answers the messages Twitch's own AutoMod holds back, so nobody has to sit in the queue. |
 | **[Twitch Warn](#twitch-warn)** | Twitch's warning screen, with escalation steps on top of it — a three-strikes rule, if you want one. |
@@ -118,6 +119,41 @@ Each of the four checks has its own switch and there is no module-wide one: unti
 The same idea, stricter, and only armed for a limited window right after an incoming raid — plus **swarm detection**, which spots several different accounts posting near-identical messages at once. That is the signature of a bot raid rather than of excited viewers, and it is decisive on its own.
 
 It has its own escalation ladder and its own progressive escalation, so a second wave of the same pattern moves up a step instead of re-picking the mode that is already running.
+
+## Follow Protection
+
+<p align="center"><img alt="The Follower Protection page" src="https://github.com/user-attachments/assets/a963857b-15f7-4fa0-ac73-1ea37881ba5b" /></p>
+
+Every other module here judges what somebody *says*. A follow bot never says anything, so all of them are
+blind to it: the wave arrives, the follower count climbs by a few hundred, and nothing in chat gives it away.
+
+This one watches follows. It counts how many **different** accounts arrive inside **Window (Seconds)**, and
+only once **Accounts Needed** is crossed does it look any of them up — eight arrivals in half a minute, as
+shipped. That is deliberate twice over: a single new follower is never judged, and Twitch is only asked about
+an account once there is a reason to ask.
+
+Each account in the wave is judged on four things from that one lookup — **Young Account**, **Default
+Avatar**, **Empty Profile** and **Throwaway Name**, a login built as a word with four or more digits stuck on
+the end. Two of them convict at the shipped sensitivity, and none of them convicts alone. An empty profile
+weighs half: it tips a case rather than making one.
+
+**Age gates the two cosmetic checks.** An account three years old with no picture and no bio is not a bot, it
+is somebody who never filled the form in — so the avatar and profile checks only count against an account
+younger than **Young Account (Days)**. The login shape is the exception, because it needs no lookup at all,
+which is also why it is the signal still standing once a wave has spent its lookup budget; at 1.0 against a
+threshold of 2.0 it is never a verdict by itself.
+
+**It blocks rather than bans, and that is the point.** A ban leaves the follower on your list — the padded
+number the bot was paid for — while a block removes the follow and stops that account following again. It is
+also quiet: nothing in the mod log to read through afterwards.
+
+**Report Only is what ships**, because a block is invisible from the viewer's side: they simply cannot follow,
+and nobody tells them why. Everything it blocks is written to **Blocked Accounts** on the page with the
+evidence that convicted it beside it, and [`!tsundo`](#chat-commands) lifts the last one.
+
+**Judge Single Follows Too** runs the checks on every follow rather than only inside a wave. It ships off, and
+the warning next to it is the reason: a viewer who made an account this morning to follow you looks exactly
+like a bot, and the wave rule is the only thing telling them apart.
 
 ---
 
