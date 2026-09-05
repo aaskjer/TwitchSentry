@@ -2,26 +2,26 @@
   {
     "code": "en",
     "name": "English",
-    "version": 10
+    "version": 11
   },
   {
     "code": "de",
     "name": "Deutsch",
-    "version": 9
+    "version": 10
   },
   {
     "code": "es",
     "name": "Español",
-    "version": 8
+    "version": 9
   },
   {
     "code": "fr",
     "name": "Français",
-    "version": 8
+    "version": 9
   },
   {
     "code": "pt-BR",
     "name": "Português (Brasil)",
-    "version": 8
+    "version": 9
   }
 ]
