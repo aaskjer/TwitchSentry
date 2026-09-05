@@ -254,25 +254,25 @@ Everything TwitchSentry says in chat, one page per module, with the placeholders
 
 ## Action Log
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/ac44b715-f730-4f68-9600-da1177e4185b" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/ac156268-a225-4e2a-8706-89f3409821d2" />
 
 Every action involving a viewer, filterable by module and by result, with the raw line underneath. This is the page for *what happened*.
 
 ## Status Log
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/8fdcd676-7dda-4851-915d-fbef82024712" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/a7e7cbe3-d65e-4cfd-a645-ca84ad38c569" />
 
 What TwitchSentry has been saying about *itself*, pulled out of the Streamer.bot log: an API key still on its placeholder, a download that failed, an action Twitch refused. None of that is announced in chat, so this is the page to open when something quietly did not happen.
 
 ## Violation Log
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/a745d8ab-4601-4c11-bc49-2bc95ac0f7dc" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/4f9ea565-f62a-471f-b474-5ca79750545d" />
 
 The **Violation Log** is every message that was acted on, exactly as it was posted — the page to open when you disagree with a removal.
 
 ## Clean Chat Log
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/175d409a-cdcd-4c64-b45f-7cdea9d60079" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/60fca65f-dd01-4191-8057-d0dfbb481e47" />
 
 The **Clean Chat Log** is the opposite of the violation log: a sample of ordinary chat that was deliberately left alone, roughly one message in ten. The Spam Learner measures its candidates against it, which is what stops an everyday word from becoming a rule. Both pages have a search box and a per-account filter, and both show the full line under the list, because chat messages are usually wider than the row.
 
