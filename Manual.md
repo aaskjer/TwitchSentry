@@ -4,11 +4,11 @@ Every page of the settings window, what each module decides, and why. If you are
 
 **[Overview](https://github.com/aaskjer/TwitchSentry/tree/main)** · **[FAQ](FAQ.md)** · **[Changelog](CHANGELOG.md)** · **[Report a problem](https://github.com/aaskjer/TwitchSentry/issues)**
 
-Everything is configured from one window. There is no config file you are expected to edit by hand, and nothing to sign up for beyond the two link-scanning services, which are optional and free.
+Everything is configured from one window. There is no config file you are expected to edit by hand (well, you can if you want) and nothing to sign up for beyond the two link-scanning services, which are optional and free.
 
 ---
 
-## The modules
+## Features
 
 | | |
 |---|---|
@@ -25,20 +25,17 @@ Everything is configured from one window. There is no config file you are expect
 | **[Voting](#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
 | **[Discord Alerts](#discord-alerts)** | Posts what happened to a webhook, one toggle per kind of action. |
 
-## Everything else on this page
-
-[Importing](#importing) · [First run](#first-run) · [The settings window](#the-settings-window) · [Setup](#setup) · [Filters](#filters) · [Spam](#spam) · [Modules](#modules) · [Messages](#messages) · [Results](#results) · [Chat commands](#chat-commands) · [Languages](#languages) · [Where the files live](#where-the-files-live)
-
 ---
 
-# Importing
+# Import
 
-<p align="center"><img alt="The Streamer.bot toolbar, with the Import button highlighted" src="https://github.com/user-attachments/assets/c4a4960b-9c2f-4ce9-b24f-abb0f7407926" /></p>
-<p align="center"><img alt="The import dialog, with the TwitchSentry.sb file dragged into it" src="https://github.com/user-attachments/assets/3acc30c6-9728-4eba-b68e-77d13163bedb" /></p>
+<p align="center"><img alt="The Streamer.bot toolbar, with the Import button highlighted" src="https://github.com/user-attachments/assets/7db12d06-c0ee-42a2-a35a-996566f20b3c" /></p>
+
+<p align="center"><img alt="The import dialog, with the TwitchSentry.sb file dragged into it" src="https://github.com/user-attachments/assets/b91f4bf4-2aa3-4730-8991-85c3eddd14b9" /></p>
 
 Open your copy of Streamer.bot, click **Import**, and drag the `TwitchSentry.sb` file into the window that opens, like in the screenshot above. Answer **Yes / OK** to the prompts that follow to finish the import.
 
-<p align="center"><img alt="The Commands tab in Streamer.bot with every TwitchSentry command ticked" src="https://github.com/user-attachments/assets/823a293d-bc95-45f2-a11f-1ef2048f611f" /></p>
+<p align="center"><img alt="The Commands tab in Streamer.bot with every TwitchSentry command ticked" src="https://github.com/user-attachments/assets/c3ba2442-a260-4f72-9dcc-22da02b30792" /></p>
 
 Then enable all the commands under **Commands**, as in the picture.
 
@@ -46,7 +43,7 @@ Then enable all the commands under **Commands**, as in the picture.
 
 # First run
 
-<p align="center"><img alt="Right-clicking the Test sub-action of the TS - Settings action and choosing Test Trigger" src="https://github.com/user-attachments/assets/c56165e8-798f-4e79-b105-fd13d1e66f1b" /></p>
+<p align="center"><img alt="Right-clicking the Test sub-action of the TS - Settings action and choosing Test Trigger" src="https://github.com/user-attachments/assets/f1ef63e3-c5da-4e9e-a94f-e79a32a70ec2" /></p>
 
 Go to the `[TS] - Settings` action, right-click **Test** and choose **Test Trigger**. That opens the settings window. *(The first start takes a moment — it fetches the language files.)*
 
@@ -56,28 +53,32 @@ The defaults are meant to be a working configuration, not a starting point you h
 
 # The settings window
 
-<img width="926" height="1335" alt="grafik" src="https://github.com/user-attachments/assets/ca4b6662-525f-4e6c-952b-588b70494762" />
+| Dark Mode | White Mode |
+|:---:|:---:|
+| ![before](https://github.com/user-attachments/assets/145de2d6-7c56-4049-ade8-86db1469af9b) | ![after](https://github.com/user-attachments/assets/0f260b75-9a63-461e-8509-cb65a171ac40) |
 
 Pages are grouped down the left: **Setup**, **Filters**, **Spam**, **Modules**, **Messages**, **Results** and **Help**. Click a group heading to collapse it.
 
-A few things that are worth knowing before you start:
-
+**A few things worth knowing before you start:**
 - **The search box** at the top left filters the page list by page name, setting label, or the internal setting key. `Ctrl+F` focuses it, `Esc` clears it. If you know roughly what a setting is called, this is faster than hunting for the page.
 - **The ☰ menu**, in front of the search box, holds the things you reach for occasionally: the light/dark theme, expert mode, the language files, test mode, and both reset buttons.
 - **The notice strip** across the top carries anything the window needs to tell you — an available update, a translation that is behind, a setting that will not do what it looks like it does. Notices stack, and the **✕** on one hides it for good. If you want them back, *Show hidden notices again* in the ☰ menu clears the list.
 - **Nothing is saved until you press Save.** The bottom left says whether you have unsaved changes.
 
-<img width="926" height="1334" alt="grafik" src="https://github.com/user-attachments/assets/f9036b44-6eea-4170-8e15-e9b2a230684f" />
+<img width="917" height="127" alt="grafik" src="https://github.com/user-attachments/assets/97fecd24-a799-4321-b976-8b043f2c78d1" />
 
 ### Test mode
 
 Switched on from the ☰ menu. While it runs, nothing is deleted, timed out or banned — every module posts what it *would* have done instead, so you can point a real chat at your settings without anybody being punished for helping you test them. Not even the chat modes come on. It ends on its own after the time set on General Settings, five minutes by default, and the notice strip counts it down — so a chat can never be left unguarded because somebody forgot to switch it back.
 
-### Expert mode
+### Easy & Expert mode
 
-Also in the ☰ menu. The three scoring pages each lead with a **sensitivity slider** — Very relaxed through Very strict, with a line under it saying what the step actually means. Expert mode reveals the individual numbers the slider is moving for you. The sliders keep working either way; they just move these.
+| Easy Mode | Expert Mode |
+|:---:|:---:|
+| ![before](https://github.com/user-attachments/assets/7049f482-589d-4fb1-bfd7-ff519465b270) | ![after](https://github.com/user-attachments/assets/191d4a2b-8d23-472a-b48b-684557acaee8) |
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/bdc5f698-5fc0-4c33-8689-7ade70d429f8" />
+`Easy Mode` is active by default, intended for users new to TwitchSentry or this type of system at all. Simplified settings with a **sensitivity slider** to choose — `Very relaxed` through `Very strict`, with a line under it saying what the step actually means and does. 
+Also in the ☰ menu. Expert mode reveals the individual numbers the slider is moving for you. In expert mode `Custom` gives you the possibility to create your own slider sensitivity and is remembered by the GUI if you move away from it, as long as you have hit `save` once.
 
 ---
 
@@ -85,16 +86,27 @@ Also in the ☰ menu. The three scoring pages each lead with a **sensitivity sli
 
 ## General Settings
 
+<img width="926" height="1338" alt="grafik" src="https://github.com/user-attachments/assets/36c548e0-e1da-4a5a-b6df-03cc9cc9e762" />
+
 Behaviour shared by every module: whether to speak through your bot account, whether to reply in chat, whether to write the action log. Then **test mode**'s duration and wording, and the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message. **Whitelisted Domains** lives here too.
 
 A whitelist entry without a trailing `/*` is an exact match: `twitch.tv/yourname` allows that one link and nothing nested under it, so your own clip links still need `twitch.tv/yourname/*`.
 
 ## Discord Alerts
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/3146412d-655f-4c92-9ded-5cddbca0e261" />
+<img width="926" height="1338" alt="grafik" src="https://github.com/user-attachments/assets/2109d718-4066-446f-b054-35899892c0c5" />
 
+Off by default, a discord webhook and one toggle per kind of action. A pasted webhook automatically gets hidden with `***` to prevent leaking critical information accidentally.
 
-A webhook and one toggle per kind of action: deletions, timeouts, bans, raid escalations, AutoMod holds, link scans, warns, permits, config changes made from chat, and Spam Learner promotions. User, action, score, triggers and message arrive as separate labelled fields rather than one dense block.
+Example:
+<img width="317" height="263" alt="grafik" src="https://github.com/user-attachments/assets/2d3d313d-d106-4bd5-a0ed-72f8df862509" />
+
+**Create a discord webhook:**
+* Right-Click on desired channel
+* Edit Channel
+* Create WebHook
+* Give your webhook a fancy name and a logo
+* Copy WebHook URL
 
 ---
 
@@ -102,7 +114,10 @@ A webhook and one toggle per kind of action: deletions, timeouts, bans, raid esc
 
 ## Message Filter
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/6e8ce583-5faa-4e0a-8ed3-3e598f317da6" />
+| Easy Mode | Expert Mode |
+|:---:|:---:|
+| ![before](https://github.com/user-attachments/assets/7ede45ce-3592-4b99-b8e5-34bdf6e7fb96) | ![after](https://github.com/user-attachments/assets/9e7a3794-e89a-4857-8fc9-0bd937d737d0) |
+
 
 Looks at how someone is chatting rather than at particular words: account age, ALL CAPS, emote spam, and posting too fast or repeating yourself.
 
@@ -114,46 +129,31 @@ Each of the four checks has its own switch and there is no module-wide one: unti
 
 ## Raid Protection
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/20d4c9ab-efca-4293-adc6-bde7d91d31ba" />
+| Easy Mode | Expert Mode |
+|:---:|:---:|
+| ![before](https://github.com/user-attachments/assets/cd0c401f-449a-4ba2-8159-ab28e8637413) | ![after](https://github.com/user-attachments/assets/71fd4478-f69c-4bef-8d7b-95de3eb71767) |
 
-The same idea, stricter, and only armed for a limited window right after an incoming raid — plus **swarm detection**, which spots several different accounts posting near-identical messages at once. That is the signature of a bot raid rather than of excited viewers, and it is decisive on its own.
-
+The same idea as `Message Filter` but stricter and only armed for a limited window right after an incoming raid. Plus: **swarm detection**, which spots several different accounts posting near-identical messages at once which then gets scored against bot patterns.
 It has its own escalation ladder and its own progressive escalation, so a second wave of the same pattern moves up a step instead of re-picking the mode that is already running.
 
 ## Follow Protection
 
-<p align="center"><img alt="The Follower Protection page" src="https://github.com/user-attachments/assets/a963857b-15f7-4fa0-ac73-1ea37881ba5b" /></p>
+| Easy Mode | Expert Mode |
+|:---:|:---:|
+| ![before](https://github.com/user-attachments/assets/30f7d996-0a13-4ee5-8512-018fab96659f) | ![after](https://github.com/user-attachments/assets/42270f7e-f998-45cb-a358-245a46ac277d) |
 
-Every other module here judges what somebody *says*. A follow bot never says anything, so all of them are
-blind to it: the wave arrives, the follower count climbs by a few hundred, and nothing in chat gives it away.
+**Off by default**. It counts how many **different** accounts arrive inside **Window (Seconds)**, and
+only once **Accounts Needed** is crossed, it looks them up and compares their account data against your settings, if there's a match, the accounts get blocked, which removes their follow and blocks them from any further action on your channel.
 
-This one watches follows. It counts how many **different** accounts arrive inside **Window (Seconds)**, and
-only once **Accounts Needed** is crossed does it look any of them up — eight arrivals in half a minute, as
-shipped. That is deliberate twice over: a single new follower is never judged, and Twitch is only asked about
-an account once there is a reason to ask.
-
-Each account in the wave is judged on four things from that one lookup — **Young Account**, **Default
-Avatar**, **Empty Profile** and **Throwaway Name**, a login built as a word with four or more digits stuck on
-the end. Two of them convict at the shipped sensitivity, and none of them convicts alone. An empty profile
-weighs half: it tips a case rather than making one.
-
-**Age gates the two cosmetic checks.** An account three years old with no picture and no bio is not a bot, it
-is somebody who never filled the form in — so the avatar and profile checks only count against an account
-younger than **Young Account (Days)**. The login shape is the exception, because it needs no lookup at all,
-which is also why it is the signal still standing once a wave has spent its lookup budget; at 1.0 against a
-threshold of 2.0 it is never a verdict by itself.
-
-**It blocks rather than bans, and that is the point.** A ban leaves the follower on your list — the padded
-number the bot was paid for — while a block removes the follow and stops that account following again. It is
-also quiet: nothing in the mod log to read through afterwards.
-
-**Report Only is what ships**, because a block is invisible from the viewer's side: they simply cannot follow,
-and nobody tells them why. Everything it blocks is written to **Blocked Accounts** on the page with the
+- Each account in the wave is judged on four things from that one lookup: **Young Account**, **Default
+Avatar**, **Empty Profile** and **Throwaway Name**. 
+- **Age gates the two cosmetic checks.** An account three years old with no picture and no bio is not a bot, it
+is somebody who never filled the form in. 
+- **It blocks rather than bans** A ban leaves the follower on your list while a block removes the follow and stops that account following again.
+- **Report Only is default**, because a block is invisible from the viewer's side: they simply cannot follow,
+and nobody tells them why. Every account it blocks is written to **Blocked Accounts** on the page with the
 evidence that convicted it beside it, and [`!tsundo`](#chat-commands) lifts the last one.
-
-**Judge Single Follows Too** runs the checks on every follow rather than only inside a wave. It ships off, and
-the warning next to it is the reason: a viewer who made an account this morning to follow you looks exactly
-like a bot, and the wave rule is the only thing telling them apart.
+- Off by Default: **Judge Single Follows Too** runs the checks on every follow rather than only inside a wave.
 
 ---
 
@@ -161,7 +161,9 @@ like a bot, and the wave rule is the only thing telling them apart.
 
 ## Spam Scoring
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/70fe1e2a-61c2-4307-884c-f7360193dcbe" />
+| Easy Mode | Expert Mode |
+|:---:|:---:|
+| ![before](https://github.com/user-attachments/assets/7049f482-589d-4fb1-bfd7-ff519465b270) | ![after](https://github.com/user-attachments/assets/191d4a2b-8d23-472a-b48b-684557acaee8) |
 
 This does not judge a message by how many red flags it trips. It asks whether the message is built like an advert. An advert has parts: somewhere to go (**Destination**), something being sold (**Offer**), a way to redeem it (**Instrument**), the random `@handle` a spam bot signs with (**Tag**), and wording this channel has seen from spam before (**Signature**).
 
@@ -171,13 +173,13 @@ One part on its own is a coincidence — plenty of ordinary messages have one. T
 
 ## Known Patterns
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/c4848081-db96-455e-9fee-7e09629ae49c" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/785e5ec5-cb02-4a75-beb5-1b4b11ba7bab" />
 
 The actual active rules every module checks against — `spam.json`, editable in place. Spam domains, keywords, strong keywords, domain endings, custom patterns and voucher-code patterns, plus the four **conversation beats** the scam detector matches on. Add your own here, or approve what the Learner suggests. Don't forget **Save**.
 
 ## Spam Learner
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/614fe1db-58b5-4c9c-a09c-0793d85f6e42" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/9a976adb-ba5c-4e33-a036-a417caa58e20" />
 
 Watches what actually got removed and works out which words, phrases and domain endings keep showing up in it, scoring each candidate by how much more often it appears in spam than in ordinary chat. New finds start as suggestions for you to review; they are promoted into the real rule list only once they have built a track record — either because you approve them, or automatically if **Auto Promote Trusted Rules** is on.
 
@@ -185,7 +187,7 @@ Only *content* violations feed it. The fact that somebody typed too fast tells y
 
 ## Suggestions
 
-<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/b9fd8263-8374-492d-bd94-7cfb0dd3531e" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/0cd9d832-f33b-4b3c-a75f-675992d31e27" />
 
 Everything the Learner has proposed but not applied. Read the **Would hit** column first: that is how many messages from your own clean chat log the rule would have matched. Zero is what you want, and anything above zero is never auto-promoted. **Users** counts how many different people posted it, so one spammer repeating himself counts once; **Discrim.** is how much more often it shows up in spam than in ordinary chat.
 
@@ -199,47 +201,52 @@ These are off by default. Each is genuinely optional — the two filters above a
 
 ## AutoMod
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/31a622d3-b741-45db-a0b3-5bf02dd1659c" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/f13b985d-4cd8-4bba-abf4-d2c319358efa" />
 
-Twitch's own AutoMod holds suspicious messages back and waits for a moderator to approve or deny each one. This answers them for you, by level and by category. Leave **AutoMod Categories** empty to act on everything Twitch holds, or list only the categories you care about.
+**Off by default**. Twitch's own AutoMod holds suspicious messages back and waits for a moderator to approve or deny each one. This answers them for you, by level and by category. Leave **AutoMod Categories** empty to act on everything Twitch holds, or list only the categories you care about.
 
 ## Twitch Warn
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/c2d95929-9784-4cc6-bd56-667531520f63" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/ec4ca9cb-37c2-4752-aece-f7c07c96714c" />
 
 A warned viewer has to read and click through a warning screen before they can chat again, and Twitch keeps the count in their moderation history. This adds escalation on top: warns accumulate, the last one before the threshold is a final warning, and the violation after that becomes a timeout or a ban. Counts reset on their own after a quiet period.
 
 ## Permits
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/2a2b78af-555c-4ea4-b4ee-6fdac1b92562" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/b7a3e22f-64da-42b5-b763-8c2a5b6bb0ae" />
 
-A time-limited exception for one viewer, so they can post a link without you changing your whitelist. `!permit @user [seconds]` grants one, `!endpermit @user` ends it, `!endpermit` on its own ends every active permit. Several people can hold one at the same time, each with its own countdown; a permit that is already running is never extended. They are deliberately forgotten on restart.
-
+A time-limited exception for a viewer, so they can post a link without it getting deleted. `!permit @user [seconds]` grants one, `!endpermit @user` ends it, `!endpermit` on its own ends every active permit. Several people can hold one at the same time, each with its own countdown; a permit that is already running is never extended. They are deliberately forgotten on restart.
 **Max Permit Duration Seconds** caps whatever a moderator types, with a hard ceiling of 24 hours.
-
 Viewers can also redeem a permit themselves through Channel Points, if **Allow Self-Permit** is on. Set that reward up with **Skip Reward Requests Queue** turned **off** — that is what lets TwitchSentry give the points back when a redemption cannot become a permit. A reward that skips the queue is spent the moment it is redeemed, and Twitch will not allow a refund.
 
 ## Check Link
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/81e17f00-76f1-4fb0-a573-c7d66934d007" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/a3aaf79f-b219-4e4e-8db8-02b600d94add" />
 
-Two jobs. Anyone can scan a URL on demand with `!checklink <url>`, and — with **Check Harmful Domains** on — the Link Filter hands it every link it sees, including links from viewers it would otherwise trust. That second scan sits on top of the ordinary link rule rather than replacing it.
-
+Two jobs: Anyone can scan a URL on demand with `!checklink <url>`. The second feature adds a scan on top of the ordinary link rule and automatically scans any incoming link in chat.
 Uses VirusTotal (required, free key) and optionally IPQualityScore for a second opinion. IPQS rates a link from 0 to 100; the default threshold is 75, with a stricter one for domains it also reports as recently registered, since a brand-new throwaway domain is a phishing classic.
 
 ## Voting
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/1b00f67a-702a-43bc-bd28-f9121a2c3803" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/307b5166-6c2a-4559-a59b-30bc88a7e27c" />
 
-Lets chat decide. `!vote @user` starts or joins a vote, and enough *unique* voters inside the time window time that person out — or ban them, if you allow it. The window running out resets the vote. Subscribers and VIPs can be exempted, there are separate exclusion lists for users and Streamer.bot groups, and **everyone above VIP is permanently unvotable.**
+Lets chat decide! `!vote @user` starts or joins a vote, and enough *unique* voters inside the time window time that person out — or ban them, if you allow it. The window running out resets the vote. Subscribers and VIPs can be exempted, there are separate exclusion lists for users and Streamer.bot groups, and **everyone above VIP is permanently unvotable!**
 
 ---
 
 # Messages
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/b5667d97-5584-48a0-b0c3-0843f79151fd" />
-
 Everything TwitchSentry says in chat, one page per module, with the placeholders each message accepts listed under the box. Nothing here is translated for you — this is your bot's voice, your wording and your language, so a German channel picks Deutsch for the window *and* writes these in German.
+
+| Command Replies | Filter Messages | Raid Messages | 
+|:---:|:---:|:---:| 
+| ![](https://github.com/user-attachments/assets/adfdfec4-7626-49db-9517-1468b6c971e1) | ![](https://github.com/user-attachments/assets/02120ab7-6865-48b2-93d1-70147a4b8ae2) | ![](https://github.com/user-attachments/assets/973b7c80-439b-4947-a5a5-9b1909799c9e) |
+| Link Messages | Spam Messages | Learner Messages | 
+| ![](https://github.com/user-attachments/assets/f2ccfe16-d849-4d03-a419-add6b06907ff) | ![](https://github.com/user-attachments/assets/ad216565-373d-4adf-8e29-5ff556bff987) | ![](https://github.com/user-attachments/assets/9c166a34-4634-4686-bc39-4e041e984b21) |
+| AutoMod Messages | Warn Messages | Permit Messages | 
+| ![](https://github.com/user-attachments/assets/44860855-2b46-4887-9a34-2d0a109925a8) | ![](https://github.com/user-attachments/assets/2d322a8f-0d28-4081-a186-2967142d01a4) | ![](https://github.com/user-attachments/assets/ea04a837-fcab-4179-b3dd-3f3eb0f8578c) |
+| Scan Messages | Vote Messages | | 
+| ![](https://github.com/user-attachments/assets/4327a6e1-998e-42e4-b8c1-dd393a0eda74) | ![](https://github.com/user-attachments/assets/485128ad-89b6-4773-8597-5eba7699d969) | |
 
 ---
 
@@ -247,25 +254,27 @@ Everything TwitchSentry says in chat, one page per module, with the placeholders
 
 ## Action Log
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/600f31c0-4b76-466c-a15d-f88be137de80" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/ac44b715-f730-4f68-9600-da1177e4185b" />
 
 Every action involving a viewer, filterable by module and by result, with the raw line underneath. This is the page for *what happened*.
 
 ## Status Log
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/37296555-f295-4e0c-9cc7-0543edc09944" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/8fdcd676-7dda-4851-915d-fbef82024712" />
 
 What TwitchSentry has been saying about *itself*, pulled out of the Streamer.bot log: an API key still on its placeholder, a download that failed, an action Twitch refused. None of that is announced in chat, so this is the page to open when something quietly did not happen.
 
-## Violation Log & Clean Chat Log
+## Violation Log
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/4fcb2a13-d8aa-417d-896f-5bf7ffbf6ca1" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/a745d8ab-4601-4c11-bc49-2bc95ac0f7dc" />
 
 The **Violation Log** is every message that was acted on, exactly as it was posted — the page to open when you disagree with a removal.
 
-<img width="926" height="837" alt="grafik" src="https://github.com/user-attachments/assets/0966bdec-c940-45ab-a21d-7111131e1a63" />
+## Clean Chat Log
 
-The **Clean Chat Log** is the opposite: a sample of ordinary chat that was deliberately left alone, roughly one message in ten. The Spam Learner measures its candidates against it, which is what stops an everyday word from becoming a rule. Both pages have a search box and a per-account filter, and both show the full line under the list, because chat messages are usually wider than the row.
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/175d409a-cdcd-4c64-b45f-7cdea9d60079" />
+
+The **Clean Chat Log** is the opposite of the violation log: a sample of ordinary chat that was deliberately left alone, roughly one message in ten. The Spam Learner measures its candidates against it, which is what stops an everyday word from becoming a rule. Both pages have a search box and a per-account filter, and both show the full line under the list, because chat messages are usually wider than the row.
 
 ---
 
@@ -273,7 +282,7 @@ The **Clean Chat Log** is the opposite: a sample of ordinary chat that was delib
 
 ## Backup & Restore
 
-<img width="926" height="1334" alt="grafik" src="https://github.com/user-attachments/assets/47709d01-a4bf-4c3f-abfb-97033f1d6031" />
+<img width="926" height="1333" alt="grafik" src="https://github.com/user-attachments/assets/d029a1b3-b4e9-4df1-a505-b0cb5ccdff87" />
 
 Everything TwitchSentry knows about your channel is a handful of files in one folder, and two of those
 files are things nothing can give back: your settings and the replies you have written, and the
@@ -317,10 +326,13 @@ Moderator-only unless noted, and always recognised as commands — a command is 
 | `!vegadd` / `!vegremove` / `!veglist` | Vote-Excluded Groups |
 | `!kwadd` / `!kwremove` / `!kwlist` | Spam Keywords |
 | `!tldadd` / `!tldremove` / `!tldlist` | Spaced-URL TLDs |
+| `!tsundo` | Undo the last action (ban/timeout/etc) |
 
 ---
 
 # Languages
+
+<img width="446" height="423" alt="grafik" src="https://github.com/user-attachments/assets/3a1517f6-9406-4118-b5a9-893ca1da3f7c" />
 
 The settings window ships in English, German, Spanish, French and Brazilian Portuguese. Pick one from the ☰ menu; the window closes and reopens in it. Files are refreshed from GitHub in the background, and the window opens on the copy you already have if GitHub is unreachable.
 
