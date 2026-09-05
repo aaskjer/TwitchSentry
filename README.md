@@ -34,6 +34,7 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 | **[Spam Scoring](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#spam-scoring)** | Reads a message as an advert with parts (somewhere to go, something on offer, a way to redeem it, a signature) and acts when enough parts fit together. Always on. |
 | **[Message Filter](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#message-filter)** | Watches *how* someone chats: account age, ALL CAPS, emote spam, flooding and repeats. |
 | **[Raid Protection](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
+| **[Follow Protection](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#follow-guard)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
 | **[Spam Learner](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#spam-learner)** | Mines what was actually removed for new keywords, phrases and domain endings, and proposes them for review. |
 | **[AutoMod](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#automod)** | Answers the messages Twitch's own AutoMod holds back, by level and by category. |
 | **[Twitch Warn](https://github.com/aaskjer/TwitchSentry/blob/main/Manual.md#twitch-warn)** | Twitch's warning screen, with escalation steps on top of it — a three-strikes rule, if you want one. |
