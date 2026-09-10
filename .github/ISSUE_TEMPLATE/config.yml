@@ -1,0 +1,9 @@
+# blank_issues_enabled must stay true. TwitchSentry's settings window opens
+# /issues/new?title=...&body=...&labels=... directly, with everything already filled in; with blank
+# issues switched off GitHub redirects that to the template chooser and drops every parameter, so
+# the ticket arrives empty and the reporter has to type it all again.
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and setup help
+    url: https://discord.com/channels/834650675224248362/1512133095246270616
+    about: The TwitchSentry thread on the Streamer.bot Discord, for anything that is not a bug or an idea.
