@@ -1,0 +1,66 @@
+name: An idea for TwitchSentry
+description: Something it could do, or could do better
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **The settings window fills most of this in for you.** ☰ → *Report an issue or idea…*, with
+        *An idea for TwitchSentry* in the first dropdown. Nothing is sent from the window - you still
+        read it over here and press Submit yourself.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part is it about?
+      description: Not sure is a fine answer.
+      options:
+        - "Not sure"
+        - "Message Filter"
+        - "Spam Scoring and Learner"
+        - "Raid Protection"
+        - "Follow Protection"
+        - "Link Filter and Check Link"
+        - "AutoMod"
+        - "Twitch Warn"
+        - "Permits"
+        - "Voting"
+        - "Discord Alerts"
+        - "The settings window"
+        - "A translation"
+    validations:
+      required: true
+
+  - type: textarea
+    id: the-idea
+    attributes:
+      label: The idea
+      description: What TwitchSentry would do that it does not do now.
+      placeholder: |
+        A per-viewer note that shows up next to their name in the Action Log, so a moderator can
+        see why somebody was let off last time.
+    validations:
+      required: true
+
+  - type: textarea
+    id: the-problem
+    attributes:
+      label: What would it solve?
+      description: |
+        The situation you are actually in. This is the part that decides whether an idea gets built
+        and how - a described problem often has a simpler answer than the feature it arrived as.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What do you do about it today?
+      description: Anything you have tried, in TwitchSentry or outside it, and why it falls short.
+
+  - type: textarea
+    id: setup
+    attributes:
+      label: Your setup
+      description: |
+        Only if it matters to the idea. The settings window writes this block for you (☰ → *Report an
+        issue or idea…*), and it never contains your channel name, your keys or your webhook URL.
+      render: text
