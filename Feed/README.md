@@ -50,16 +50,4 @@ Two files on your PC belong to the feed:
 - The lists: `spamDomains`, `strongKeywords`, `keywords`, `spacedUrlTlds`, `beatRapport`,
   `beatCritique`, `beatSolution`, `beatPitch`, `handoffPhrases`, `serviceOffers`.
 
-## Changing it
-
-1. **Bump `version`** with every change, or installs holding the previous copy never take the new one.
-2. **Write entries the way installs store them:** lower case, trimmed, no leading `!`.
-3. **Never add an entry that a release shipped as a built-in default.** A streamer may have deleted
-   it, and a first check cannot tell a deletion from never having had it.
-4. **To take something back, move it to `retracted`.** Removing it from `lists` changes nothing on
-   installs that already have it.
-5. **Run `tools/check-feed.ps1`** in the development folder before publishing. It applies the rules
-   every install applies, and the ones above, then replays the spam corpus with the feed's entries.
-   After a release, run `tools/check-feed.ps1 -RecordRelease <tag>` so rule 3 knows the new defaults.
-
-GitHub serves this file from a cache for up to five minutes after a push.
+# not in the final build yet
