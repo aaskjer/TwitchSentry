@@ -1,0 +1,49 @@
+name: Suggest a better translation
+description: A text in the settings window that reads badly in your language
+title: "Translation: "
+labels: ["share: translation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **A pull request is opened for this automatically,** and once it is merged the fix goes into the next language update. One text per ticket.
+
+        To find the English original, switch the settings window to English in the ☰ menu and copy the text exactly, line breaks included.
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options:
+        - Deutsch (de)
+        - Español (es)
+        - Français (fr)
+        - Português (Brasil) (pt-BR)
+    validations:
+      required: true
+
+  - type: textarea
+    id: english
+    attributes:
+      label: The English text
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: What it says now
+      description: Optional, but it helps find the right place.
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: What it should say
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it better?
+      description: Optional.
