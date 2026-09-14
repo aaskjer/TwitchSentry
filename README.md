@@ -87,7 +87,6 @@ The settings window ships in English but you can download also: German, Spanish,
 |---|---|
 | **[Manual](Manual.md)** | Every page of the settings window, and what each module decides |
 | **[FAQ](FAQ.md)** | The questions that come up most |
-| **[Changelog](CHANGELOG.md)** | What changed in each release |
 | **[Issues](https://github.com/aaskjer/TwitchSentry/issues)** | Anything that looks wrong, or a feature you are missing |
 
 ## Credits
