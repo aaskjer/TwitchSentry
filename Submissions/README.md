@@ -16,6 +16,6 @@ The workflow needs **Settings → Actions → General → Allow GitHub Actions t
 
 ## What is checked here, and what is not
 
-- **Spam wording:** the list names, and the rules every install applies to an entry. Entries already in the feed are left out of the file. Defaults a release already shipped, and the spam corpus, are left to the promotion step.
+- **Spam wording:** the list names, and the rules every install applies to an entry. Entries already in the feed, and defaults a release already shipped (the feed's `shipped` block), are left out of the file. The spam corpus is left to the promotion step.
 - **Profiles:** that it is a TwitchSentry profile, and that it carries no key, webhook, token or list of people - the same filter the settings window applies when it imports one.
 - **Translations:** that the language exists, and whether the English text is in the published `Language/en.json`.

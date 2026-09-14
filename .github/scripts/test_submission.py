@@ -129,9 +129,11 @@ class ReadingTheTicket(unittest.TestCase):
 
 class SpamWording(unittest.TestCase):
     def setUp(self):
-        self.root = workspace({"schema": 1, "version": 1,
+        self.root = workspace({"schema": 1, "version": 2,
                                "lists": {"spamDomains": ["smmgen"], "strongKeywords": ["botrush"]},
-                               "retracted": {"keywords": ["old offer"]}})
+                               "retracted": {"keywords": ["old offer"]},
+                               "shipped": {"releases": ["v1.0.1", "v2.0.0"],
+                                           "lists": {"keywords": ["cheap"], "spamDomains": ["streamboo"]}}})
 
     def build(self, entries, **kw):
         return s.build("spam", ticket("spam", spam_pairs(entries, **kw)), self.root)
@@ -156,6 +158,31 @@ class SpamWording(unittest.TestCase):
         r = self.build("spamDomains: smmgen\nstrongKeywords: BotRush")
         self.assertIsNone(r.document)
         self.assertEqual(r.nothing_new, {"spamDomains": ["smmgen"], "strongKeywords": ["botrush"]})
+
+    def test_defaults_a_release_shipped_are_left_out(self):
+        # An install that started on an older version still carries that version's defaults, so the
+        # window may offer one; the feed could never hand it over.
+        r = self.build("keywords: !Cheap\nspamDomains: streamboo\nspamDomains: newsite")
+        self.assertEqual(r.document["entries"], {"spamDomains": ["newsite"]})
+        self.assertIn("| `keywords` | 0 | 0 | 1 |", r.summary)
+        self.assertIn("Built-in defaults of a TwitchSentry release", r.summary)
+        self.assertIn("spamDomains: streamboo\nkeywords: cheap", r.summary)
+        self.assertIn("and the defaults releases shipped", r.summary)
+
+    def test_a_default_is_not_a_default_in_another_list(self):
+        r = self.build("strongKeywords: cheap")
+        self.assertEqual(r.document["entries"], {"strongKeywords": ["cheap"]})
+
+    def test_nothing_but_known_entries_and_defaults_opens_no_pull_request(self):
+        r = self.build("spamDomains: smmgen\nkeywords: cheap")
+        self.assertIsNone(r.document)
+        self.assertEqual(r.nothing_new, {"spamDomains": ["smmgen"]})
+        self.assertEqual(r.already_shipped, {"keywords": ["cheap"]})
+
+    def test_a_feed_without_the_shipped_block_is_not_claimed_to_be_checked(self):
+        r = s.build("spam", ticket("spam", spam_pairs("spamDomains: newsite")), workspace())
+        self.assertIn("has no `shipped` block yet", r.summary)
+        self.assertNotIn("and the defaults releases shipped", r.summary)
 
     def test_an_entry_retracted_before_is_kept_and_pointed_out(self):
         r = self.build("keywords: old offer")
@@ -375,6 +402,19 @@ class TheWorkflowRun(unittest.TestCase):
         self.assertEqual(rec.commands(), ["git fetch --depth=1", "git show origin/submission/42:Submissions/spam/42.json",
                                           "gh pr list", "gh pr edit"])
         self.assertEqual(rec.calls[-1][3], "7")
+
+    def test_a_ticket_the_feed_can_add_nothing_from_only_gets_a_comment_saying_why(self):
+        root = workspace({"schema": 1, "version": 2, "lists": {"spamDomains": ["smmgen"]}, "retracted": {},
+                          "shipped": {"releases": ["v2.0.0"], "lists": {"keywords": ["cheap"]}}})
+        issue = ticket("spam", spam_pairs("spamDomains: smmgen\nkeywords: cheap"))
+        code, rec, _ = self.run_main(issue, [], root)
+        self.assertEqual(code, 0)
+        self.assertEqual(rec.commands(), ["gh issue comment"])
+        with open(rec.calls[0][rec.calls[0].index("--body-file") + 1], encoding="utf-8") as f:
+            body = f.read()
+        self.assertIn("Already in the spam feed:\n``` text\nspamDomains: smmgen\n```", body)
+        self.assertIn("Built-in defaults of a TwitchSentry release", body)
+        self.assertIn("``` text\nkeywords: cheap\n```", body)
 
     def test_a_ticket_with_mistakes_only_gets_a_comment(self):
         issue = ticket("spam", spam_pairs("spamDomains: smm gen"))

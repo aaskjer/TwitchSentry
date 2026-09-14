@@ -220,6 +220,7 @@ class Result:
         self.title = None
         self.summary = None
         self.nothing_new = None
+        self.already_shipped = None
 
 
 def read_json(path, default):
@@ -233,6 +234,11 @@ def read_json(path, default):
 def _sets(block):
     block = block if isinstance(block, dict) else {}
     return {name: {normalize(e) for e in (block.get(name) or []) if isinstance(e, str)} for name in SPAM_LISTS}
+
+
+def listing(block):
+    """Entries grouped by list, one `list: entry` per line, in the order the lists are known."""
+    return "\n".join("%s: %s" % (name, entry) for name in SPAM_LISTS for entry in block.get(name, []))
 
 
 def build_spam(issue, values, root):
@@ -281,10 +287,17 @@ def build_spam(issue, values, root):
 
     feed = read_json(os.path.join(root, "Feed", "spam.json"), {})
     listed, retracted = _sets(feed.get("lists")), _sets(feed.get("retracted"))
-    fresh, known, withdrawn = {}, {}, {}
+    # What releases shipped as built-in defaults. The feed never hands one of those over - a streamer who
+    # deleted one would get it back - so a default is no use to the promotion step, however good it is.
+    shipped_block = feed.get("shipped") if isinstance(feed.get("shipped"), dict) else {}
+    knows_shipped = isinstance(shipped_block.get("lists"), dict)
+    shipped = _sets(shipped_block.get("lists"))
+    fresh, known, defaults, withdrawn = {}, {}, {}, {}
     for name in SPAM_LISTS:
         for entry in entries.get(name, []):
-            if entry in listed[name] and entry not in retracted[name]:
+            if entry in shipped[name]:
+                defaults.setdefault(name, []).append(entry)
+            elif entry in listed[name] and entry not in retracted[name]:
                 known.setdefault(name, []).append(entry)
             else:
                 fresh.setdefault(name, []).append(entry)
@@ -293,6 +306,7 @@ def build_spam(issue, values, root):
 
     if not fresh:
         result.nothing_new = known
+        result.already_shipped = defaults
         return result
 
     number = issue["number"]
@@ -320,22 +334,29 @@ def build_spam(issue, values, root):
     result.title = "Spam wording from #%d (%d %s)" % (number, total, "entry" if total == 1 else "entries")
 
     lines = ["**Spam wording** shared in #%d by %s." % (number, issue["user"]["login"]), ""]
-    lines += ["| List | New | Already in the feed |", "|---|---|---|"]
+    lines += ["| List | New | Already in the feed | A shipped default |", "|---|---|---|---|"]
     for name in SPAM_LISTS:
-        if name in fresh or name in known:
-            lines.append("| `%s` | %d | %d |" % (name, len(fresh.get(name, [])), len(known.get(name, []))))
-    lines += ["", "New:", fence("\n".join("%s: %s" % (n, e) for n in SPAM_LISTS for e in fresh.get(n, [])))]
+        if name in fresh or name in known or name in defaults:
+            lines.append("| `%s` | %d | %d | %d |" % (name, len(fresh.get(name, [])), len(known.get(name, [])),
+                                                    len(defaults.get(name, []))))
+    lines += ["", "New:", fence(listing(fresh))]
     if known:
-        lines += ["Already in the feed, so left out of the file:",
-                  fence("\n".join("%s: %s" % (n, e) for n in SPAM_LISTS for e in known.get(n, [])))]
+        lines += ["Already in the feed, so left out of the file:", fence(listing(known))]
+    if defaults:
+        lines += ["Built-in defaults of a TwitchSentry release, so left out of the file - the feed never hands one over:",
+                  fence(listing(defaults))]
     if withdrawn:
-        lines += ["**Retracted from the feed before** - kept, for you to judge:",
-                  fence("\n".join("%s: %s" % (n, e) for n in SPAM_LISTS for e in withdrawn.get(n, [])))]
+        lines += ["**Retracted from the feed before** - kept, for you to judge:", fence(listing(withdrawn))]
     if context:
         lines += ["Where it showed up:", fence(context)]
-    lines += ["Checked here: the list names and the rules every install applies to an entry. "
-              "**Not checked:** defaults a release already shipped, and the spam corpus - "
-              "`tools/check-feed.ps1` covers both when this is promoted into the feed."]
+    if knows_shipped:
+        lines += ["Checked here: the list names, the rules every install applies to an entry, and the defaults "
+                  "releases shipped. **Not checked:** the spam corpus - `tools/check-feed.ps1` runs it when this "
+                  "is promoted into the feed."]
+    else:
+        lines += ["Checked here: the list names and the rules every install applies to an entry. "
+                  "**Not checked:** defaults a release already shipped (`Feed/spam.json` has no `shipped` block yet), "
+                  "and the spam corpus - `tools/check-feed.ps1` covers both when this is promoted into the feed."]
     result.summary = "\n".join(lines)
     return result
 
@@ -566,6 +587,17 @@ def problems_comment(result):
                      + ["", "Edit the ticket to put it right, and it is checked again."])
 
 
+def nothing_new_comment(result):
+    lines = ["Thank you - there is nothing here the spam feed could add.", ""]
+    if result.nothing_new:
+        lines += ["Already in the spam feed:", fence(listing(result.nothing_new))]
+    if result.already_shipped:
+        lines += ["Built-in defaults of a TwitchSentry release. The feed never hands one of those over, "
+                  "so a streamer who deleted one keeps it deleted:", fence(listing(result.already_shipped))]
+    lines.append("This ticket can be closed.")
+    return "\n".join(lines)
+
+
 def publish(result, issue, repo, base, root):
     number = issue["number"]
     branch = "submission/%d" % number
@@ -623,11 +655,8 @@ def main():
             comment(repo, number, problems_comment(result))
             return 0
         if result.nothing_new is not None:
-            print("Ticket #%d holds nothing the feed lacks." % number)
-            comment(repo, number, "\n".join([
-                "Thank you - every entry here is already in the spam feed, so there is nothing new to add:", "",
-                fence("\n".join("%s: %s" % (n, e) for n in SPAM_LISTS for e in result.nothing_new.get(n, []))),
-                "This ticket can be closed."]))
+            print("Ticket #%d holds nothing the feed could add." % number)
+            comment(repo, number, nothing_new_comment(result))
             return 0
 
         url, created = publish(result, issue, repo, base, root)
