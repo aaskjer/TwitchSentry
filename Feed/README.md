@@ -37,6 +37,12 @@ Two files on your PC belong to the feed:
   },
   "retracted": {
     "spamDomains": ["an-entry-that-was-a-mistake"]
+  },
+  "shipped": {
+    "releases": ["v1.0.1", "v2.0.0"],
+    "lists": {
+      "keywords": ["a-built-in-default"]
+    }
   }
 }
 ```
@@ -47,6 +53,10 @@ Two files on your PC belong to the feed:
   offline for a month catches up in one go.
 - `retracted` takes an entry back from installs that got it from the feed. An entry a streamer
   marked with `!` stays, because it is theirs now.
+- `shipped` names every entry a release shipped as a built-in default, and the releases counted.
+  Installs never hand one of these over, even if `lists` carried it by mistake: a streamer who
+  deleted a default keeps it deleted. The settings window does not offer them for sharing either,
+  and a share ticket that holds one leaves it out.
 - The lists: `spamDomains`, `strongKeywords`, `keywords`, `spacedUrlTlds`, `beatRapport`,
   `beatCritique`, `beatSolution`, `beatPitch`, `handoffPhrases`, `serviceOffers`.
 
