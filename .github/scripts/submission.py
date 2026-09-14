@@ -71,6 +71,7 @@ PROFILE_EXCLUDED = [
     "settingsSchema", "activeProfile", "updateChannel", "logToFile", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
     "dryRunEnabled", "dryRunMinutes",
+    "spamFeedEnabled",
 ]
 SECRET_NAME_PARTS = ["apikey", "webhook", "token", "secret", "password"]
 RESERVED_PROFILE_NAMES = ["Relaxed", "Balanced", "Strict", "Under Attack", "Just Chatting"]

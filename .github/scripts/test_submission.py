@@ -209,6 +209,10 @@ class Profiles(unittest.TestCase):
         r = self.build(settings={"discordWebhookUrl": "https://discord.com/api/webhooks/1/abc"})
         self.assertTrue(any("`discordWebhookUrl`" in p for p in r.problems))
 
+    def test_the_feed_switch_never_travels_in_a_profile(self):
+        r = self.build(settings={"spamFeedEnabled": False})
+        self.assertTrue(any("`spamFeedEnabled`" in p for p in r.problems))
+
     def test_a_text_setting_named_like_a_secret_is_turned_away(self):
         r = self.build(settings={"twitchToken": "abc"})
         self.assertTrue(any("`twitchToken`" in p for p in r.problems))
