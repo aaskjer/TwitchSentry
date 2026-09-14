@@ -1,0 +1,46 @@
+name: Share a profile
+description: A settings profile other streamers can import
+title: "Profile: "
+labels: ["share: profile"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **A pull request is opened for this automatically.** Once it is merged, the profile is kept with the others that were shared, for streamers to import through ☰ → *Profiles*.
+
+        **Where the file comes from:** save your settings as a profile in ☰ → *Profiles*. TwitchSentry writes it to `Settings/Profiles` in its folder; open that file in a text editor and paste all of it below. A profile already leaves out your Discord webhook, your API keys and every list naming people or sites, and a pasted file that still carries one of them is turned away.
+
+        **Everything on this page is public.**
+
+  - type: input
+    id: name
+    attributes:
+      label: Profile name
+      placeholder: Small English chat, strict on links
+    validations:
+      required: true
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: What is it for?
+      description: The kind of channel it suits, and what it does differently from Balanced.
+    validations:
+      required: true
+
+  - type: textarea
+    id: profile
+    attributes:
+      label: Profile file
+      description: The whole file, from the first `{` to the last `}`.
+      render: json
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Before you submit
+      options:
+        - label: The profile came from TwitchSentry's own export and holds no key, webhook or list of people.
+          required: true

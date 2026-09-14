@@ -1,0 +1,44 @@
+name: Share spam wording
+description: Spam wording or a spam site from your channel, for the list every TwitchSentry install receives
+title: "Spam wording from my channel"
+labels: ["share: spam list"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **A pull request is opened for this automatically.** Once it is merged, the entries are weighed together with what other streamers sent, and the ones that hold up go into the [spam feed](https://github.com/aaskjer/TwitchSentry/blob/main/Feed/README.md) every TwitchSentry install receives.
+
+        **Everything on this page is public.** Share wording and site names only - never a chat message, a username, or anything else that points at a person.
+
+  - type: textarea
+    id: entries
+    attributes:
+      label: Entries
+      description: |
+        One per line, written as `list: entry`. The lists are `spamDomains`, `strongKeywords`, `keywords`, `spacedUrlTlds`, `beatRapport`, `beatCritique`, `beatSolution`, `beatPitch`, `handoffPhrases` and `serviceOffers` - the same names as in `Machine Learning/spam.json`. Custom patterns and voucher patterns are regex and are not taken.
+      placeholder: |
+        spamDomains: someviewersite
+        handoffPhrases: add me on discord
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Where did it show up?
+      description: Optional. How it arrived and roughly when, for example "first messages from new accounts during a raid, September 2026". No messages, no names.
+
+  - type: input
+    id: version
+    attributes:
+      label: TwitchSentry version
+      description: Optional.
+      placeholder: v2.1.0
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Before you submit
+      options:
+        - label: Nothing above is a chat message, a username, or anything else that identifies a person.
+          required: true
