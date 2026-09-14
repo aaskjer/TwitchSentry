@@ -50,4 +50,4 @@ Two files on your PC belong to the feed:
 - The lists: `spamDomains`, `strongKeywords`, `keywords`, `spacedUrlTlds`, `beatRapport`,
   `beatCritique`, `beatSolution`, `beatPitch`, `handoffPhrases`, `serviceOffers`.
 
-# not in the final build yet
+# This is not in the final build yet
