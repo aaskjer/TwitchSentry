@@ -15,6 +15,7 @@ body:
     attributes:
       label: Language
       options:
+        - English (en)
         - Deutsch (de)
         - Español (es)
         - Français (fr)
