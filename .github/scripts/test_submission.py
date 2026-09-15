@@ -99,7 +99,7 @@ class TemplatesMatchTheScript(unittest.TestCase):
         offered = re.findall(r"^\s+- .*\(([A-Za-z-]+)\)\s*$", text, re.M)
         with open(os.path.join(REPO_ROOT, "Language", "index.json"), encoding="utf-8-sig") as f:
             index = json.load(f)
-        self.assertEqual(sorted(offered), sorted(e["code"] for e in index if e["code"] != "en"))
+        self.assertEqual(sorted(offered), sorted(e["code"] for e in index))
 
 
 class ReadingTheTicket(unittest.TestCase):
@@ -257,6 +257,12 @@ class Translations(unittest.TestCase):
         self.assertEqual(r.document["suggestion"], "Speichern")
         self.assertIn("is in the published", r.summary)
         self.assertEqual(r.path, "Submissions/translations/42.json")
+
+    def test_english_is_a_language_like_the_others(self):
+        r = self.build(language="English (en)", english="Save", current="Save", suggestion="Save changes")
+        self.assertEqual(r.problems, [])
+        self.assertEqual(r.document["language"], "en")
+        self.assertEqual(r.title, "Translation (en) from #42")
 
     def test_a_language_with_brackets_in_its_name(self):
         r = self.build(language="Portugu\u00eas (Brasil) (pt-BR)", current="Salvar!", suggestion="Salvar")

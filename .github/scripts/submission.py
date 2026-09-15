@@ -447,7 +447,8 @@ def _profile_setting_problems(settings):
 def build_translation(issue, values, root):
     result = Result("translation")
     index = read_json(os.path.join(root, "Language", "index.json"), [])
-    codes = [str(e.get("code")) for e in index if isinstance(e, dict) and e.get("code") and e.get("code") != "en"]
+    # English is a language file like the others: en.json can word a text differently from the code.
+    codes = [str(e.get("code")) for e in index if isinstance(e, dict) and e.get("code")]
 
     match = re.search(r"\(([A-Za-z]{2,3}(?:-[A-Za-z]{2,4})?)\)\s*$", values.get("language") or "")
     code = match.group(1) if match else None
