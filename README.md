@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Utilities/Assets/TwitchSentry-full.png" alt="TwitchSentry" width="200" height="200">
+  <img src="https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Assets/TwitchSentry-Named-Favicon.png?raw=true" alt="TwitchSentry" width="200" height="200">
 </p>
 
 
