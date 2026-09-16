@@ -1,11 +1,13 @@
-# Turns a share ticket into a pull request. The forms are .github/ISSUE_TEMPLATE/share-*.yml, the work
-# is done by .github/scripts/submission.py, and Submissions/README.md says what happens after a merge.
+# Turns a share ticket into a pull request, or a shared profile into a file on the profiles branch. The
+# forms are .github/ISSUE_TEMPLATE/share-*.yml, the work is done by .github/scripts/submission.py, and
+# Submissions/README.md says what happens after a merge.
 #
 # Anyone with a GitHub account can open these tickets, so everything in one is untrusted. The script
 # reads the ticket from the event file itself; nothing from the ticket is ever written into a command
 # on this page.
 #
-# Needs Settings -> Actions -> General -> "Allow GitHub Actions to create and approve pull requests".
+# Pull requests need Settings -> Actions -> General -> "Allow GitHub Actions to create and approve pull
+# requests". A profile only needs contents: write, which is what commits it to the profiles branch.
 
 name: Community submissions
 
@@ -34,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Turn the ticket into a pull request
+      - name: Handle the ticket
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 .github/scripts/submission.py
