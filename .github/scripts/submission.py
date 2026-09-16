@@ -682,6 +682,7 @@ def store_profile(result, issue, repo):
     remote = "refs/remotes/origin/%s" % PROFILE_BRANCH
     address = "https://github.com/%s/blob/%s/%s" % (repo, PROFILE_BRANCH, result.path)
 
+    refused = ""
     for _ in range(PUSH_ATTEMPTS):
         fetched = run(["git", "fetch", "origin", "+refs/heads/%s:%s" % (PROFILE_BRANCH, remote)], check=False)
         if fetched.returncode != 0:
@@ -689,7 +690,11 @@ def store_profile(result, issue, repo):
             # it, so it carries none of main. If another run starts it first, this push is refused and the
             # next fetch finds theirs.
             start = run(["git"] + BOT_IDENTITY + ["commit-tree", EMPTY_TREE, "-m", "Start the profiles branch"])
-            run(["git", "push", "origin", "%s:refs/heads/%s" % (start.stdout.strip(), PROFILE_BRANCH)], check=False)
+            started = run(["git", "push", "origin", "%s:refs/heads/%s" % (start.stdout.strip(), PROFILE_BRANCH)], check=False)
+            if started.returncode != 0:
+                refused = started.stderr or ""
+                if refused_by_rules(refused):
+                    break
             continue
 
         # An edit that changed nothing about the profile writes nothing.
@@ -711,8 +716,19 @@ def store_profile(result, issue, repo):
             run(["git", "worktree", "remove", "--force", work], check=False)
         if pushed.returncode == 0:
             return address, True
+        refused = pushed.stderr or ""
+        if refused_by_rules(refused):
+            break
+    # What GitHub said goes into the run's log. "The branch kept moving" was the guess this used to print,
+    # and a push the repository rules refuse looks nothing like a lost race.
     raise subprocess.CalledProcessError(1, ["git", "push", "origin", PROFILE_BRANCH],
-                                        stderr="the profiles branch moved on every attempt")
+                                        stderr=refused.strip() or "the push was refused and git gave no reason")
+
+
+def refused_by_rules(stderr):
+    """A push GitHub turns away over a ruleset or a protected branch. Trying again changes nothing."""
+    text = (stderr or "").lower()
+    return "gh013" in text or "rule violation" in text or "protected ref" in text or "protected branch" in text
 
 
 def profiles_readme(folder, repo):
