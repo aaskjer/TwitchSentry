@@ -360,7 +360,8 @@ class ATicketWithoutItsForm(unittest.TestCase):
 class Recorder:
     """Stands in for subprocess: records every call and answers from a script of responses.
 
-    An answer given as a list is used up one call at a time, and its last entry answers every call after."""
+    An answer is (code, stdout) or (code, stdout, stderr). One given as a list is used up one call at a
+    time, and its last entry answers every call after."""
 
     def __init__(self, answers):
         self.calls = []
@@ -371,17 +372,17 @@ class Recorder:
         self.calls.append(list(args))
         self.dirs.append(cwd)
         key = " ".join(args[:3])
-        code, out = 0, ""
+        code, out, err = 0, "", ""
         for prefix, answer in self.answers:
             if key.startswith(prefix):
                 if isinstance(answer, list):
-                    code, out = answer.pop(0) if len(answer) > 1 else answer[0]
-                else:
-                    code, out = answer
+                    answer = answer.pop(0) if len(answer) > 1 else answer[0]
+                code, out = answer[0], answer[1]
+                err = answer[2] if len(answer) > 2 else ""
                 break
         if check and code != 0:
-            raise subprocess.CalledProcessError(code, args, output=out, stderr="failed")
-        return subprocess.CompletedProcess(args, code, stdout=out, stderr="")
+            raise subprocess.CalledProcessError(code, args, output=out, stderr=err or "failed")
+        return subprocess.CompletedProcess(args, code, stdout=out, stderr=err)
 
     def commands(self):
         return [" ".join(c[:3]) for c in self.calls]
@@ -524,6 +525,33 @@ class TheWorkflowRun(unittest.TestCase):
         self.assertEqual(rec.commands()[-1], "gh issue comment")
         with open(rec.calls[-1][rec.calls[-1].index("--body-file") + 1], encoding="utf-8") as f:
             self.assertIn("Something went wrong storing this profile", f.read())
+
+    def test_a_push_the_repository_rules_refuse_is_not_retried_and_github_is_quoted(self):
+        # What happened to #13 and #14: the ruleset covered every branch with "Restrict updates", so the
+        # branch could be created and never written to. The log said the branch kept moving.
+        issue = ticket("profile", profile_pairs())
+        result = s.build("profile", issue, workspace())
+        said = ("remote: error: GH013: Repository rule violations found for refs/heads/profiles.\n"
+                "remote: - Cannot update this protected ref.")
+        recorder = Recorder([("git fetch origin", (0, "")), ("git show origin/profiles:42.json", (128, "")),
+                             ("git push origin", (1, "", said))])
+        with mock.patch.object(s, "run", recorder):
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                s.store_profile(result, issue, "aaskjer/TwitchSentry")
+        self.assertEqual(recorder.commands().count("git push origin"), 1, "a rule does not change by asking again")
+        self.assertIn("GH013", caught.exception.stderr)
+        self.assertIn("Cannot update this protected ref", caught.exception.stderr)
+
+    def test_a_ruleset_that_refuses_creating_the_branch_is_quoted_too(self):
+        issue = ticket("profile", profile_pairs())
+        result = s.build("profile", issue, workspace())
+        recorder = Recorder([("git fetch origin", (128, "")), ("git -c user.name=github-actions[bot]", (0, "0123abcd\n")),
+                             ("git push origin", (1, "", "remote: error: GH013: Repository rule violations found"))])
+        with mock.patch.object(s, "run", recorder):
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                s.store_profile(result, issue, "aaskjer/TwitchSentry")
+        self.assertEqual(recorder.commands().count("git push origin"), 1)
+        self.assertIn("GH013", caught.exception.stderr)
 
     def test_an_edit_that_changes_nothing_about_the_profile_writes_nothing(self):
         issue = ticket("profile", profile_pairs())
