@@ -487,7 +487,10 @@ class TheWorkflowRun(unittest.TestCase):
         self.assertEqual((stored["twitchSentryProfile"], stored["name"], stored["issue"]), (1, "Small chat, strict links", 42))
         with open(os.path.join(work, "README.md"), encoding="utf-8") as f:
             readme = f.read()
-        self.assertIn("| [`Small chat, strict links`](42.json) | [#42](https://github.com/aaskjer/TwitchSentry/issues/42) | v2.1.0 |", readme)
+        self.assertIn("| [`Small chat, strict links`](42.json) | [somestreamer](https://github.com/somestreamer) "
+                      "| [#42](https://github.com/aaskjer/TwitchSentry/issues/42) | v2.1.0 |", readme)
+        self.assertEqual(rec.calls[4][-2:], ["-m", "Store profile #42 from somestreamer"],
+                         "the file list shows who shared it beside the file")
         with open(rec.calls[7][rec.calls[7].index("--body-file") + 1], encoding="utf-8") as f:
             body = f.read()
         self.assertIn("https://github.com/aaskjer/TwitchSentry/blob/profiles/42.json", body)
@@ -568,15 +571,24 @@ class TheWorkflowRun(unittest.TestCase):
 
     def test_the_branch_front_page_lists_every_profile_newest_first(self):
         folder = tempfile.mkdtemp(prefix="ts-profiles-test-")
-        for number, name in ((9, "test"), (12, "Late night"), (10, "odd `name`")):
+        for number, name, login in ((9, "test", "aaskjer"), (12, "Late night", "night-owl-42"), (10, "odd `name`", None),
+                                    (11, "sneaky", "x](https://evil.example)")):
+            doc = {"twitchSentryProfile": 1, "name": name, "settings": {}}
+            if login is not None:
+                doc["submittedBy"] = login
             with open(os.path.join(folder, "%d.json" % number), "w", encoding="utf-8") as f:
-                json.dump({"twitchSentryProfile": 1, "name": name, "settings": {}}, f)
+                json.dump(doc, f)
         with open(os.path.join(folder, "notes.json"), "w", encoding="utf-8") as f:
             f.write("{}")
         readme = s.profiles_readme(folder, "aaskjer/TwitchSentry")
         rows = [line for line in readme.splitlines() if line.startswith("| [")]
-        self.assertEqual([r.split("](")[1].split(")")[0] for r in rows], ["12.json", "10.json", "9.json"])
+        self.assertEqual([r.split("](")[1].split(")")[0] for r in rows], ["12.json", "11.json", "10.json", "9.json"])
         self.assertIn("[`odd 'name'`](10.json)", readme, "a backtick in a name cannot break out of its code span")
+        self.assertIn("| [`Late night`](12.json) | [night-owl-42](https://github.com/night-owl-42) |", readme)
+        self.assertIn("| [`test`](9.json) | [aaskjer](https://github.com/aaskjer) |", readme)
+        self.assertIn("| [`odd 'name'`](10.json) | - |", readme, "a file from before the column says so")
+        self.assertIn("| [`sneaky`](11.json) | - |", readme, "a name GitHub would never issue is left out, not linked")
+        self.assertNotIn("evil.example", readme)
 
     def test_a_pull_request_github_refuses_fails_the_run_and_tells_the_ticket(self):
         issue = ticket("spam", spam_pairs("spamDomains: newsite"))

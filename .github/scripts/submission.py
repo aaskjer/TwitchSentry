@@ -71,6 +71,9 @@ EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 BOT_IDENTITY = ["-c", "user.name=github-actions[bot]",
                 "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com"]
 SETTING_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
+# The characters GitHub allows in an account name. The name comes from the event, but it goes into a
+# commit message and a Markdown link, so anything else is left out rather than trusted.
+GITHUB_LOGIN = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
 
 # TSSettings' Dictionary<string, double> settings: the Custom stop of each sensitivity slider, a dial's
 # setting name to its number. The only settings whose value is an object. tools/profile_filter_parity.py
@@ -710,7 +713,11 @@ def store_profile(result, issue, repo):
             with open(os.path.join(work, "README.md"), "w", encoding="utf-8", newline="\n") as f:
                 f.write(profiles_readme(work, repo))
             run(["git", "add", "--all"], cwd=work)
-            run(["git"] + BOT_IDENTITY + ["commit", "-m", "Store profile #%d" % number], cwd=work)
+            # GitHub shows a file's last commit message beside it in the branch, so who shared a profile
+            # can be read off the file list without opening anything.
+            login = (issue.get("user") or {}).get("login") or ""
+            message = "Store profile #%d%s" % (number, " from " + login if GITHUB_LOGIN.match(login) else "")
+            run(["git"] + BOT_IDENTITY + ["commit", "-m", message], cwd=work)
             pushed = run(["git", "push", "origin", "HEAD:refs/heads/%s" % PROFILE_BRANCH], cwd=work, check=False)
         finally:
             run(["git", "worktree", "remove", "--force", work], check=False)
@@ -743,20 +750,23 @@ def profiles_readme(folder, repo):
 
     lines = [
         "# Shared profiles", "",
-        "Settings profiles streamers shared from TwitchSentry, one file per ticket. Every file here passed the "
+        "Settings profiles streamers shared from TwitchSentry, one file per ticket, with the GitHub account that "
+        "shared it. Every file here passed the "
         "check the settings window applies when it imports one: it is a profile export, and it carries no key, "
         "webhook, token or list of people. Nobody has reviewed the policy inside it.", "",
         "**To use one:** open the file, press *Download raw file*, and put it into `Settings/Profiles` in your "
         "TwitchSentry folder, or pick it with *Import* in ☰ → *Profiles*. The Profiles dialog lists every "
         "setting a profile in that folder would change before you pick it.", "",
         "The share workflow on `main` writes this branch. It shares no history with `main`, and no install reads it.", "",
-        "| Profile | Shared in | Exported from |",
-        "|---|---|---|",
+        "| Profile | Shared by | Shared in | Exported from |",
+        "|---|---|---|---|",
     ]
     for number, file_name, doc in rows:
         version = doc.get("twitchSentry") if isinstance(doc.get("twitchSentry"), str) else "-"
-        lines.append("| [`%s`](%s) | [#%d](https://github.com/%s/issues/%d) | %s |" % (
-            printable(doc["name"], 40).replace("|", "/"), file_name, number, repo, number,
+        login = doc.get("submittedBy") if isinstance(doc.get("submittedBy"), str) else ""
+        shared_by = "[%s](https://github.com/%s)" % (login, login) if GITHUB_LOGIN.match(login) else "-"
+        lines.append("| [`%s`](%s) | %s | [#%d](https://github.com/%s/issues/%d) | %s |" % (
+            printable(doc["name"], 40).replace("|", "/"), file_name, shared_by, number, repo, number,
             printable(version, 20).replace("|", "/")))
     return "\n".join(lines) + "\n"
 
