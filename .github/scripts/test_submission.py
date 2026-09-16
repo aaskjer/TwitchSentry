@@ -225,12 +225,38 @@ class Profiles(unittest.TestCase):
     def test_an_export_is_accepted_and_only_its_known_parts_are_kept(self):
         r = self.build()
         self.assertEqual(r.problems, [])
-        self.assertEqual(r.document["profile"], {"twitchSentryProfile": 1, "name": "Small chat, strict links",
-                                                 "twitchSentry": "v2.1.0",
-                                                 "settings": {"spamScoreThreshold": 1.0, "discordWebhookEnabled": True,
-                                                              "timeoutDurationSeconds": 300, "autoModCategories": []}})
-        self.assertEqual(r.path, "Submissions/profiles/42.json")
-        self.assertEqual(r.title, "Profile \"Small chat, strict links\" from #42")
+        self.assertEqual(r.document, {"twitchSentryProfile": 1, "name": "Small chat, strict links", "twitchSentry": "v2.1.0",
+                                      "purpose": "For small English chats.", "issue": 42, "submittedBy": "somestreamer",
+                                      "submittedAt": "2026-09-14T12:00:00Z",
+                                      "settings": {"spamScoreThreshold": 1.0, "discordWebhookEnabled": True,
+                                                   "timeoutDurationSeconds": 300, "autoModCategories": []}})
+        self.assertEqual(r.path, "42.json")
+
+    def test_the_stored_file_is_a_profile_the_window_imports_as_it_is(self):
+        # ReadProfileFile wants the marker, a settings object and a name, and passes over everything else.
+        document = self.build().document
+        self.assertEqual(document["twitchSentryProfile"], 1)
+        self.assertIsInstance(document["settings"], dict)
+        self.assertEqual(document["name"], "Small chat, strict links")
+        self.assertEqual(list(document)[0], "twitchSentryProfile")
+
+    def test_the_custom_slider_stops_an_export_carries_are_accepted(self):
+        # The four Dictionary<string, double> settings. Ticket #9, the first profile shared for real, was
+        # turned away over exactly these, empty or filled.
+        r = self.build(settings={"mgCustomPreset": {"mgScoreThreshold": 0.8, "mgMinAccountAgeDays": 14.0},
+                                 "rfCustomPreset": {}, "fgCustomPreset": {"fgScoreThreshold": 2},
+                                 "spamCustomPreset": {"spamScoreThreshold": 1.75}})
+        self.assertEqual(r.problems, [])
+
+    def test_a_custom_slider_stop_holding_anything_but_numbers_is_turned_away(self):
+        for value in ({"mgScoreThreshold": "high"}, {"mgScoreThreshold": True}, {"mgScoreThreshold": {"x": 1}},
+                      {"not a name": 1}, [0.8], "0.8"):
+            r = self.build(settings={"mgCustomPreset": value})
+            self.assertTrue(any("`mgCustomPreset` holds a value no setting has" in p for p in r.problems), value)
+
+    def test_a_number_map_on_any_other_setting_is_turned_away(self):
+        r = self.build(settings={"mgScoreThreshold": {"mgScoreThreshold": 0.8}})
+        self.assertTrue(any("holds a value no setting has" in p for p in r.problems))
 
     def test_a_setting_a_profile_never_carries_is_turned_away(self):
         r = self.build(settings={"discordWebhookUrl": "https://discord.com/api/webhooks/1/abc"})
@@ -332,19 +358,26 @@ class ATicketWithoutItsForm(unittest.TestCase):
 
 
 class Recorder:
-    """Stands in for subprocess: records every call and answers from a script of responses."""
+    """Stands in for subprocess: records every call and answers from a script of responses.
+
+    An answer given as a list is used up one call at a time, and its last entry answers every call after."""
 
     def __init__(self, answers):
         self.calls = []
+        self.dirs = []
         self.answers = answers
 
-    def __call__(self, args, check=True):
+    def __call__(self, args, check=True, cwd=None):
         self.calls.append(list(args))
+        self.dirs.append(cwd)
         key = " ".join(args[:3])
         code, out = 0, ""
         for prefix, answer in self.answers:
             if key.startswith(prefix):
-                code, out = answer
+                if isinstance(answer, list):
+                    code, out = answer.pop(0) if len(answer) > 1 else answer[0]
+                else:
+                    code, out = answer
                 break
         if check and code != 0:
             raise subprocess.CalledProcessError(code, args, output=out, stderr="failed")
@@ -429,6 +462,93 @@ class TheWorkflowRun(unittest.TestCase):
         other["labels"] = [{"name": "bug"}]
         _, rec, _ = self.run_main(other, [])
         self.assertEqual(rec.calls, [])
+
+    def worktree_of(self, rec):
+        added = next(c for c in rec.calls if c[:3] == ["git", "worktree", "add"])
+        return added[4]
+
+    def test_a_profile_is_committed_to_its_own_branch_and_the_ticket_closed(self):
+        issue = ticket("profile", profile_pairs())
+        code, rec, _ = self.run_main(issue, [("git fetch origin", (0, "")), ("git show origin/profiles:42.json", (128, ""))])
+        self.assertEqual(code, 0)
+        self.assertEqual(rec.commands(), [
+            "git fetch origin", "git show origin/profiles:42.json", "git worktree add", "git add --all",
+            "git -c user.name=github-actions[bot]", "git push origin", "git worktree remove", "gh issue comment", "gh issue close"])
+        self.assertFalse(any(c[:2] == ["gh", "pr"] for c in rec.calls), "no pull request, ever")
+        self.assertIn("+refs/heads/profiles:refs/remotes/origin/profiles", rec.calls[0])
+        self.assertIn("HEAD:refs/heads/profiles", rec.calls[5])
+        self.assertEqual(rec.dirs[5], self.worktree_of(rec), "the push goes out from the profiles worktree")
+        self.assertEqual(rec.calls[-1][-2:], ["--reason", "completed"])
+
+        work = self.worktree_of(rec)
+        with open(os.path.join(work, "42.json"), encoding="utf-8") as f:
+            stored = json.load(f)
+        self.assertEqual((stored["twitchSentryProfile"], stored["name"], stored["issue"]), (1, "Small chat, strict links", 42))
+        with open(os.path.join(work, "README.md"), encoding="utf-8") as f:
+            readme = f.read()
+        self.assertIn("| [`Small chat, strict links`](42.json) | [#42](https://github.com/aaskjer/TwitchSentry/issues/42) | v2.1.0 |", readme)
+        with open(rec.calls[7][rec.calls[7].index("--body-file") + 1], encoding="utf-8") as f:
+            body = f.read()
+        self.assertIn("https://github.com/aaskjer/TwitchSentry/blob/profiles/42.json", body)
+        self.assertIn("https://raw.githubusercontent.com/aaskjer/TwitchSentry/profiles/42.json", body)
+
+    def test_the_first_profile_starts_a_branch_that_shares_nothing_with_main(self):
+        issue = ticket("profile", profile_pairs())
+        _, rec, _ = self.run_main(issue, [
+            ("git fetch origin", [(128, ""), (0, "")]),
+            ("git -c user.name=github-actions[bot]", (0, "0123abcd\n")),
+            ("git show origin/profiles:42.json", (128, "")),
+        ])
+        self.assertEqual(rec.commands()[:4], ["git fetch origin", "git -c user.name=github-actions[bot]",
+                                              "git push origin", "git fetch origin"])
+        self.assertIn("commit-tree", rec.calls[1])
+        self.assertIn(s.EMPTY_TREE, rec.calls[1])
+        self.assertEqual(rec.calls[2][-1], "0123abcd:refs/heads/profiles")
+        self.assertEqual(rec.commands()[-1], "gh issue close")
+
+    def test_a_push_that_loses_a_race_starts_over_from_the_branch_as_it_is(self):
+        issue = ticket("profile", profile_pairs())
+        code, rec, _ = self.run_main(issue, [("git fetch origin", (0, "")), ("git show origin/profiles:42.json", (128, "")),
+                                             ("git push origin", [(1, ""), (0, "")])])
+        self.assertEqual(code, 0)
+        self.assertEqual(rec.commands().count("git fetch origin"), 2)
+        self.assertEqual(rec.commands().count("git worktree remove"), 2, "every worktree is removed, the refused one too")
+        self.assertEqual(rec.commands()[-1], "gh issue close")
+
+    def test_a_branch_that_never_holds_still_fails_the_run_and_says_so(self):
+        issue = ticket("profile", profile_pairs())
+        code, rec, _ = self.run_main(issue, [("git fetch origin", (0, "")), ("git show origin/profiles:42.json", (128, "")),
+                                             ("git push origin", (1, ""))])
+        self.assertEqual(code, 1)
+        self.assertEqual(rec.commands().count("git push origin"), s.PUSH_ATTEMPTS)
+        self.assertEqual(rec.commands()[-1], "gh issue comment")
+        with open(rec.calls[-1][rec.calls[-1].index("--body-file") + 1], encoding="utf-8") as f:
+            self.assertIn("Something went wrong storing this profile", f.read())
+
+    def test_an_edit_that_changes_nothing_about_the_profile_writes_nothing(self):
+        issue = ticket("profile", profile_pairs())
+        stored = json.dumps(s.build("profile", issue, workspace()).document, ensure_ascii=False, indent=2) + "\n"
+        _, rec, _ = self.run_main(issue, [("git fetch origin", (0, "")), ("git show origin/profiles:42.json", (0, stored))])
+        self.assertEqual(rec.commands(), ["git fetch origin", "git show origin/profiles:42.json"])
+
+    def test_a_profile_with_mistakes_only_gets_a_comment_and_stays_open(self):
+        issue = ticket("profile", profile_pairs(settings={"discordWebhookUrl": "https://discord.com/api/webhooks/1/abc"}))
+        _, rec, _ = self.run_main(issue, [])
+        self.assertEqual(rec.commands(), ["gh issue comment"])
+        with open(rec.calls[0][rec.calls[0].index("--body-file") + 1], encoding="utf-8") as f:
+            self.assertTrue(f.read().startswith("This profile could not be stored yet:"))
+
+    def test_the_branch_front_page_lists_every_profile_newest_first(self):
+        folder = tempfile.mkdtemp(prefix="ts-profiles-test-")
+        for number, name in ((9, "test"), (12, "Late night"), (10, "odd `name`")):
+            with open(os.path.join(folder, "%d.json" % number), "w", encoding="utf-8") as f:
+                json.dump({"twitchSentryProfile": 1, "name": name, "settings": {}}, f)
+        with open(os.path.join(folder, "notes.json"), "w", encoding="utf-8") as f:
+            f.write("{}")
+        readme = s.profiles_readme(folder, "aaskjer/TwitchSentry")
+        rows = [line for line in readme.splitlines() if line.startswith("| [")]
+        self.assertEqual([r.split("](")[1].split(")")[0] for r in rows], ["12.json", "10.json", "9.json"])
+        self.assertIn("[`odd 'name'`](10.json)", readme, "a backtick in a name cannot break out of its code span")
 
     def test_a_pull_request_github_refuses_fails_the_run_and_tells_the_ticket(self):
         issue = ticket("spam", spam_pairs("spamDomains: newsite"))

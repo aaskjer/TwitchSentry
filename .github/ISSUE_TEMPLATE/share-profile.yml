@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **A pull request is opened for this automatically.** Once it is merged, the profile is kept with the others that were shared, for streamers to import through ☰ → *Profiles*.
+        **Stored automatically, no pull request.** Once the profile passes the check, it is committed to the [`profiles` branch](https://github.com/aaskjer/TwitchSentry/tree/profiles) with the others that were shared, and this ticket is closed. Anyone can import it from there through ☰ → *Profiles*, you included, so it doubles as a backup.
 
         **Where the file comes from:** save your settings as a profile in ☰ → *Profiles*. TwitchSentry writes it to `Settings/Profiles` in its folder; open that file in a text editor and paste all of it below. A profile already leaves out your Discord webhook, your API keys and every list naming people or sites, and a pasted file that still carries one of them is turned away.
 

@@ -1,14 +1,18 @@
-"""Turns a TwitchSentry share ticket into a pull request.
+"""Turns a TwitchSentry share ticket into a pull request, or a shared profile into a file.
 
 .github/workflows/community-submissions.yml runs this whenever an issue carrying one of the share
 labels is opened or edited. The ticket comes from one of the three forms in .github/ISSUE_TEMPLATE
 (share-spam-list, share-profile, share-translation), typed in by hand or prefilled by the settings
-window, and it becomes one file under Submissions/, on a branch of its own, in a pull request that
-closes the ticket when it is merged.
+window.
 
-Merging accepts a submission. It does not ship it: nothing under Submissions/ reaches an install.
-Spam wording only gets into Feed/spam.json through a deliberate promotion step, because the feed
-reaches every channel within hours.
+Spam wording and translations become one file under Submissions/, on a branch of their own, in a pull
+request that closes the ticket when it is merged. Merging accepts a submission. It does not ship it:
+nothing under Submissions/ reaches an install. Spam wording only gets into Feed/spam.json through a
+deliberate promotion step, because the feed reaches every channel within hours.
+
+A profile is not a change to TwitchSentry, so nobody has to accept it: once it passes the check it is
+committed straight to the profiles branch as <ticket number>.json, a file the Profiles dialog imports
+as it is, and the ticket is closed. That branch shares no history with main and no install reads it.
 
 Anyone with a GitHub account can open these tickets, so everything in one is untrusted. It is read
 from the event file here rather than handed over on a command line, git and gh are called with
@@ -56,8 +60,22 @@ FIELDS = {
                     ("why", "Why is it better?")],
 }
 
-FOLDER = {"spam": "spam", "profile": "profiles", "translation": "translations"}
+FOLDER = {"spam": "spam", "translation": "translations"}
 NO_RESPONSE = "_No response_"
+
+PROFILE_BRANCH = "profiles"
+PUSH_ATTEMPTS = 5
+# The tree with nothing in it. Git knows it without having it stored, so the profiles branch can start
+# from a commit that shares nothing with main.
+EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+BOT_IDENTITY = ["-c", "user.name=github-actions[bot]",
+                "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com"]
+SETTING_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
+
+# TSSettings' Dictionary<string, double> settings: the Custom stop of each sensitivity slider, a dial's
+# setting name to its number. The only settings whose value is an object. tools/profile_filter_parity.py
+# holds this list to the window's.
+PROFILE_NUMBER_MAPS = ["fgCustomPreset", "mgCustomPreset", "rfCustomPreset", "spamCustomPreset"]
 
 # TSSettings.ProfileExcluded and SecretNameParts in TwitchSentry-GUI.cs. The window's export already
 # leaves all of these out; a pasted file that still carries one was edited by hand, or is not an export.
@@ -404,29 +422,20 @@ def build_profile(issue, values, root):
         return result
 
     number = issue["number"]
-    carried = {"twitchSentryProfile": 1, "name": name}
     version = version_of(profile.get("twitchSentry") if isinstance(profile.get("twitchSentry"), str) else None)
+    # The stored file is itself a profile: the marker, the name and the settings are all the window's
+    # import reads, and it passes over the rest. So a streamer downloads it and uses it as it is.
+    document = {"twitchSentryProfile": 1, "name": name}
     if version:
-        carried["twitchSentry"] = version
-    carried["settings"] = settings
-    result.document = {
-        "type": "profile",
-        "issue": number,
-        "submittedBy": issue["user"]["login"],
-        "submittedAt": issue.get("created_at"),
-        "name": name,
-        "purpose": purpose,
-        "profile": carried,
-    }
-    result.path = "Submissions/profiles/%d.json" % number
+        document["twitchSentry"] = version
+    document["purpose"] = purpose
+    document["issue"] = number
+    document["submittedBy"] = issue["user"]["login"]
+    document["submittedAt"] = issue.get("created_at")
+    document["settings"] = settings
+    result.document = document
+    result.path = "%d.json" % number
     result.title = "Profile \"%s\" from #%d" % (printable(name, 40).replace('"', "'"), number)
-    result.summary = "\n".join([
-        "**A profile** shared in #%d by %s: %d settings%s." % (number, issue["user"]["login"], len(settings),
-                                                             ", exported from " + version if version else ""),
-        "", "Name:", fence(name), "What it is for:", fence(purpose),
-        "Checked here: it is a profile export, and it carries no key, webhook, token or list of people - "
-        "the same filter the window applies on import. Read the settings through before merging."
-    ])
     return result
 
 
@@ -442,11 +451,15 @@ def _profile_setting_problems(settings):
     if len(settings) > MAX_PROFILE_SETTINGS:
         return ["The profile carries %d settings, more than the window has." % len(settings)]
     for key, value in settings.items():
-        if not re.match(r"^[A-Za-z][A-Za-z0-9_]{0,63}$", key):
+        if not SETTING_NAME.match(key):
             problems.append("`%s` is not a setting name." % printable(key, 40))
             continue
         if key in PROFILE_EXCLUDED:
             problems.append("It carries `%s`, which a profile never shares." % key)
+            continue
+        if key in PROFILE_NUMBER_MAPS:
+            if not _is_number_map(value):
+                problems.append("`%s` holds a value no setting has." % key)
             continue
         if isinstance(value, str) and any(part in key.lower() for part in SECRET_NAME_PARTS):
             problems.append("It carries `%s`, which looks like a key or a webhook." % key)
@@ -463,6 +476,18 @@ def _profile_setting_problems(settings):
                 problems.append("`%s` holds text that does not belong in a shared profile." % key)
                 break
     return problems
+
+
+def _is_number_map(value):
+    """A Custom slider stop as the window writes it: dial names to finite numbers, and nothing else."""
+    if not isinstance(value, dict) or len(value) > 64:
+        return False
+    for name, number in value.items():
+        if not SETTING_NAME.match(name) or isinstance(number, bool) or not isinstance(number, (int, float)):
+            return False
+        if number != number or number in (float("inf"), float("-inf")):
+            return False
+    return True
 
 
 def build_translation(issue, values, root):
@@ -566,8 +591,8 @@ def kind_of(issue):
 # Talking to git and GitHub
 # ---------------------------------------------------------------------------------------------------
 
-def run(args, check=True):
-    return subprocess.run(args, check=check, text=True, capture_output=True)
+def run(args, check=True, cwd=None):
+    return subprocess.run(args, check=check, text=True, capture_output=True, cwd=cwd)
 
 
 def write_temp(text):
@@ -582,9 +607,21 @@ def comment(repo, number, text):
 
 
 def problems_comment(result):
-    return "\n".join(["This ticket could not be turned into a pull request yet:", ""]
+    opening = ("This profile could not be stored yet:" if result.kind == "profile"
+               else "This ticket could not be turned into a pull request yet:")
+    return "\n".join([opening, ""]
                      + ["- " + p for p in result.problems]
                      + ["", "Edit the ticket to put it right, and it is checked again."])
+
+
+def stored_comment(address, repo, result):
+    raw = "https://raw.githubusercontent.com/%s/%s/%s" % (repo, PROFILE_BRANCH, result.path)
+    return "\n".join([
+        "Thank you! The profile is stored: %s" % address, "",
+        "Anyone can use it from there, you included: download the file (%s) and put it into `Settings/Profiles` "
+        "in the TwitchSentry folder, or pick it with *Import* in ☰ → *Profiles*." % raw, "",
+        "This ticket is closed now. To share a newer version, share it again from the window.",
+    ])
 
 
 def nothing_new_comment(result):
@@ -634,6 +671,80 @@ def publish(result, issue, repo, base, root):
     return created.stdout.strip().splitlines()[-1], True
 
 
+def store_profile(result, issue, repo):
+    """Commits a checked profile to the profiles branch. Returns the file's address, and whether anything
+    was written.
+
+    Another ticket's profile can land between the fetch and the push. A refused push starts over from the
+    branch as it is then, and since every ticket owns its own file, starting over loses nobody's."""
+    number = issue["number"]
+    content = json.dumps(result.document, ensure_ascii=False, indent=2) + "\n"
+    remote = "refs/remotes/origin/%s" % PROFILE_BRANCH
+    address = "https://github.com/%s/blob/%s/%s" % (repo, PROFILE_BRANCH, result.path)
+
+    for _ in range(PUSH_ATTEMPTS):
+        fetched = run(["git", "fetch", "origin", "+refs/heads/%s:%s" % (PROFILE_BRANCH, remote)], check=False)
+        if fetched.returncode != 0:
+            # The first profile ever shared. The branch starts from a commit with no parent and nothing in
+            # it, so it carries none of main. If another run starts it first, this push is refused and the
+            # next fetch finds theirs.
+            start = run(["git"] + BOT_IDENTITY + ["commit-tree", EMPTY_TREE, "-m", "Start the profiles branch"])
+            run(["git", "push", "origin", "%s:refs/heads/%s" % (start.stdout.strip(), PROFILE_BRANCH)], check=False)
+            continue
+
+        # An edit that changed nothing about the profile writes nothing.
+        shown = run(["git", "show", "origin/%s:%s" % (PROFILE_BRANCH, result.path)], check=False)
+        if shown.returncode == 0 and shown.stdout == content:
+            return address, False
+
+        work = tempfile.mkdtemp(prefix="ts-profiles-")
+        run(["git", "worktree", "add", "--detach", work, remote])
+        try:
+            with open(os.path.join(work, result.path), "w", encoding="utf-8", newline="\n") as f:
+                f.write(content)
+            with open(os.path.join(work, "README.md"), "w", encoding="utf-8", newline="\n") as f:
+                f.write(profiles_readme(work, repo))
+            run(["git", "add", "--all"], cwd=work)
+            run(["git"] + BOT_IDENTITY + ["commit", "-m", "Store profile #%d" % number], cwd=work)
+            pushed = run(["git", "push", "origin", "HEAD:refs/heads/%s" % PROFILE_BRANCH], cwd=work, check=False)
+        finally:
+            run(["git", "worktree", "remove", "--force", work], check=False)
+        if pushed.returncode == 0:
+            return address, True
+    raise subprocess.CalledProcessError(1, ["git", "push", "origin", PROFILE_BRANCH],
+                                        stderr="the profiles branch moved on every attempt")
+
+
+def profiles_readme(folder, repo):
+    """The branch's front page: what the files are, how to use one, and every profile on it, newest first."""
+    rows = []
+    for file_name in os.listdir(folder):
+        match = re.match(r"^(\d+)\.json$", file_name)
+        doc = read_json(os.path.join(folder, file_name), None) if match else None
+        if isinstance(doc, dict) and isinstance(doc.get("name"), str):
+            rows.append((int(match.group(1)), file_name, doc))
+    rows.sort(key=lambda row: row[0], reverse=True)
+
+    lines = [
+        "# Shared profiles", "",
+        "Settings profiles streamers shared from TwitchSentry, one file per ticket. Every file here passed the "
+        "check the settings window applies when it imports one: it is a profile export, and it carries no key, "
+        "webhook, token or list of people. Nobody has reviewed the policy inside it.", "",
+        "**To use one:** open the file, press *Download raw file*, and put it into `Settings/Profiles` in your "
+        "TwitchSentry folder, or pick it with *Import* in ☰ → *Profiles*. The Profiles dialog lists every "
+        "setting a profile in that folder would change before you pick it.", "",
+        "The share workflow on `main` writes this branch. It shares no history with `main`, and no install reads it.", "",
+        "| Profile | Shared in | Exported from |",
+        "|---|---|---|",
+    ]
+    for number, file_name, doc in rows:
+        version = doc.get("twitchSentry") if isinstance(doc.get("twitchSentry"), str) else "-"
+        lines.append("| [`%s`](%s) | [#%d](https://github.com/%s/issues/%d) | %s |" % (
+            printable(doc["name"], 40).replace("|", "/"), file_name, number, repo, number,
+            printable(version, 20).replace("|", "/")))
+    return "\n".join(lines) + "\n"
+
+
 def main():
     with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as f:
         event = json.load(f)
@@ -659,6 +770,14 @@ def main():
             comment(repo, number, nothing_new_comment(result))
             return 0
 
+        if kind == "profile":
+            url, stored = store_profile(result, issue, repo)
+            print("Ticket #%d is %s" % (number, url))
+            if stored:
+                comment(repo, number, stored_comment(url, repo, result))
+                run(["gh", "issue", "close", str(number), "--repo", repo, "--reason", "completed"])
+            return 0
+
         url, created = publish(result, issue, repo, base, root)
         print("Ticket #%d is %s" % (number, url))
         if created:
@@ -669,8 +788,9 @@ def main():
     except subprocess.CalledProcessError as ex:
         print("Failed: %s\n%s" % (" ".join(ex.cmd[:3]), (ex.stderr or "").strip()), file=sys.stderr)
         try:
-            comment(repo, number, "Something went wrong turning this ticket into a pull request. "
-                                  "The maintainer can see what in the workflow run.")
+            comment(repo, number, ("Something went wrong storing this profile. " if kind == "profile"
+                                   else "Something went wrong turning this ticket into a pull request. ")
+                    + "The maintainer can see what in the workflow run.")
         except subprocess.CalledProcessError:
             pass
         return 1
