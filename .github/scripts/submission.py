@@ -804,14 +804,17 @@ def profiles_readme(folder, repo):
 
     lines = [
         "# Shared profiles", "",
-        "Settings profiles streamers shared from TwitchSentry, one file per ticket, with the GitHub account that "
-        "shared it. Every file here passed the "
-        "check the settings window applies when it imports one: it is a profile export, and it carries no key, "
-        "webhook, token or list of people. Nobody has reviewed the policy inside it.", "",
-        "**To use one:** open the file, press *Download raw file*, and put it into `Settings/Profiles` in your "
-        "TwitchSentry folder, or pick it with *Import* in ☰ → *Profiles*. The Profiles dialog lists every "
-        "setting a profile in that folder would change before you pick it.", "",
-        "The share workflow on `main` writes this branch. It shares no history with `main`, and no install reads it.", "",
+        "Settings profiles streamers shared from TwitchSentry: how strict to be, one file per profile. Take one, "
+        "try it, keep it or go back - your own settings are one *Import* away again.", "",
+        "**Use one:** open the file, press *Download raw file*, and drop it into `Settings/Profiles` in your "
+        "TwitchSentry folder. It is then in ☰ → *Profiles* in the settings window, which lists every setting it "
+        "would change before you pick it.", "",
+        "**Share yours:** ☰ → *Share...* in the settings window, *My settings as a profile*. It fills the form in "
+        "for you, and once the check passes the profile appears here.", "",
+        "**What a profile carries:** the policy - sensitivity, actions, timings, which modules do what. Never a key, "
+        "a webhook, an account name or any list naming people or sites; every file here was checked for that, the "
+        "same way the settings window checks one you import. What the policy itself does is your call, not ours.", "",
+        "Nothing in this branch reaches an installation by itself, and it has no history in common with `main`.", "",
         "| Profile | Shared by | Shared in | Exported from |",
         "|---|---|---|---|",
     ]
@@ -830,37 +833,25 @@ def submissions_readme(repo):
     script's wording does."""
     lines = [
         "# Submissions", "",
-        "What streamers shared from TwitchSentry for the maintainer to accept, one file per ticket. Every ticket "
-        "from the share forms becomes a pull request into this branch, and merging it accepts the submission and "
-        "closes the ticket. Accepted is **not** shipped: no install reads this branch.", "",
-        "| Folder | From the form | What happens next |",
+        "Spam wording and translation fixes streamers shared from TwitchSentry, one file per ticket, waiting to be "
+        "taken up. Accepted here is not shipped: nothing in this branch reaches an installation.", "",
+        "| Folder | Shared through | Where it goes from here |",
         "|---|---|---|",
-        "| `spam/` | Share spam wording | Entries that hold up, best of all sent by more than one streamer, are "
-        "promoted into the [spam feed](https://github.com/%s/blob/main/Feed/README.md) with a version bump, after "
-        "`tools/check-feed.ps1` and the spam corpus. |" % repo,
-        "| `translations/` | Suggest a better translation | Applied to the language files in the next language "
-        "update. |", "",
-        "**Profiles do not come here.** Nobody has to accept a profile, so one that passes the check is stored on "
-        "the [`profiles` branch](https://github.com/%s/tree/profiles) straight away." % repo, "",
-        "## How a ticket becomes a file", "",
-        "`.github/workflows/community-submissions.yml` on `main` runs `.github/scripts/submission.py` whenever a "
-        "ticket from one of the share forms is opened or edited. It reads the form, writes `<folder>/<ticket "
-        "number>.json` on the branch `submission/<ticket number>`, which starts from this one, and opens a pull "
-        "request into this branch. Editing the ticket updates the pull request; a ticket with a mistake in it gets "
-        "a comment saying what to fix instead.", "",
-        "GitHub only closes the ticket a pull request names when the pull request goes into `main`, so the "
-        "workflow closes it itself once a pull request into this branch is merged. One closed without merging "
-        "leaves its ticket open.", "",
-        "Pull requests need **Settings → Actions → General → Allow GitHub Actions to create and approve pull "
-        "requests** switched on.", "",
-        "This branch shares no history with `main`. The workflow wrote this page and writes it again whenever its "
-        "wording changes, so change it in `submission.py` rather than here.", "",
-        "## What is checked, and what is not", "",
-        "- **Spam wording:** the list names, and the rules every install applies to an entry. Entries already in "
-        "the feed, and defaults a release already shipped (the feed's `shipped` block), are left out of the file. "
-        "The spam corpus is left to the promotion step.",
-        "- **Translations:** that the language exists, and whether the English text is in the published "
-        "`Language/en.json`.",
+        "| `spam/` | ☰ → *Share...*, spam wording from your lists | Weighed against what other streamers sent. "
+        "What holds up is published in the [spam feed](https://github.com/%s/blob/main/Feed/README.md), which every "
+        "installation receives within hours. |" % repo,
+        "| `translations/` | ☰ → *Share...*, a better translation | Into the language files, with the next "
+        "language update. |", "",
+        "**How a file gets here:** the share form fills a ticket in, the ticket becomes a pull request into this "
+        "branch, and merging it takes the submission up and closes the ticket. Editing the ticket updates its pull "
+        "request; a ticket with a mistake in it is answered with what to correct instead.", "",
+        "**What was checked:** for spam wording, that every entry is one an installation would accept, and that "
+        "TwitchSentry does not already carry it. For a translation, that the language exists, and whether the "
+        "English text is one the settings window really shows. Whether the wording deserves to reach every channel "
+        "is the judgement the merge stands for - that is the whole point of the wait.", "",
+        "**Profiles are not collected here.** A profile changes nothing about TwitchSentry, so nobody has to take "
+        "it up: it goes straight to the [`profiles` branch](https://github.com/%s/tree/profiles)." % repo, "",
+        "This branch has no history in common with `main`, and this page is written by the share workflow.",
     ]
     return "\n".join(lines) + "\n"
 

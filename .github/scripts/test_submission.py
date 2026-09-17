@@ -690,6 +690,17 @@ class TheWorkflowRun(WorkflowHarness):
         self.assertEqual(code, 1)
         self.assertEqual(rec.commands()[-1], "gh issue comment")
 
+    def test_neither_front_page_carries_anything_only_the_maintainer_needs(self):
+        # Both pages are read by whoever finds the branch. What the repository is set to, which script writes
+        # what, and which local tool gates a promotion are none of their business - and the Actions setting is
+        # something a stranger has no reason to be told at all.
+        folder = tempfile.mkdtemp(prefix="ts-profiles-front-")
+        pages = [README, s.profiles_readme(folder, "aaskjer/TwitchSentry")]
+        for page in pages:
+            for leak in ("Settings → Actions", "Allow GitHub Actions", "submission.py", "community-submissions.yml",
+                         "check-feed.ps1", "tools/", ".github"):
+                self.assertNotIn(leak, page, leak)
+
     def test_the_submissions_front_page_links_out_of_the_branch(self):
         # The branch has no Feed folder and no profiles, so a relative link from it leads nowhere.
         self.assertIn("https://github.com/aaskjer/TwitchSentry/blob/main/Feed/README.md", README)
