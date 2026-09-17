@@ -1,6 +1,6 @@
-# Turns a share ticket into a pull request, or a shared profile into a file on the profiles branch. The
-# forms are .github/ISSUE_TEMPLATE/share-*.yml, the work is done by .github/scripts/submission.py, and
-# Submissions/README.md says what happens after a merge.
+# Turns a share ticket into a pull request into the submissions branch, or a shared profile into a file on
+# the profiles branch. The forms are .github/ISSUE_TEMPLATE/share-*.yml, and the work is done by
+# .github/scripts/submission.py, which also writes the front page of both branches.
 #
 # Anyone with a GitHub account can open these tickets, so everything in one is untrusted. The script
 # reads the ticket from the event file itself; nothing from the ticket is ever written into a command
@@ -14,6 +14,12 @@ name: Community submissions
 on:
   issues:
     types: [opened, edited]
+  # GitHub only closes the ticket a pull request names when the pull request goes into main, so a merge into
+  # the submissions branch closes it from here. pull_request_target always runs this file as main has it,
+  # whichever branch the pull request went into, and nothing from the pull request is checked out or run.
+  pull_request_target:
+    types: [closed]
+    branches: [submissions]
 
 permissions:
   contents: write
@@ -21,13 +27,13 @@ permissions:
   issues: write
 
 concurrency:
-  group: submission-${{ github.event.issue.number }}
+  group: submission-${{ github.event.issue.number || github.event.pull_request.number }}
   cancel-in-progress: false
 
 jobs:
   submission:
     if: >-
-      github.event.issue.state == 'open' && (
+      github.event_name == 'issues' && github.event.issue.state == 'open' && (
       contains(github.event.issue.labels.*.name, 'share: spam list') ||
       contains(github.event.issue.labels.*.name, 'share: profile') ||
       contains(github.event.issue.labels.*.name, 'share: translation'))
@@ -37,6 +43,28 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Handle the ticket
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/submission.py
+
+  accepted:
+    if: >-
+      github.event_name == 'pull_request_target' && github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'submissions' &&
+      startsWith(github.event.pull_request.head.ref, 'submission/') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      # main as it is, never the pull request.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Close the accepted ticket
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 .github/scripts/submission.py

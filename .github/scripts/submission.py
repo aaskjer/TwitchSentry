@@ -1,18 +1,22 @@
 """Turns a TwitchSentry share ticket into a pull request, or a shared profile into a file.
 
 .github/workflows/community-submissions.yml runs this whenever an issue carrying one of the share
-labels is opened or edited. The ticket comes from one of the three forms in .github/ISSUE_TEMPLATE
-(share-spam-list, share-profile, share-translation), typed in by hand or prefilled by the settings
-window.
+labels is opened or edited, and when a pull request into the submissions branch is merged. The ticket
+comes from one of the three forms in .github/ISSUE_TEMPLATE (share-spam-list, share-profile,
+share-translation), typed in by hand or prefilled by the settings window.
 
-Spam wording and translations become one file under Submissions/, on a branch of their own, in a pull
-request that closes the ticket when it is merged. Merging accepts a submission. It does not ship it:
-nothing under Submissions/ reaches an install. Spam wording only gets into Feed/spam.json through a
-deliberate promotion step, because the feed reaches every channel within hours.
+Spam wording and translations become one file in a pull request into the submissions branch. Merging it
+accepts the submission, and this script closes the ticket then, because GitHub only acts on "Closes #N"
+in a pull request into main. Accepting does not ship anything: no install reads that branch. Spam
+wording only gets into Feed/spam.json through a deliberate promotion step, because the feed reaches
+every channel within hours.
 
 A profile is not a change to TwitchSentry, so nobody has to accept it: once it passes the check it is
 committed straight to the profiles branch as <ticket number>.json, a file the Profiles dialog imports
-as it is, and the ticket is closed. That branch shares no history with main and no install reads it.
+as it is, and the ticket is closed.
+
+Both branches start from a commit of their own and share no history with main, so nothing shared ever
+lands on the branch every install reads.
 
 Anyone with a GitHub account can open these tickets, so everything in one is untrusted. It is read
 from the event file here rather than handed over on a command line, git and gh are called with
@@ -60,13 +64,17 @@ FIELDS = {
                     ("why", "Why is it better?")],
 }
 
+# Where each kind that goes through a pull request keeps its files on the submissions branch.
 FOLDER = {"spam": "spam", "translation": "translations"}
 NO_RESPONSE = "_No response_"
 
+SUBMISSION_BRANCH = "submissions"
 PROFILE_BRANCH = "profiles"
+# The branch a ticket's pull request comes from. Only this script names a branch so.
+TICKET_BRANCH = re.compile(r"^submission/(\d{1,9})$")
 PUSH_ATTEMPTS = 5
-# The tree with nothing in it. Git knows it without having it stored, so the profiles branch can start
-# from a commit that shares nothing with main.
+# The tree with nothing in it. Git knows it without having it stored, so a branch can start from a commit
+# that shares nothing with main.
 EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 BOT_IDENTITY = ["-c", "user.name=github-actions[bot]",
                 "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com"]
@@ -351,7 +359,7 @@ def build_spam(issue, values, root):
 
     total = sum(len(v) for v in fresh.values())
     result.document = document
-    result.path = "Submissions/spam/%d.json" % number
+    result.path = "%s/%d.json" % (FOLDER["spam"], number)
     result.title = "Spam wording from #%d (%d %s)" % (number, total, "entry" if total == 1 else "entries")
 
     lines = ["**Spam wording** shared in #%d by %s." % (number, issue["user"]["login"]), ""]
@@ -538,7 +546,7 @@ def build_translation(issue, values, root):
     if why:
         document["why"] = why
     result.document = document
-    result.path = "Submissions/translations/%d.json" % number
+    result.path = "%s/%d.json" % (FOLDER["translation"], number)
     result.title = "Translation (%s) from #%d" % (code, number)
     lines = ["**A translation fix** for `%s`, shared in #%d by %s." % (code, number, issue["user"]["login"]), "",
              "The English text:", fence(english)]
@@ -595,7 +603,9 @@ def kind_of(issue):
 # ---------------------------------------------------------------------------------------------------
 
 def run(args, check=True, cwd=None):
-    return subprocess.run(args, check=check, text=True, capture_output=True, cwd=cwd)
+    # UTF-8 whatever the machine's locale says: what `git show` prints is compared with what this script
+    # would write, and the front pages carry characters outside ASCII.
+    return subprocess.run(args, check=check, text=True, encoding="utf-8", errors="replace", capture_output=True, cwd=cwd)
 
 
 def write_temp(text):
@@ -627,6 +637,15 @@ def stored_comment(address, repo, result):
     ])
 
 
+def accepted_comment(kind, number, pull, repo):
+    address = "https://github.com/%s/blob/%s/%s/%d.json" % (repo, SUBMISSION_BRANCH, FOLDER[kind], number)
+    merged = "#%d" % pull["number"] if isinstance(pull.get("number"), int) else "The pull request"
+    next_step = ("The entries are weighed together with what other streamers sent, and the ones that hold up go "
+                 "into the spam feed every TwitchSentry install receives." if kind == "spam"
+                 else "The fix goes into the language files with the next language update.")
+    return "\n".join(["Thank you! %s was merged, so this is accepted: %s" % (merged, address), "", next_step])
+
+
 def nothing_new_comment(result):
     lines = ["Thank you - there is nothing here the spam feed could add.", ""]
     if result.nothing_new:
@@ -638,98 +657,133 @@ def nothing_new_comment(result):
     return "\n".join(lines)
 
 
-def publish(result, issue, repo, base, root):
+def publish(result, issue, repo):
+    """Opens a pull request into the submissions branch for a checked submission, or brings the open one up
+    to date. Returns its address, and whether it is new."""
     number = issue["number"]
     branch = "submission/%d" % number
     content = json.dumps(result.document, ensure_ascii=False, indent=2) + "\n"
 
+    # The branch the pull request goes into. The first submission ever shared starts it, and its front page
+    # is written again whenever this script words it differently.
+    readme = submissions_readme(repo)
+    if commit_to_branch(SUBMISSION_BRANCH, lambda work: write_file(work, "README.md", readme),
+                        "Describe the submissions branch", lambda: shown(SUBMISSION_BRANCH, "README.md") == readme):
+        # So the pull request's branch starts from the front page just pushed, not from before it.
+        fetch_branch(SUBMISSION_BRANCH)
+
     # An edit that changed nothing about the file must not force-push the branch again.
-    fetched = run(["git", "fetch", "--depth=1", "origin", "+refs/heads/%s:refs/remotes/origin/%s" % (branch, branch)], check=False)
-    unchanged = False
-    if fetched.returncode == 0:
-        shown = run(["git", "show", "origin/%s:%s" % (branch, result.path)], check=False)
-        unchanged = shown.returncode == 0 and shown.stdout == content
+    if not (fetch_branch(branch) and shown(branch, result.path) == content):
+        work = tempfile.mkdtemp(prefix="ts-submission-")
+        run(["git", "worktree", "add", "--detach", work, "refs/remotes/origin/%s" % SUBMISSION_BRANCH])
+        try:
+            write_file(work, result.path, content)
+            run(["git", "add", "--all"], cwd=work)
+            run(["git"] + BOT_IDENTITY + ["commit", "-m", "Add submission #%d (%s)%s" % (number, result.kind, from_account(issue))],
+                cwd=work)
+            run(["git", "push", "--force", "origin", "HEAD:refs/heads/%s" % branch], cwd=work)
+        finally:
+            run(["git", "worktree", "remove", "--force", work], check=False)
 
-    if not unchanged:
-        target = os.path.join(root, *result.path.split("/"))
-        os.makedirs(os.path.dirname(target), exist_ok=True)
-        run(["git", "checkout", "-B", branch])
-        with open(target, "w", encoding="utf-8", newline="\n") as f:
-            f.write(content)
-        run(["git", "add", result.path])
-        run(["git", "-c", "user.name=github-actions[bot]",
-             "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com",
-             "commit", "-m", "Add submission #%d (%s)" % (number, result.kind)])
-        run(["git", "push", "--force", "origin", "HEAD:refs/heads/%s" % branch])
-
-    body = "\n".join(["Closes #%d" % number, "", result.summary])
+    # No "Closes #N": GitHub ignores it in a pull request into any branch but main. close_accepted() does
+    # that part once this is merged.
+    body = "\n".join(["Merging this accepts the submission and closes #%d." % number, "", result.summary])
     listed = run(["gh", "pr", "list", "--repo", repo, "--head", branch, "--state", "open", "--json", "number,url"])
     existing = json.loads(listed.stdout or "[]")
     if existing:
         run(["gh", "pr", "edit", str(existing[0]["number"]), "--repo", repo,
              "--title", result.title, "--body-file", write_temp(body)])
         return existing[0]["url"], False
-    created = run(["gh", "pr", "create", "--repo", repo, "--base", base, "--head", branch,
+    created = run(["gh", "pr", "create", "--repo", repo, "--base", SUBMISSION_BRANCH, "--head", branch,
                    "--title", result.title, "--body-file", write_temp(body)])
     return created.stdout.strip().splitlines()[-1], True
 
 
 def store_profile(result, issue, repo):
     """Commits a checked profile to the profiles branch. Returns the file's address, and whether anything
-    was written.
-
-    Another ticket's profile can land between the fetch and the push. A refused push starts over from the
-    branch as it is then, and since every ticket owns its own file, starting over loses nobody's."""
-    number = issue["number"]
+    was written."""
     content = json.dumps(result.document, ensure_ascii=False, indent=2) + "\n"
-    remote = "refs/remotes/origin/%s" % PROFILE_BRANCH
     address = "https://github.com/%s/blob/%s/%s" % (repo, PROFILE_BRANCH, result.path)
 
+    def write(work):
+        write_file(work, result.path, content)
+        write_file(work, "README.md", profiles_readme(work, repo))
+
+    # GitHub shows a file's last commit message beside it in the branch, so who shared a profile can be
+    # read off the file list without opening anything.
+    stored = commit_to_branch(PROFILE_BRANCH, write, "Store profile #%d%s" % (issue["number"], from_account(issue)),
+                              # An edit that changed nothing about the profile writes nothing.
+                              lambda: shown(PROFILE_BRANCH, result.path) == content)
+    return address, stored
+
+
+def commit_to_branch(branch, write, message, unchanged):
+    """Commits what write(folder) puts into a checkout of the branch, and says whether it did. Nothing is
+    written when unchanged() finds the branch already holding it.
+
+    A branch that does not exist yet starts from a commit with no parent and nothing in it, so it carries
+    none of main. The checkout is a worktree of its own, which leaves main's checkout as it is. Another run
+    can land a commit between the fetch and the push: a refused push starts over from the branch as it is
+    then, and since every ticket owns its own file, starting over loses nobody's."""
+    remote = "refs/remotes/origin/%s" % branch
     refused = ""
     for _ in range(PUSH_ATTEMPTS):
-        fetched = run(["git", "fetch", "origin", "+refs/heads/%s:%s" % (PROFILE_BRANCH, remote)], check=False)
-        if fetched.returncode != 0:
-            # The first profile ever shared. The branch starts from a commit with no parent and nothing in
-            # it, so it carries none of main. If another run starts it first, this push is refused and the
-            # next fetch finds theirs.
-            start = run(["git"] + BOT_IDENTITY + ["commit-tree", EMPTY_TREE, "-m", "Start the profiles branch"])
-            started = run(["git", "push", "origin", "%s:refs/heads/%s" % (start.stdout.strip(), PROFILE_BRANCH)], check=False)
+        if not fetch_branch(branch):
+            # If another run starts the branch first, this push is refused and the next fetch finds theirs.
+            start = run(["git"] + BOT_IDENTITY + ["commit-tree", EMPTY_TREE, "-m", "Start the %s branch" % branch])
+            started = run(["git", "push", "origin", "%s:refs/heads/%s" % (start.stdout.strip(), branch)], check=False)
             if started.returncode != 0:
                 refused = started.stderr or ""
                 if refused_by_rules(refused):
                     break
             continue
 
-        # An edit that changed nothing about the profile writes nothing.
-        shown = run(["git", "show", "origin/%s:%s" % (PROFILE_BRANCH, result.path)], check=False)
-        if shown.returncode == 0 and shown.stdout == content:
-            return address, False
+        if unchanged():
+            return False
 
-        work = tempfile.mkdtemp(prefix="ts-profiles-")
+        work = tempfile.mkdtemp(prefix="ts-%s-" % branch)
         run(["git", "worktree", "add", "--detach", work, remote])
         try:
-            with open(os.path.join(work, result.path), "w", encoding="utf-8", newline="\n") as f:
-                f.write(content)
-            with open(os.path.join(work, "README.md"), "w", encoding="utf-8", newline="\n") as f:
-                f.write(profiles_readme(work, repo))
+            write(work)
             run(["git", "add", "--all"], cwd=work)
-            # GitHub shows a file's last commit message beside it in the branch, so who shared a profile
-            # can be read off the file list without opening anything.
-            login = (issue.get("user") or {}).get("login") or ""
-            message = "Store profile #%d%s" % (number, " from " + login if GITHUB_LOGIN.match(login) else "")
             run(["git"] + BOT_IDENTITY + ["commit", "-m", message], cwd=work)
-            pushed = run(["git", "push", "origin", "HEAD:refs/heads/%s" % PROFILE_BRANCH], cwd=work, check=False)
+            pushed = run(["git", "push", "origin", "HEAD:refs/heads/%s" % branch], cwd=work, check=False)
         finally:
             run(["git", "worktree", "remove", "--force", work], check=False)
         if pushed.returncode == 0:
-            return address, True
+            return True
         refused = pushed.stderr or ""
         if refused_by_rules(refused):
             break
     # What GitHub said goes into the run's log. "The branch kept moving" was the guess this used to print,
     # and a push the repository rules refuse looks nothing like a lost race.
-    raise subprocess.CalledProcessError(1, ["git", "push", "origin", PROFILE_BRANCH],
+    raise subprocess.CalledProcessError(1, ["git", "push", "origin", branch],
                                         stderr=refused.strip() or "the push was refused and git gave no reason")
+
+
+def fetch_branch(branch):
+    """Whether origin has the branch. When it does, origin/<branch> is up to date afterwards."""
+    return run(["git", "fetch", "origin", "+refs/heads/%s:refs/remotes/origin/%s" % (branch, branch)], check=False).returncode == 0
+
+
+def shown(branch, path):
+    """A file as the fetched branch holds it, or None when it holds no such file."""
+    answer = run(["git", "show", "origin/%s:%s" % (branch, path)], check=False)
+    return answer.stdout if answer.returncode == 0 else None
+
+
+def write_file(folder, path, text):
+    target = os.path.join(folder, *path.split("/"))
+    os.makedirs(os.path.dirname(target), exist_ok=True)
+    with open(target, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+
+def from_account(issue):
+    """The ' from <account>' a commit message ends with. The name comes from the event, so one GitHub would
+    never issue is left out rather than trusted."""
+    login = (issue.get("user") or {}).get("login") or ""
+    return " from " + login if GITHUB_LOGIN.match(login) else ""
 
 
 def refused_by_rules(stderr):
@@ -771,17 +825,93 @@ def profiles_readme(folder, repo):
     return "\n".join(lines) + "\n"
 
 
+def submissions_readme(repo):
+    """The submissions branch's front page. Nothing on it comes from a ticket, so it only changes when this
+    script's wording does."""
+    lines = [
+        "# Submissions", "",
+        "What streamers shared from TwitchSentry for the maintainer to accept, one file per ticket. Every ticket "
+        "from the share forms becomes a pull request into this branch, and merging it accepts the submission and "
+        "closes the ticket. Accepted is **not** shipped: no install reads this branch.", "",
+        "| Folder | From the form | What happens next |",
+        "|---|---|---|",
+        "| `spam/` | Share spam wording | Entries that hold up, best of all sent by more than one streamer, are "
+        "promoted into the [spam feed](https://github.com/%s/blob/main/Feed/README.md) with a version bump, after "
+        "`tools/check-feed.ps1` and the spam corpus. |" % repo,
+        "| `translations/` | Suggest a better translation | Applied to the language files in the next language "
+        "update. |", "",
+        "**Profiles do not come here.** Nobody has to accept a profile, so one that passes the check is stored on "
+        "the [`profiles` branch](https://github.com/%s/tree/profiles) straight away." % repo, "",
+        "## How a ticket becomes a file", "",
+        "`.github/workflows/community-submissions.yml` on `main` runs `.github/scripts/submission.py` whenever a "
+        "ticket from one of the share forms is opened or edited. It reads the form, writes `<folder>/<ticket "
+        "number>.json` on the branch `submission/<ticket number>`, which starts from this one, and opens a pull "
+        "request into this branch. Editing the ticket updates the pull request; a ticket with a mistake in it gets "
+        "a comment saying what to fix instead.", "",
+        "GitHub only closes the ticket a pull request names when the pull request goes into `main`, so the "
+        "workflow closes it itself once a pull request into this branch is merged. One closed without merging "
+        "leaves its ticket open.", "",
+        "Pull requests need **Settings → Actions → General → Allow GitHub Actions to create and approve pull "
+        "requests** switched on.", "",
+        "This branch shares no history with `main`. The workflow wrote this page and writes it again whenever its "
+        "wording changes, so change it in `submission.py` rather than here.", "",
+        "## What is checked, and what is not", "",
+        "- **Spam wording:** the list names, and the rules every install applies to an entry. Entries already in "
+        "the feed, and defaults a release already shipped (the feed's `shipped` block), are left out of the file. "
+        "The spam corpus is left to the promotion step.",
+        "- **Translations:** that the language exists, and whether the English text is in the published "
+        "`Language/en.json`.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def accepted_ticket(pull, repo):
+    """The ticket a merged pull request into the submissions branch accepted, or None. Only a branch this
+    script pushed counts: a pull request from a fork decides nothing about a ticket, whatever its branch is
+    called."""
+    head = pull.get("head") or {}
+    if pull.get("merged") is not True or (pull.get("base") or {}).get("ref") != SUBMISSION_BRANCH:
+        return None
+    if ((head.get("repo") or {}).get("full_name") or "").lower() != repo.lower():
+        return None
+    match = TICKET_BRANCH.match(head.get("ref") or "")
+    return int(match.group(1)) if match else None
+
+
+def close_accepted(pull, repo):
+    number = accepted_ticket(pull, repo)
+    if number is None:
+        print("Not a merged submission - nothing to do.")
+        return 0
+    viewed = run(["gh", "issue", "view", str(number), "--repo", repo, "--json", "state,labels"])
+    ticket = json.loads(viewed.stdout or "{}")
+    kind = kind_of(ticket)
+    if ticket.get("state") != "OPEN" or kind not in FOLDER:
+        print("#%d is not an open spam or translation ticket - left as it is." % number)
+        return 0
+    comment(repo, number, accepted_comment(kind, number, pull, repo))
+    run(["gh", "issue", "close", str(number), "--repo", repo, "--reason", "completed"])
+    print("Ticket #%d is accepted and closed." % number)
+    return 0
+
+
 def main():
     with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as f:
         event = json.load(f)
+    repo = os.environ["GITHUB_REPOSITORY"]
+    if event.get("pull_request") is not None:
+        try:
+            return close_accepted(event["pull_request"], repo)
+        except subprocess.CalledProcessError as ex:
+            print("Failed: %s\n%s" % (" ".join(ex.cmd[:3]), (ex.stderr or "").strip()), file=sys.stderr)
+            return 1
+
     issue = event.get("issue") or {}
     kind = kind_of(issue)
     if issue.get("state") != "open" or issue.get("pull_request") or kind is None:
         print("Not an open share ticket - nothing to do.")
         return 0
 
-    repo = os.environ["GITHUB_REPOSITORY"]
-    base = (event.get("repository") or {}).get("default_branch") or "main"
     root = os.environ.get("GITHUB_WORKSPACE") or os.getcwd()
     number = issue["number"]
     result = build(kind, issue, root)
@@ -804,7 +934,7 @@ def main():
                 run(["gh", "issue", "close", str(number), "--repo", repo, "--reason", "completed"])
             return 0
 
-        url, created = publish(result, issue, repo, base, root)
+        url, created = publish(result, issue, repo)
         print("Ticket #%d is %s" % (number, url))
         if created:
             comment(repo, number, "Thank you! This is now a pull request: %s\n\n"
