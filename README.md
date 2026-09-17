@@ -1,10 +1,14 @@
 # Shared profiles
 
-Settings profiles streamers shared from TwitchSentry, one file per ticket, with the GitHub account that shared it. Every file here passed the check the settings window applies when it imports one: it is a profile export, and it carries no key, webhook, token or list of people. Nobody has reviewed the policy inside it.
+Settings profiles streamers shared from TwitchSentry: how strict to be, one file per profile. Take one, try it, keep it or go back - your own settings are one *Import* away again.
 
-**To use one:** open the file, press *Download raw file*, and put it into `Settings/Profiles` in your TwitchSentry folder, or pick it with *Import* in ☰ → *Profiles*. The Profiles dialog lists every setting a profile in that folder would change before you pick it.
+**Use one:** open the file, press *Download raw file*, and drop it into `Settings/Profiles` in your TwitchSentry folder. It is then in ☰ → *Profiles* in the settings window, which lists every setting it would change before you pick it.
 
-The share workflow on `main` writes this branch. It shares no history with `main`, and no install reads it.
+**Share yours:** ☰ → *Share...* in the settings window, *My settings as a profile*. It fills the form in for you, and once the check passes the profile appears here. This list is public and the name is all anyone sees before they open the file, so name it after the channel it suits: *Small English chat, strict on links* tells somebody whether to try it, *test2* tells them nothing. The name is yours to change in the form before you submit it.
+
+**What a profile carries:** the policy - sensitivity, actions, timings, which modules do what. Never a key, a webhook, an account name or any list naming people or sites; every file here was checked for that, the same way the settings window checks one you import. What the policy itself does is your call, not ours.
+
+Nothing in this branch reaches an installation by itself, and it has no history in common with `main`.
 
 | Profile | Shared by | Shared in | Exported from |
 |---|---|---|---|
