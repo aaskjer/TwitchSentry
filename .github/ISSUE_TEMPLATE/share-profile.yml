@@ -16,6 +16,7 @@ body:
     id: name
     attributes:
       label: Profile name
+      description: The public list shows this name and nothing else until somebody opens the file, so name it after the channel it suits rather than after your test.
       placeholder: Small English chat, strict on links
     validations:
       required: true
