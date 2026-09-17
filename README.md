@@ -8,5 +8,4 @@ The share workflow on `main` writes this branch. It shares no history with `main
 
 | Profile | Shared by | Shared in | Exported from |
 |---|---|---|---|
-| [`test2`](21.json) | [aaskjer](https://github.com/aaskjer) | [#21](https://github.com/aaskjer/TwitchSentry/issues/21) | v2.1.0 |
 | [`Test-Profil`](14.json) | [aaskjer](https://github.com/aaskjer) | [#14](https://github.com/aaskjer/TwitchSentry/issues/14) | v2.1.0 |
