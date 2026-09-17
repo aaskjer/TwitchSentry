@@ -1,0 +1,30 @@
+{
+  "type": "spam list",
+  "issue": 18,
+  "submittedBy": "aaskjer",
+  "submittedAt": "2026-09-17T18:47:55Z",
+  "entries": {
+    "spamDomains": [
+      "testviewers.example",
+      "boost-demo.invalid"
+    ],
+    "strongKeywords": [
+      "twitchsentry demo brand"
+    ],
+    "keywords": [
+      "twitchsentry test keyword",
+      "buy demo viewers here"
+    ],
+    "spacedUrlTlds": [
+      "testtld"
+    ],
+    "handoffPhrases": [
+      "add me on demo chat"
+    ],
+    "serviceOffers": [
+      "we sell demo overlays"
+    ]
+  },
+  "twitchSentry": "v2.1.0",
+  "context": "Test Spam"
+}
