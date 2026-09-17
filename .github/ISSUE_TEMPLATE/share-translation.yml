@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **A pull request is opened for this automatically,** and once it is merged the fix goes into the next language update. One text per ticket.
+        **A pull request is opened for this automatically,** into the [`submissions` branch](https://github.com/aaskjer/TwitchSentry/tree/submissions), and once it is merged this ticket is closed and the fix goes into the next language update. One text per ticket.
 
         To find the English original, switch the settings window to English in the ☰ menu and copy the text exactly, line breaks included.
 

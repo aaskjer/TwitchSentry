@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **A pull request is opened for this automatically.** Once it is merged, the entries are weighed together with what other streamers sent, and the ones that hold up go into the [spam feed](https://github.com/aaskjer/TwitchSentry/blob/main/Feed/README.md) every TwitchSentry install receives.
+        **A pull request is opened for this automatically,** into the [`submissions` branch](https://github.com/aaskjer/TwitchSentry/tree/submissions), which no install reads. Once it is merged, this ticket is closed, the entries are weighed together with what other streamers sent, and the ones that hold up go into the [spam feed](https://github.com/aaskjer/TwitchSentry/blob/main/Feed/README.md) every TwitchSentry install receives.
 
         **Everything on this page is public.** Share wording and site names only - never a chat message, a username, or anything else that points at a person.
 
