@@ -250,6 +250,11 @@ class Result:
         self.summary = None
         self.nothing_new = None
         self.already_shipped = None
+        # What another ticket has already put forward: spam entries as list -> entry -> ticket, and for a
+        # translation the ticket that says the same thing, or one that says something else about the same text.
+        self.already_in = {}
+        self.same_as = None
+        self.answered_differently = None
 
 
 def read_json(path, default):
@@ -270,7 +275,8 @@ def listing(block):
     return "\n".join("%s: %s" % (name, entry) for name in SPAM_LISTS for entry in block.get(name, []))
 
 
-def build_spam(issue, values, root):
+def build_spam(issue, values, root, elsewhere=None):
+    elsewhere = elsewhere or Elsewhere()
     result = Result("spam")
     if not is_checked(values.get("privacy")):
         result.problems.append("The box saying the entries hold no chat message and no username is not ticked.")
@@ -333,6 +339,21 @@ def build_spam(issue, values, root):
                 if entry in retracted[name]:
                     withdrawn.setdefault(name, []).append(entry)
 
+    # An entry another ticket has already put forward is not offered again: the same wording in two files is
+    # two things to judge and one streamer counted twice. It is named in the ticket instead, and the file
+    # records that this account saw it too, which is what "more than one streamer sent it" is counted from.
+    repeated = {}
+    for name in list(fresh):
+        for entry in list(fresh[name]):
+            ticket = elsewhere.spam.get(name, {}).get(entry)
+            if ticket is None or ticket == issue["number"]:
+                continue
+            fresh[name].remove(entry)
+            repeated.setdefault(name, {})[entry] = ticket
+        if not fresh[name]:
+            del fresh[name]
+    result.already_in = repeated
+
     if not fresh:
         result.nothing_new = known
         result.already_shipped = defaults
@@ -350,6 +371,8 @@ def build_spam(issue, values, root):
     kept_counts = {name: c for name, c in kept_counts.items() if c}
     if kept_counts:
         document["counts"] = kept_counts
+    if repeated:
+        document["seconds"] = {name: sorted(entries) for name, entries in repeated.items()}
     version = version_of(values.get("version"))
     if version:
         document["twitchSentry"] = version
@@ -374,6 +397,11 @@ def build_spam(issue, values, root):
     if defaults:
         lines += ["Built-in defaults of a TwitchSentry release, so left out of the file - the feed never hands one over:",
                   fence(listing(defaults))]
+    if repeated:
+        lines += ["Another ticket has these in hand already, so they are left out of the file - this ticket is a "
+                  "second streamer seeing them, which the file records under `seconds`:",
+                  fence("\n".join("%s: %s (#%d)" % (name, entry, ticket)
+                                  for name in SPAM_LISTS for entry, ticket in sorted(repeated.get(name, {}).items())))]
     if withdrawn:
         lines += ["**Retracted from the feed before** - kept, for you to judge:", fence(listing(withdrawn))]
     if context:
@@ -501,7 +529,8 @@ def _is_number_map(value):
     return True
 
 
-def build_translation(issue, values, root):
+def build_translation(issue, values, root, elsewhere=None):
+    elsewhere = elsewhere or Elsewhere()
     result = Result("translation")
     index = read_json(os.path.join(root, "Language", "index.json"), [])
     # English is a language file like the others: en.json can word a text differently from the code.
@@ -527,6 +556,16 @@ def build_translation(issue, values, root):
             result.problems.append("*%s* holds an invisible character." % label)
     if result.problems:
         return result
+
+    # The same text in the same language is one decision, so a second ticket saying the same thing adds nothing.
+    # One saying something else does: both wordings belong in front of whoever picks.
+    for other in elsewhere.translations:
+        if other.get("issue") == issue["number"] or other.get("language") != code or other.get("english") != english:
+            continue
+        if other.get("suggestion") == suggestion:
+            result.same_as = other.get("issue")
+            return result
+        result.answered_differently = other.get("issue")
 
     english_file = read_json(os.path.join(root, "Language", "en.json"), {})
     known = isinstance(english_file, dict) and english in english_file
@@ -555,6 +594,9 @@ def build_translation(issue, values, root):
     lines += ["What it should say:", fence(suggestion)]
     if why:
         lines += ["Why:", fence(why)]
+    if result.answered_differently:
+        lines += ["**#%d wants something else for the same text.** Both are here to pick from; only one of them "
+                  "can end up in the language file." % result.answered_differently, ""]
     lines.append("The English text is %s the published `Language/en.json`%s." % (
         "in" if known else "**not** in",
         "" if known else " - it may belong to a window newer than that file, or be copied inexactly"))
@@ -565,13 +607,36 @@ def build_translation(issue, values, root):
 BUILDERS = {"spam": build_spam, "profile": build_profile, "translation": build_translation}
 
 
+class Elsewhere:
+    """What other tickets have already put forward, so nothing is proposed twice: spam entries as
+    list -> entry -> ticket, and the translation documents as they were written."""
+
+    def __init__(self):
+        self.spam = {}
+        self.translations = []
+
+    def add(self, document):
+        if not isinstance(document, dict) or not isinstance(document.get("issue"), int):
+            return
+        if document.get("type") == "spam list":
+            for name, entries in (document.get("entries") or {}).items():
+                for entry in entries if isinstance(entries, list) else []:
+                    self.spam.setdefault(name, {}).setdefault(entry, document["issue"])
+            # A ticket that only seconded an entry counts as having it in hand too.
+            for name, entries in (document.get("seconds") or {}).items():
+                for entry in entries if isinstance(entries, list) else []:
+                    self.spam.setdefault(name, {}).setdefault(entry, document["issue"])
+        elif document.get("type") == "translation":
+            self.translations.append(document)
+
+
 def without_lone_surrogates(text):
     # Valid UTF-8 cannot carry one, but a JSON escape in the event can, and a single one would stop the
     # file from being written at all.
     return "".join(c for c in (text or "") if not 0xD800 <= ord(c) <= 0xDFFF)
 
 
-def build(kind, issue, root):
+def build(kind, issue, root, elsewhere=None):
     values = parse_form(without_lone_surrogates(issue.get("body")), FIELDS[kind])
     missing = [label for key, label in FIELDS[kind] if values[key] is None]
     if missing:
@@ -580,7 +645,9 @@ def build(kind, issue, root):
                                "Open a new one from the form rather than editing the headings."
                                % ", ".join("*%s*" % m for m in missing))
         return result
-    return BUILDERS[kind](issue, values, root)
+    if kind == "profile":
+        return BUILDERS[kind](issue, values, root)
+    return BUILDERS[kind](issue, values, root, elsewhere)
 
 
 def fence(text):
@@ -646,8 +713,18 @@ def accepted_comment(kind, number, pull, repo):
     return "\n".join(["Thank you! %s was merged, so this is accepted: %s" % (merged, address), "", next_step])
 
 
+def same_as_comment(ticket):
+    return ("Thank you - #%d says the same about the same text, and is waiting to be picked up. "
+            "Two tickets for one decision is one too many, so this one can be closed.\n\n"
+            "If you meant to word it differently, edit this ticket: it is checked again every time." % ticket)
+
+
 def nothing_new_comment(result):
     lines = ["Thank you - there is nothing here the spam feed could add.", ""]
+    if result.already_in:
+        lines += ["Another ticket has these in hand already:",
+                  fence("\n".join("%s: %s (#%d)" % (name, entry, ticket)
+                                  for name in SPAM_LISTS for entry, ticket in sorted(result.already_in.get(name, {}).items())))]
     if result.nothing_new:
         lines += ["Already in the spam feed:", fence(listing(result.nothing_new))]
     if result.already_shipped:
@@ -655,6 +732,50 @@ def nothing_new_comment(result):
                   "so a streamer who deleted one keeps it deleted:", fence(listing(result.already_shipped))]
     lines.append("This ticket can be closed.")
     return "\n".join(lines)
+
+
+def submission_files(ref):
+    """The submission files on that ref, as their text. One listing for the whole tree, because every call here
+    is a git process and this runs for every ticket."""
+    listed = run(["git", "ls-tree", "-r", "--name-only", ref], check=False)
+    if listed.returncode != 0:
+        return
+    folders = tuple(folder + "/" for folder in FOLDER.values())
+    for path in (listed.stdout or "").splitlines():
+        if not path.startswith(folders) or not path.endswith(".json"):
+            continue
+        shown = run(["git", "show", "%s:%s" % (ref, path)], check=False)
+        if shown.returncode == 0:
+            yield shown.stdout
+
+
+def elsewhere_of(repo, mine):
+    """What the other tickets have put forward: what is accepted on the submissions branch, and what waits in
+    an open pull request. The ticket's own branch is left out, so an edit is not compared with itself."""
+    elsewhere = Elsewhere()
+
+    def collect(ref):
+        for text in submission_files(ref):
+            try:
+                elsewhere.add(json.loads(text))
+            except ValueError:
+                pass
+
+    if fetch_branch(SUBMISSION_BRANCH):
+        collect("origin/" + SUBMISSION_BRANCH)
+
+    listed = run(["gh", "pr", "list", "--repo", repo, "--state", "open", "--base", SUBMISSION_BRANCH,
+                  "--json", "headRefName"], check=False)
+    try:
+        open_branches = [pull.get("headRefName") for pull in json.loads(listed.stdout or "[]")]
+    except ValueError:
+        open_branches = []
+    for branch in open_branches:
+        if not branch or branch == mine or not TICKET_BRANCH.match(branch):
+            continue
+        if fetch_branch(branch):
+            collect("origin/" + branch)
+    return elsewhere
 
 
 def publish(result, issue, repo):
@@ -908,9 +1029,15 @@ def main():
 
     root = os.environ.get("GITHUB_WORKSPACE") or os.getcwd()
     number = issue["number"]
-    result = build(kind, issue, root)
 
     try:
+        elsewhere = None if kind == "profile" else elsewhere_of(repo, "submission/%d" % number)
+        result = build(kind, issue, root, elsewhere)
+
+        if result.same_as is not None:
+            print("Ticket #%d says what #%d already says." % (number, result.same_as))
+            comment(repo, number, same_as_comment(result.same_as))
+            return 0
         if result.problems:
             print("Ticket #%d has %d problem(s); telling the submitter." % (number, len(result.problems)))
             comment(repo, number, problems_comment(result))
