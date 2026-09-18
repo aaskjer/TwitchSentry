@@ -397,6 +397,9 @@ class Recorder:
 
 
 README = s.submissions_readme("aaskjer/TwitchSentry")
+# Before anything else, a spam or translation ticket is held against what the other tickets have already put
+# forward: the submissions branch, then every open pull request into it.
+LOOKED_AROUND = ["git fetch origin", "git ls-tree -r", "gh pr list"]
 
 
 class WorkflowHarness(unittest.TestCase):
@@ -425,28 +428,28 @@ class TheWorkflowRun(WorkflowHarness):
     def test_a_new_ticket_becomes_a_file_in_a_pull_request_into_the_submissions_branch(self):
         issue = ticket("spam", spam_pairs("spamDomains: newsite"))
         code, rec, root = self.run_main(issue, [
-            ("git fetch origin", [(0, ""), (1, "")]),
+            ("git fetch origin", [(0, ""), (0, ""), (1, "")]),
             ("git show origin/submissions:README.md", (0, README)),
             ("gh pr list", (0, "[]")),
             ("gh pr create", (0, "https://github.com/aaskjer/TwitchSentry/pull/7\n")),
         ])
         self.assertEqual(code, 0)
-        self.assertEqual(rec.commands(), [
+        self.assertEqual(rec.commands(), LOOKED_AROUND + [
             "git fetch origin", "git show origin/submissions:README.md", "git fetch origin", "git worktree add",
             "git add --all", "git -c user.name=github-actions[bot]", "git push --force", "git worktree remove",
             "gh pr list", "gh pr create", "gh issue comment"])
-        self.assertIn("+refs/heads/submissions:refs/remotes/origin/submissions", rec.calls[0])
-        self.assertIn("+refs/heads/submission/42:refs/remotes/origin/submission/42", rec.calls[2])
-        self.assertEqual(rec.calls[3][-1], "refs/remotes/origin/submissions", "the branch starts from submissions, not from main")
-        self.assertEqual(rec.calls[5][-2:], ["-m", "Add submission #42 (spam) from somestreamer"])
-        self.assertEqual(rec.calls[6][-1], "HEAD:refs/heads/submission/42")
+        self.assertIn("+refs/heads/submissions:refs/remotes/origin/submissions", rec.calls[3])
+        self.assertIn("+refs/heads/submission/42:refs/remotes/origin/submission/42", rec.calls[5])
+        self.assertEqual(rec.calls[6][-1], "refs/remotes/origin/submissions", "the branch starts from submissions, not from main")
+        self.assertEqual(rec.calls[8][-2:], ["-m", "Add submission #42 (spam) from somestreamer"])
+        self.assertEqual(rec.calls[9][-1], "HEAD:refs/heads/submission/42")
         work = self.worktrees(rec)[0]
-        self.assertEqual(rec.dirs[6], work, "the push goes out from the worktree")
+        self.assertEqual(rec.dirs[9], work, "the push goes out from the worktree")
         with open(os.path.join(work, "spam", "42.json"), encoding="utf-8") as f:
             self.assertEqual(json.load(f)["entries"], {"spamDomains": ["newsite"]})
         self.assertEqual(sorted(os.listdir(root)), ["Feed", "Language"], "main's checkout is left as it was")
 
-        created = rec.calls[9]
+        created = rec.calls[12]
         self.assertEqual(created[created.index("--base") + 1], "submissions")
         with open(created[created.index("--body-file") + 1], encoding="utf-8") as f:
             body = f.read()
@@ -456,26 +459,27 @@ class TheWorkflowRun(WorkflowHarness):
     def test_the_first_submission_starts_the_branch_with_its_front_page(self):
         issue = ticket("translation", translation_pairs())
         _, rec, _ = self.run_main(issue, [
-            ("git fetch origin", [(128, ""), (0, ""), (0, ""), (1, "")]),
+            ("git fetch origin", [(128, ""), (128, ""), (0, ""), (0, ""), (1, "")]),
             ("git -c user.name=github-actions[bot]", (0, "0123abcd\n")),
             ("git show origin/submissions:README.md", (128, "")),
             ("gh pr list", (0, "[]")),
             ("gh pr create", (0, "https://github.com/aaskjer/TwitchSentry/pull/8\n")),
         ], workspace(en={"Save": "Save"}))
-        self.assertEqual(rec.commands(), [
+        # The look around finds no branch at all here: nothing has been put forward yet, so there is no tree to list.
+        self.assertEqual(rec.commands(), ["git fetch origin", "gh pr list",
             "git fetch origin", "git -c user.name=github-actions[bot]", "git push origin",
             "git fetch origin", "git show origin/submissions:README.md", "git worktree add", "git add --all",
             "git -c user.name=github-actions[bot]", "git push origin", "git worktree remove",
             "git fetch origin", "git fetch origin", "git worktree add", "git add --all", "git -c user.name=github-actions[bot]",
             "git push --force", "git worktree remove", "gh pr list", "gh pr create", "gh issue comment"])
-        self.assertIn("commit-tree", rec.calls[1])
-        self.assertIn(s.EMPTY_TREE, rec.calls[1], "it shares nothing with main")
-        self.assertEqual(rec.calls[2][-1], "0123abcd:refs/heads/submissions")
-        self.assertEqual(rec.calls[7][-2:], ["-m", "Describe the submissions branch"])
-        self.assertEqual(rec.calls[8][-1], "HEAD:refs/heads/submissions")
-        self.assertIn("+refs/heads/submissions:refs/remotes/origin/submissions", rec.calls[10],
+        self.assertIn("commit-tree", rec.calls[3])
+        self.assertIn(s.EMPTY_TREE, rec.calls[3], "it shares nothing with main")
+        self.assertEqual(rec.calls[4][-1], "0123abcd:refs/heads/submissions")
+        self.assertEqual(rec.calls[9][-2:], ["-m", "Describe the submissions branch"])
+        self.assertEqual(rec.calls[10][-1], "HEAD:refs/heads/submissions")
+        self.assertIn("+refs/heads/submissions:refs/remotes/origin/submissions", rec.calls[12],
                       "fetched again, so the pull request's branch starts from the front page just pushed")
-        self.assertIn("+refs/heads/submission/42:refs/remotes/origin/submission/42", rec.calls[11])
+        self.assertIn("+refs/heads/submission/42:refs/remotes/origin/submission/42", rec.calls[13])
         front, pull = self.worktrees(rec)
         self.assertEqual(os.listdir(front), ["README.md"], "the front page goes onto the branch by itself, not into a pull request")
         with open(os.path.join(front, "README.md"), encoding="utf-8") as f:
@@ -485,15 +489,15 @@ class TheWorkflowRun(WorkflowHarness):
     def test_a_front_page_worded_differently_is_written_again_first(self):
         issue = ticket("spam", spam_pairs("spamDomains: newsite"))
         _, rec, _ = self.run_main(issue, [
-            ("git fetch origin", [(0, ""), (0, ""), (1, "")]),
+            ("git fetch origin", [(0, ""), (0, ""), (0, ""), (1, "")]),
             ("git show origin/submissions:README.md", (0, "# Submissions\n\nOlder wording.\n")),
             ("gh pr list", (0, "[]")),
             ("gh pr create", (0, "https://example/pull/7")),
         ])
-        self.assertEqual(rec.commands()[:8], [
+        self.assertEqual(rec.commands()[:11], LOOKED_AROUND + [
             "git fetch origin", "git show origin/submissions:README.md", "git worktree add", "git add --all",
             "git -c user.name=github-actions[bot]", "git push origin", "git worktree remove", "git fetch origin"])
-        self.assertEqual(rec.calls[4][-2:], ["-m", "Describe the submissions branch"])
+        self.assertEqual(rec.calls[7][-2:], ["-m", "Describe the submissions branch"])
         self.assertEqual(rec.commands()[-2:], ["gh pr create", "gh issue comment"])
 
     def test_a_submissions_branch_github_will_not_take_opens_no_pull_request(self):
@@ -501,17 +505,18 @@ class TheWorkflowRun(WorkflowHarness):
         code, rec, _ = self.run_main(issue, [
             ("git fetch origin", (128, "")),
             ("git -c user.name=github-actions[bot]", (0, "0123abcd\n")),
+            ("gh pr list", (0, "[]")),
             ("git push origin", (1, "", "remote: error: GH013: Repository rule violations found for refs/heads/submissions.")),
         ])
         self.assertEqual(code, 1)
         self.assertEqual(rec.commands().count("git push origin"), 1, "a rule does not change by asking again")
-        self.assertFalse(any(c[:2] == ["gh", "pr"] for c in rec.calls))
+        self.assertFalse(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls), "nothing is proposed")
         with open(rec.calls[-1][rec.calls[-1].index("--body-file") + 1], encoding="utf-8") as f:
             self.assertIn("Something went wrong turning this ticket into a pull request", f.read())
 
     def test_no_call_carries_the_ticket_text_on_its_command_line(self):
         issue = ticket("spam", spam_pairs("spamDomains: newsite", context="$(rm -rf /) `whoami`"))
-        _, rec, _ = self.run_main(issue, [("git fetch origin", [(0, ""), (1, "")]),
+        _, rec, _ = self.run_main(issue, [("git fetch origin", [(0, ""), (0, ""), (1, "")]),
                                           ("git show origin/submissions:README.md", (0, README)),
                                           ("gh pr list", (0, "[]")), ("gh pr create", (0, "https://example/pull/7"))])
         self.assertIn("gh pr create", rec.commands())
@@ -529,8 +534,9 @@ class TheWorkflowRun(WorkflowHarness):
             ("git show origin/submission/42:spam/42.json", (0, content)),
             ("gh pr list", (0, '[{"number": 7, "url": "https://github.com/aaskjer/TwitchSentry/pull/7"}]')),
         ], root)
-        self.assertEqual(rec.commands(), ["git fetch origin", "git show origin/submissions:README.md", "git fetch origin",
-                                          "git show origin/submission/42:spam/42.json", "gh pr list", "gh pr edit"])
+        self.assertEqual(rec.commands(), LOOKED_AROUND + ["git fetch origin", "git show origin/submissions:README.md",
+                                          "git fetch origin", "git show origin/submission/42:spam/42.json",
+                                          "gh pr list", "gh pr edit"])
         self.assertEqual(rec.calls[-1][3], "7")
 
     def test_a_ticket_the_feed_can_add_nothing_from_only_gets_a_comment_saying_why(self):
@@ -539,8 +545,8 @@ class TheWorkflowRun(WorkflowHarness):
         issue = ticket("spam", spam_pairs("spamDomains: smmgen\nkeywords: cheap"))
         code, rec, _ = self.run_main(issue, [], root)
         self.assertEqual(code, 0)
-        self.assertEqual(rec.commands(), ["gh issue comment"])
-        with open(rec.calls[0][rec.calls[0].index("--body-file") + 1], encoding="utf-8") as f:
+        self.assertEqual(rec.commands(), LOOKED_AROUND + ["gh issue comment"])
+        with open(rec.calls[-1][rec.calls[-1].index("--body-file") + 1], encoding="utf-8") as f:
             body = f.read()
         self.assertIn("Already in the spam feed:\n``` text\nspamDomains: smmgen\n```", body)
         self.assertIn("Built-in defaults of a TwitchSentry release", body)
@@ -549,8 +555,8 @@ class TheWorkflowRun(WorkflowHarness):
     def test_a_ticket_with_mistakes_only_gets_a_comment(self):
         issue = ticket("spam", spam_pairs("spamDomains: smm gen"))
         _, rec, _ = self.run_main(issue, [])
-        self.assertEqual(rec.commands(), ["gh issue comment"])
-        self.assertEqual(rec.calls[0][3], "42")
+        self.assertEqual(rec.commands(), LOOKED_AROUND + ["gh issue comment"])
+        self.assertEqual(rec.calls[-1][3], "42")
 
     def test_closed_tickets_and_other_labels_are_left_alone(self):
         _, rec, _ = self.run_main(ticket("spam", spam_pairs("spamDomains: newsite"), state="closed"), [])
@@ -708,6 +714,104 @@ class TheWorkflowRun(WorkflowHarness):
         self.assertNotIn("](../", README)
         for folder in s.FOLDER.values():
             self.assertIn("| `%s/` |" % folder, README)
+
+
+class NothingIsProposedTwice(WorkflowHarness):
+    """A second ticket for wording or a text somebody else already put forward. Two files for one decision is
+    one too many, and it also counts one streamer as two when the promotion step asks how many saw it."""
+
+    def waiting(self, document, branch="submission/18"):
+        """A ticket in flight: an open pull request into the submissions branch, with its file on its branch."""
+        # Both listings and both pull request queries come through the same prefix, so they are answered in
+        # the order they happen: the submissions branch first, then the branch of the open pull request.
+        return [("git fetch origin", (0, "")),
+                ("git ls-tree -r", [(0, "README.md\n"), (0, document["path"] + "\n")]),
+                ("git show origin/%s:%s" % (branch, document["path"]), (0, json.dumps(document["body"]))),
+                ("git show origin/submissions:README.md", (0, README)),
+                ("gh pr list", [(0, json.dumps([{"headRefName": branch}])), (0, "[]")]),
+                ("gh pr create", (0, "https://example/pull/9"))]
+
+    def spam_waiting(self, entries, issue=18, seconds=None):
+        body = {"type": "spam list", "issue": issue, "submittedBy": "somebodyelse", "entries": entries}
+        if seconds:
+            body["seconds"] = seconds
+        return {"path": "spam/%d.json" % issue, "body": body}
+
+    def test_an_entry_another_ticket_put_forward_is_left_out_and_seconded(self):
+        issue = ticket("spam", spam_pairs("spamDomains: newsite\nkeywords: buy cheap viewers here"))
+        _, rec, _ = self.run_main(issue, self.waiting(self.spam_waiting({"spamDomains": ["newsite"]})))
+        work = self.worktrees(rec)[0]
+        with open(os.path.join(work, "spam", "42.json"), encoding="utf-8") as f:
+            stored = json.load(f)
+        self.assertEqual(stored["entries"], {"keywords": ["buy cheap viewers here"]}, "only what is new is proposed")
+        self.assertEqual(stored["seconds"], {"spamDomains": ["newsite"]}, "and the rest is recorded as seen here too")
+        created = next(c for c in rec.calls if c[:3] == ["gh", "pr", "create"])
+        with open(created[created.index("--body-file") + 1], encoding="utf-8") as f:
+            self.assertIn("spamDomains: newsite (#18)", f.read())
+
+    def test_a_ticket_that_only_repeats_another_one_opens_no_pull_request(self):
+        issue = ticket("spam", spam_pairs("spamDomains: newsite"))
+        code, rec, _ = self.run_main(issue, self.waiting(self.spam_waiting({"spamDomains": ["newsite"]})))
+        self.assertEqual(code, 0)
+        self.assertFalse(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls))
+        with open(rec.calls[-1][rec.calls[-1].index("--body-file") + 1], encoding="utf-8") as f:
+            self.assertIn("Another ticket has these in hand already:\n``` text\nspamDomains: newsite (#18)", f.read())
+
+    def test_seconding_counts_as_having_it_in_hand(self):
+        # #18 only seconded it, but it is still in front of the maintainer, so a third ticket adds nothing.
+        issue = ticket("spam", spam_pairs("spamDomains: newsite"))
+        _, rec, _ = self.run_main(issue, self.waiting(
+            self.spam_waiting({"keywords": ["something else"]}, seconds={"spamDomains": ["newsite"]})))
+        self.assertFalse(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls))
+
+    def test_what_is_already_accepted_counts_too(self):
+        issue = ticket("spam", spam_pairs("spamDomains: newsite"))
+        accepted = self.spam_waiting({"spamDomains": ["newsite"]}, issue=7)
+        _, rec, _ = self.run_main(issue, [
+            ("git fetch origin", (0, "")),
+            ("git ls-tree -r", (0, "README.md\nspam/7.json\n")),
+            ("git show origin/submissions:spam/7.json", (0, json.dumps(accepted["body"]))),
+            ("git show origin/submissions:README.md", (0, README)),
+            ("gh pr list", (0, "[]")),
+        ])
+        self.assertFalse(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls), "already on the branch is enough")
+
+    def test_the_ticket_is_not_compared_with_its_own_branch(self):
+        # An edited ticket must not find itself waiting and end up proposing nothing.
+        issue = ticket("spam", spam_pairs("spamDomains: newsite"))
+        mine = self.spam_waiting({"spamDomains": ["newsite"]}, issue=42)
+        answers = self.waiting(mine, branch="submission/42")
+        _, rec, _ = self.run_main(issue, answers)
+        self.assertTrue(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls), "its own branch is passed over")
+
+    def test_the_same_translation_twice_opens_no_pull_request(self):
+        waiting = {"path": "translations/18.json",
+                   "body": {"type": "translation", "issue": 18, "language": "de", "english": "Save",
+                            "suggestion": "Speichern"}}
+        issue = ticket("translation", translation_pairs())
+        code, rec, _ = self.run_main(issue, self.waiting(waiting), workspace(en={"Save": "Save"}))
+        self.assertEqual(code, 0)
+        self.assertFalse(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls))
+        with open(rec.calls[-1][rec.calls[-1].index("--body-file") + 1], encoding="utf-8") as f:
+            self.assertIn("#18 says the same about the same text", f.read())
+
+    def test_another_wording_for_the_same_text_is_proposed_and_says_so(self):
+        waiting = {"path": "translations/18.json",
+                   "body": {"type": "translation", "issue": 18, "language": "de", "english": "Save",
+                            "suggestion": "Sichern"}}
+        issue = ticket("translation", translation_pairs())
+        _, rec, _ = self.run_main(issue, self.waiting(waiting), workspace(en={"Save": "Save"}))
+        created = next(c for c in rec.calls if c[:3] == ["gh", "pr", "create"])
+        with open(created[created.index("--body-file") + 1], encoding="utf-8") as f:
+            self.assertIn("**#18 wants something else for the same text.**", f.read())
+
+    def test_the_same_text_in_another_language_is_its_own_decision(self):
+        waiting = {"path": "translations/18.json",
+                   "body": {"type": "translation", "issue": 18, "language": "pt-BR", "english": "Save",
+                            "suggestion": "Speichern"}}
+        issue = ticket("translation", translation_pairs())
+        _, rec, _ = self.run_main(issue, self.waiting(waiting), workspace(en={"Save": "Save"}))
+        self.assertTrue(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls))
 
 
 OPEN_SPAM_TICKET = '{"state": "OPEN", "labels": [{"name": "share: spam list"}]}'
