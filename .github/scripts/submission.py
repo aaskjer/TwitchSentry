@@ -97,7 +97,7 @@ PROFILE_EXCLUDED = [
     "autoModWhitelist", "voteExcludedUsers", "voteExcludedGroups", "fgBlockedList",
     "learnerIgnoreTerms", "selfPermitRewardId",
     "useBotAccount", "DarkMode", "guiLanguage", "uiExpertMode", "dismissedHints",
-    "settingsSchema", "activeProfile", "updateChannel", "logToFile", "backupFolder", "backupSettings",
+    "settingsSchema", "activeProfile", "updateChannel", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
     "dryRunEnabled", "dryRunMinutes",
     "spamFeedEnabled",
