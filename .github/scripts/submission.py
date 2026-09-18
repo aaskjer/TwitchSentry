@@ -403,7 +403,7 @@ def build_profile(issue, values, root):
     elif any(unicodedata.category(c) in ("Cc", "Cf") or c in '\\/:*?"<>|`' for c in name):
         result.problems.append("The name holds a character a file name cannot.")
     elif name.lower() in [n.lower() for n in RESERVED_PROFILE_NAMES]:
-        result.problems.append("`%s` is one of the built-in stances; give it a name of its own." % printable(name))
+        result.problems.append("`%s` is one of the built-in profiles; give it a name of its own." % printable(name))
 
     purpose = clip(values.get("purpose"), 1000)
     if not purpose:
