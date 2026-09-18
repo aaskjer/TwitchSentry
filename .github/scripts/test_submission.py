@@ -295,9 +295,9 @@ class Profiles(unittest.TestCase):
         r = self.build(raw='{"spamScoreThreshold": 1.0}')
         self.assertTrue(any("not a TwitchSentry profile" in p for p in r.problems))
 
-    def test_the_built_in_stance_names_are_taken(self):
+    def test_the_built_in_profile_names_are_taken(self):
         r = self.build(name="under attack")
-        self.assertTrue(any("built-in stances" in p for p in r.problems))
+        self.assertTrue(any("built-in profiles" in p for p in r.problems))
 
     def test_a_name_that_cannot_be_a_file_name(self):
         r = self.build(name="a/b")
