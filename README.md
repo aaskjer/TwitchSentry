@@ -9,8 +9,11 @@
   <img alt="Platform: Twitch" src="https://img.shields.io/badge/platform-Twitch-6441a5">
   <img alt="Tool: Streamer.bot" src="https://img.shields.io/badge/tool-Streamer.bot-0b73ff">
   <img alt="MIT licence" src="https://img.shields.io/github/license/aaskjer/TwitchSentry">
-  <img alt="Latest release" src="https://img.shields.io/github/v/release/aaskjer/TwitchSentry">
+  <img alt="Latest stable release" src="https://img.shields.io/github/v/release/aaskjer/TwitchSentry?label=stable">
+  <img alt="Latest pre-release" src="https://img.shields.io/github/v/release/aaskjer/TwitchSentry?include_prereleases&label=pre-release">
   <img alt="Total downloads" src="https://img.shields.io/github/downloads/aaskjer/TwitchSentry/total">
+  <img alt="Latest release downloads" src="https://img.shields.io/github/downloads/aaskjer/TwitchSentry/latest/total?label=latest%20downloads">
+  <img alt="GitHub stars" src="https://img.shields.io/github/stars/aaskjer/TwitchSentry">
 </p>
 
 <p align="center">
