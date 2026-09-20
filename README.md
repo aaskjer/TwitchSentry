@@ -83,14 +83,6 @@ The settings window ships in English but you can download also: German, Spanish,
 
 ---
 
-## Documentation
-
-| | |
-|---|---|
-| **[Manual](Manual.md)** | Every page of the settings window, and what each module decides |
-| **[FAQ](FAQ.md)** | The questions that come up most |
-| **[Issues](https://github.com/aaskjer/TwitchSentry/issues)** | Anything that looks wrong, or a feature you are missing |
-
 ## Credits
 
 [aaskjer on Twitch](https://twitch.tv/aaskjer) · [TwitchSentry on the Streamer.bot Discord](https://discord.com/channels/834650675224248362/1512133095246270616) · [Streamer.bot](https://streamer.bot) by [nate1280](https://www.patreon.com/c/nate1280/home) · [enNemMesS](https://extensions.streamer.bot/u/ennemmess/summary) · YOU ♡
