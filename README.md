@@ -83,6 +83,6 @@ The settings window ships in English but you can download also: German, Spanish,
 
 ---
 
-## Credits
+# Credits
 
 [aaskjer on Twitch](https://twitch.tv/aaskjer) · [TwitchSentry on the Streamer.bot Discord](https://discord.com/channels/834650675224248362/1512133095246270616) · [Streamer.bot](https://streamer.bot) by [nate1280](https://www.patreon.com/c/nate1280/home) · [enNemMesS](https://extensions.streamer.bot/u/ennemmess/summary) · YOU ♡
