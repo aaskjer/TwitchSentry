@@ -12,7 +12,6 @@
   <img alt="Latest stable release" src="https://img.shields.io/github/v/release/aaskjer/TwitchSentry?label=stable">
   <img alt="Latest pre-release" src="https://img.shields.io/github/v/release/aaskjer/TwitchSentry?include_prereleases&label=pre-release">
   <img alt="Total downloads" src="https://img.shields.io/github/downloads/aaskjer/TwitchSentry/total">
-  <img alt="Latest release downloads" src="https://img.shields.io/github/downloads/aaskjer/TwitchSentry/latest/total?label=latest%20downloads">
   <img alt="GitHub stars" src="https://img.shields.io/github/stars/aaskjer/TwitchSentry">
 </p>
 
