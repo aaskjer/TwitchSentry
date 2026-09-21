@@ -23,5 +23,11 @@
     "code": "pt-BR",
     "name": "Português (Brasil)",
     "version": 9
+  },
+  {
+    "code": "nl",
+    "name": "Dutch",
+    "version": 1
   }
+  
 ]
