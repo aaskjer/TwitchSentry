@@ -2,259 +2,350 @@
 
 ---
 
+## ⚙️ General
 
-**Q: The Settings GUI won't open or throws an error. What do I do?**
+**Q: The settings window won't open or shows an error.**
 
-Streamer.bot has a weird bug since 1.0.5 where it adds useless bits to Microsoft .NET reference paths and makes them invalid when imported to another streamer.bot instance. Open up all `NO TOUCHY!` subactions of the project, open `Execute Code`, click `Find Refs` and then `OK`. If it keeps happening, please report it [here](https://github.com/aaskjer/TwitchSentry/issues).
+Since Streamer.bot 1.0.5, an import can leave broken .NET reference paths. Open every `NO TOUCHY!` sub-action, open `Execute Code`, click `Find Refs`, then `OK`.
 
-If the window *does* open, the **Status Log** page under Results and check what is written there.
+If one of TwitchSentry's own files (`configs.json`, `messages.json`, `spam.json`) can't be read, the window says which one before it opens and offers to restore it from a backup, let you fix it by hand, or start on the defaults (the damaged file is kept as `.bak`).
 
----
-
-**Q: I saved settings but nothing changed. Why?**
-
-Make sure your streamer.bot instance does **not** run as administrator, run from a folder not out of a .zip folder or in a external cloud. If it keeps happening, please report it [here](https://github.com/aaskjer/TwitchSentry/issues).
+If the window opens, the **Status Log** page under Results usually names the problem. Still stuck? [Open an issue](https://github.com/aaskjer/TwitchSentry/issues).
 
 ---
 
-**Q: How do I reset everything to defaults?**
+**Q: I saved settings but nothing changed.**
 
-**Reset everything**, in the ☰ menu. It asks for confirmation, then rewrites both `configs.json` and `messages.json` with factory defaults and reopens the window.
-
-If you only want to undo what you did to one page, **Reset this page** is right above it. That one puts the current page's controls back to their defaults and leaves every other page alone — and nothing is written until you press **Save**, so it is safe to look at first.
+Make sure Streamer.bot does **not** run as administrator, and not from inside a .zip or a cloud-synced folder. If it keeps happening, [report it](https://github.com/aaskjer/TwitchSentry/issues).
 
 ---
 
-**Q: Where did the buttons along the bottom go?**
+**Q: How do I reset to defaults?**
 
-If you're coming from an older version, the **☰ menu**, in front of the search box at the top left holds expert mode, test mode, *Show hidden notices again*, the language files, the light/dark theme, and both resets. The bottom bar is now only **Save**, **Save & Exit** and **Cancel**, plus the note telling you whether you have unsaved changes.
-
----
-
-**Q: How do I try my settings out without anyone getting timed out?**
-
-**Test mode**, in the ☰ menu. While it runs nothing is deleted, timed out or banned: every module posts what it *would* have done instead, so you can point a real chat at your settings without somebody being punished for helping you test them. The chat modes stay off too — a dry run that puts your channel into follower-only is not a dry run.
-
-It ends on its own after the time set on General Settings (five minutes by default) and the notice strip counts it down. The deadline is stored as a timestamp rather than an on/off flag, so a chat is never left unguarded because somebody forgot to switch it back.
+☰ → **Reset Everything** rewrites `configs.json` and `messages.json` with the defaults, after asking. **Reset current page** only resets the page you are on, and nothing is written until you press **Save**.
 
 ---
 
-**Q: What is expert mode?**
+**Q: How do I try my settings without punishing anyone?**
 
-The Message Filter, Raid Protection and Spam Scoring pages each lead with a **sensitivity slider**, from Very relaxed to Very strict, with a line under it saying what the step actually means. It scales that page's threshold, standing in for the dozen individual numbers underneath.
-
-Expert mode, in the ☰ menu, is what shows those numbers. They keep working exactly as before for anyone who wants to tune them by hand; the slider just moves them for you. Nothing is hidden from you permanently, and turning it on changes no setting by itself.
+☰ → **Test Mode**. Nothing is deleted, timed out or banned and no chat mode is switched on; every module posts what it *would* have done instead. It switches itself off after **Test Duration (Minutes)** on General Settings (5 by default), counted down in the notice strip.
 
 ---
 
-**Q: A notice appeared at the top of the window. Can I get rid of it?**
+**Q: What is Expert Mode?**
 
-Yes — the **✕** on it. That is permanent: a notice you have read and answered should not keep coming back every time you open the window.
+Message Filter, Raid Protection, Follow Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
 
-If you want them back, **Show hidden notices again** in the ☰ menu empties the list and rebuilds the window, so every notice is worked out again from scratch. It greys itself out when nothing is hidden.
+---
+
+**Q: Can I get rid of a notice at the top of the window?**
+
+Its **✕** hides it for good. ☰ → **Show hidden notices again** brings them all back.
+
+---
+
+**Q: Where is the longer explanation of a setting?**
+
+The **?** in a card's corner opens the **Manual** page (under Help) at that card's section, and **← Back to …** takes you back. Installing, the deck buttons and where the files live are in the [online Manual](Manual.md).
+
+---
+
+## 🧭 Commands
+
+Commands are never scanned as ordinary chat. **Allow Chat Commands** and **Allow Whisper Commands** on General Settings decide where they are accepted. `!tsundo` in chat works even with **Allow Chat Commands** off: that switch is about editing the lists.
+
+| Command | Who | What it does |
+|---|---|---|
+| `!tsundo` | Moderators | Takes back TwitchSentry's last timeout, ban, restriction, monitoring or follow block, whichever module did it |
+| `!tsundo @user` | Moderators | Takes back the last one for that viewer |
+| `!permit @user [seconds]` | Moderators | Grants a temporary link permit |
+| `!endpermit [@user]` | Moderators | Ends that viewer's permit, or all of them |
+| `!checklink <url>` / `!linkcheck <url>` | Anyone | Scans a link with Check Link *(anyone)* |
+| `!vote @user` | Anyone | Starts or joins a vote-kick *(anyone)* |
+| `!endvote` | Moderators | Ends the running vote early |
+| `!wladd` / `!wlremove` / `!wllist` | Moderators | Whitelisted Domains |
+| `!amadd` / `!amremove` / `!amlist` | Moderators | AutoMod Whitelist |
+| `!euadd` / `!euremove` / `!eulist` | Moderators | Excluded Users |
+| `!egadd` / `!egremove` / `!eglist` | Moderators | Excluded Groups |
+| `!veuadd` / `!veuremove` / `!veulist` | Moderators | Vote-Excluded Users |
+| `!vegadd` / `!vegremove` / `!veglist` | Moderators | Vote-Excluded Groups |
+| `!kwadd` / `!kwremove` / `!kwlist` | Moderators | Spam Keywords |
+| `!tldadd` / `!tldremove` / `!tldlist` | Moderators | Spaced-URL TLDs |
+
+---
+
+**Q: How far back does `!tsundo` reach?**
+
+The last 25 actions from the last 12 hours. If Twitch refuses the undo, the entry stays so you can try again. A deck button can do the same (`tsUndo`).
+
+---
+
+## 🎛️ Deck Buttons
+
+**Q: Can I switch things from a Stream Deck or a Streamer.bot Deck?**
+
+Yes. A key runs the **`[TS] - Deck`** action with an argument: `tsProfile` (switch profile), `tsModule` (module on/off), `tsExempt` (Followers/Subscribers/VIPs), `tsTestMode`, `tsRaid` (arm Raid Protection now) or `tsUndo`. One key can carry several, e.g. `Under Attack` plus `arm` as a panic button. Setup and examples: [Manual → Deck buttons](Manual.md#deck-buttons).
+
+---
+
+**Q: Does the settings window notice a key press?**
+
+Yes. Within a couple of seconds its notice strip says so and offers **Reload**. Saving without reloading keeps what the key changed.
+
+---
+
+## ⚖️ Profiles
+
+**Q: What is the difference between a profile and a backup?**
+
+A backup (**Backup & Restore**, under Help) is everything: settings, chat replies, learned spam data, logs. A profile (☰ → **Profiles...**) is only the policy, how strict this channel is. 261 of the 297 settings in `configs.json` travel in a profile; your Discord webhook, API keys, whitelist, every list naming people and install-specific settings stay out. That is why a profile can be shared and a backup can't.
+
+---
+
+**Q: I picked Under Attack. How do I get back?**
+
+☰ → **Profiles...** → **Balanced**. All built-in profiles name the same settings, so Balanced undoes everything Under Attack turned on. Settings no built-in profile mentions keep your value.
+
+---
+
+**Q: What does *(modified)* in the title bar mean?**
+
+The settings the current profile names no longer match it. A **built-in profile** names 34 settings (the four sensitivity sliders, the 23 dials behind them and seven switches), so only those count. A **saved profile** names all 261, so almost any change counts.
+
+---
+
+**Q: Can I keep my own profiles?**
+
+Yes: **Save Current Settings** in the Profiles dialog writes them to `TwitchSentry/Settings/Profiles` under a name you choose (the five built-in names are reserved). **✎** renames one, **↺** overwrites it with what you are running now, and a file dropped into that folder shows up in the list. Nothing in the window deletes a profile file. Each profile shows *would change N settings* with every change listed before you pick it.
+
+---
+
+**Q: I imported someone's profile and my whitelist didn't change. Broken?**
+
+No. A profile carries how strict to be, never who is exempt. Your whitelist, excluded and trusted users, AutoMod allow list and Follow Protection block list stay yours.
+
+---
+
+**Q: Is it safe to share a profile publicly?**
+
+Yes. No webhook URL or API key is ever written into one, and the same filter runs on import, so a hand-edited file can't put a webhook into your settings either. Settings your version doesn't know are ignored, and a file that isn't a profile is refused. ☰ → **Share With Others...** shares a profile through GitHub so others can import it.
 
 ---
 
 ## 💬 Message Filter
 
-**Q: What does Message Filter actually check?**
+**Q: What does it check?**
 
-It looks at *how* someone is chatting, not specific words: account age, ALL CAPS / repeated-character spam, emote spam, and posting too fast or repeating the same message. Each of those four has its own switch, so you can run only the ones you want.
+*How* someone chats: account age, caps and repeated characters, emote spam, and flooding or repeated messages. Each check has its own switch (**Account Check**, **Caps Check**, **Emote Check**, **Flood Check**); untick all four to switch the filter off.
 
-They do not each stand on their own, though, and that is the point. Shouting, spamming emotes and typing fast are circumstantial: people shout, and people spam emotes when something good happens. So the evidence has to compose — at least two of them on the same message, or one that is hard to do by accident. A repeated message is decisive and still enough on its own.
-
-A young account is a **risk factor rather than evidence**: on its own it never gets anyone actioned, it makes whatever else the message tripped count for more. And someone with a long history in your chat has their score scaled down before it is measured, so a regular needs more against them than a stranger does.
-
-Two switches under **Expert Tuning** turn the older, stricter behaviour back on if you want it: **Require Two Signals**, and **Act On Account Age Alone**.
-
-**Q: Can a moderator command be deleted or flagged as a violation?**
-
-No. TwitchSentry recognizes commands — both its own built-in ones and anything else you've configured in Streamer.bot — and skips them entirely before any scanning happens, so a command never reaches the Account Age check or any other filter.
-
-**Q: How do I switch the whole Message Filter off?**
-
-Untick its four checks: Account Check, Caps Check, Emote Check and Flood Check. There is no separate module switch — each check carries its own, and a second one sitting above them only made "the module is on but nothing happens" harder to work out.
-
-**Q: What is "Escalation"?**
-
-A chat-wide safety net layered on top of the per-user checks above. If enough *different* users trigger violations within a short window (a spam wave, not one annoying person), TwitchSentry automatically activates a Twitch chat mode (slow mode, follower-only, emote-only, or sub-only) to protect the whole chat, then lifts it automatically once things calm down. Which mode gets picked depends on the dominant spam pattern detected (e.g. an emote-spam wave prefers slow mode; a wave of brand-new accounts prefers follower-only).
-
-You do not have to take that on trust: the table at the bottom of the section — **What actually happens** — draws the whole preference order live from the checkboxes above it. Step numbers renumber as you tick modes, and a mode you have switched off is struck through where it would have been used.
-
-Sub-only and emote-only are **not** on by default. They are the two drastic modes, so they are opt-in.
+One signal is not enough, because people shout and spam emotes when something good happens: it takes two on the same message, or one that is hard to do by accident. A repeated message is enough on its own. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance.
 
 ---
 
-## 🚫 Spam Filter (the Spam Scoring page)
+**Q: Can a command be flagged as a violation?**
 
-**Q: What kinds of spam does it catch?**
+A moderator's or the broadcaster's never: they are exempt from every filter. A viewer's `!checklink <link>` is left to Check Link while Check Link is on, and only a malicious result removes it. Any other message is checked whatever word it starts with, so a command in front of a link is not a way past the filters.
 
-Keyword matches, custom patterns (flexible text matching for things a plain word list can't catch), spaced-out/disguised links (`twitch. tv`), fancy lookalike-Unicode obfuscation, excessive @mentions (especially to nonexistent accounts), and gift/voucher-code-shaped strings.
+---
 
-None of those is a verdict by itself. TwitchSentry asks whether the message is built like an **advert**, and an advert has parts: somewhere to go (Destination), something being sold (Offer), a way to redeem it (Instrument), the random `@handle` a spam bot signs with (Tag), and wording this channel has seen from spam before (Signature). One part on its own is a coincidence — plenty of ordinary messages have one. Two parts together is an advert, and each part contributes its value at most once however many times it was found.
+**Q: What is Escalation?**
 
-The **sensitivity slider** at the top of the Spam Scoring page is how you shift that balance. The individual weights behind it are under **Expert Tuning — Scoring**, in expert mode. The slider deliberately does not touch **Require Two Parts**: "act on weaker evidence" and "act on a single part of an advert" are different decisions, and the second one keeps its own switch.
+A chat-wide safety net: when enough *different* users trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What actually happens** table shows the order live from your ticks. Emote-only and sub-only are opt-in.
 
-**Q: What is the "conversation scam" and why does it have its own action?**
+---
 
-It is the sales approach that arrives as a conversation rather than as an advert: friendly questions about your stream, then a remark that your channel looks empty, then a suggestion (a logo, emotes, an overlay, a VTuber model), and finally the offer — "i work with streamers, i can show you my previous work". No single message is spam, so the normal rules cannot see it; the tell is the order.
+## 🚫 Spam Scoring
 
-Four stages are tracked per account inside a 45-minute window, and they only count moving forwards. Two stages never do anything. Three, with the pitch last, is what closes it.
+**Q: What does it catch?**
 
-Being a regular here does **not** exempt an account from this check — it raises the bar to all four stages instead of three. Trust raises the bar; it never removes it. Exempting familiar accounts outright was backwards, because the accounts running this scam sit in a channel for hours on purpose, chatting about nothing, which is exactly how they earned that standing. It also meant a fresh account could switch the detector off for itself by posting two dozen throwaway lines first.
+Keywords, custom patterns, disguised links (`twitch. tv`), lookalike characters, @mentions of accounts that don't exist, and voucher codes. None of them is a verdict alone: a message has to look like an **advert**, with at least two parts out of somewhere to go (Destination), something for sale (Offer), a way to redeem it (Instrument), a bot's random `@handle` (Tag) and wording seen in spam before (Signature). The sensitivity slider shifts that balance; **Require Two Parts** is a separate decision and keeps its own switch.
 
-Every beat is written to the log as it lands, so an arc that does not close leaves a trail explaining why.
+---
 
-It gets its own action because it is a different animal from the usual bot: those post once and disappear, while these accounts sit in the channel for hours. **Report Only** is silent in chat and only writes the log and the Discord alert, **Timeout** removes them for the configured time (a day by default), **Ban** removes them for good.
+**Q: What is the conversation scam?**
 
-**Q: Can I add my own detection patterns?**
+The "sales chat": friendly questions, then "your channel looks empty", then a suggestion (logo, overlay, VTuber model), then the pitch ("I work with streamers..."). No single message is spam, so TwitchSentry tracks the four stages per account over 45 minutes. Three in order, with the pitch last, closes it; regulars need all four. Its own action: **Report Only**, **Timeout** (a day by default) or **Ban**.
 
-Yes — the **Known Patterns** page lets you add custom keywords, custom patterns, and voucher-code patterns directly, on top of whatever the Spam Learner suggests.
+---
+
+**Q: Where do the block lists come from, and do they update?**
+
+From the Spam Learner, the public Stop The Bots list, and the **spam feed**: with **Receive New Entries** on (Known Patterns page), new entries arrive every three hours. Each arrives once, so an entry you delete stays deleted, and the feed only touches the plain-text lists, never your custom or voucher patterns. **Share With Other Streamers...** on the same card offers your own entries for everyone.
+
+---
+
+**Q: Can I add my own patterns?**
+
+Yes, on **Known Patterns**: keywords, strong keywords, domains, TLDs, custom patterns and voucher patterns.
 
 ---
 
 ## 🧠 Spam Learner
 
-**Q: What does the Spam Learner do?**
+**Q: What does it do?**
 
-It watches messages that actually get deleted/timed-out/banned and tries to spot new spam keywords, phrases, and domain endings automatically. New finds start as pending suggestions (the Suggestions page) for you to review, and only get promoted to the real, active rule list (`spam.json`) once they've built up enough of a track record — either you approve them yourself, or the learner promotes them automatically if **Auto Promote Trusted Rules** is turned on.
+It studies messages that were actually removed and suggests new keywords, phrases and domain endings. Suggestions wait on the **Suggestions** page until you approve them, or until **Auto Promote Trusted Rules** promotes those that have proven themselves.
 
-**Q: The Spam Learner suggested a totally normal word (like "google"). Why?**
+---
 
-Only *content* violations feed the learner — a message that matched a keyword, pattern or link rule. *Behavioral* violations (young account, caps spam, flooding) never contribute words, because the fact that someone typed too fast tells you nothing about which of their words are spam.
+**Q: It suggested a normal word like "google". Why?**
 
-Several guards sit on top of that: a permanent **Ignore Terms** list, automatic protection for your broadcaster and bot account names, a "clean chat" sample the learner compares against so everyday words get suppressed, and a denylist that keeps major brand names (Google, YouTube, Twitch, Discord, etc.) from ever being suggested as blocked domain endings.
+Only content violations feed it (keywords, patterns, links), never behaviour like caps or flooding. **Ignore Terms**, your channel and bot names, a clean-chat comparison and a brand denylist filter most mistakes. Reject the rest and add it to **Ignore Terms**.
 
-A word that slips past all of that is still only a *suggestion*. Reject it on the Suggestions page, and add it to **Ignore Terms** so it can't come back.
+---
 
-**Q: What's the difference between "probation" and "trusted" status?**
+**Q: Probation vs. trusted?**
 
-A brand-new suggestion starts on **probation**. Once it's been seen across enough separate learner runs (see **Probation Runs Required**), it's upgraded to **trusted**. Trusted suggestions are the only ones eligible for automatic promotion into `spam.json` if Auto Promote is enabled — probation suggestions always need your manual review first.
+New suggestions start on probation and become trusted after **Probation Runs Required** learner runs. Only trusted ones can be auto-promoted.
 
-**Q: How do I get rid of a bunch of bad/stale suggestions?**
+---
 
-Use the **Clear File** button on the Suggestions page — it wipes every pending suggestion and starts fresh. It does **not** touch your active `spam.json` rules, only the pending list.
+**Q: How do I clear bad suggestions?**
 
-**Q: Where can I see what was removed, and what was left alone?**
+**Clear File** on the Suggestions page. It doesn't touch your active `spam.json` rules.
 
-Under **Results**. The **Violation Log** lists every message TwitchSentry acted on, exactly as it was posted — that is the page to open when a removal looks wrong. The **Clean Chat Log** lists the sample of ordinary chat that was deliberately left alone, roughly one message in ten, which is what the Spam Learner compares its candidates against so an everyday word never becomes a rule. Both have a search box and a per-account filter, and both show the full line under the list, because chat messages are usually wider than the row.
+---
 
-**Q: What is "Decay"?**
+**Q: What is Decay?**
 
-Automatic cleanup. When enabled, both active rules and pending suggestions are checked against recent chat history, and get removed if they've stopped showing up — keeps the rule list from accumulating dead weight from one-off spam campaigns. Entries you added by hand (prefixed with `!` in `spam.json`) are protected from decay by default.
+Cleanup of rules and suggestions that stopped appearing in chat. Entries starting with `!` are protected.
+
+---
+
+**Q: Where can I see what was removed?**
+
+Under Results: **Violation Log** lists every message TwitchSentry acted on this month; **Clean Chat Log** is the sample of normal chat the learner compares against. Both have search and a per-account filter.
+
+---
+
+**Q: Where did last month's log go?**
+
+Each month starts a new `action-log.txt` and `violation-log.txt`. The previous month is moved aside in the same `Logs` folder as `action-log-2026-09.txt` / `violation-log-2026-09.txt` and so on. Nothing is deleted, so you can remove old months by hand whenever you like.
 
 ---
 
 ## 🔗 Link Filter & Whitelist
 
-**Q: Can I switch the Link Filter or the Spam Filter off?**
+**Q: Can I switch the Link Filter or Spam Scoring off?**
 
-No, and that is deliberate — those two are the core of TwitchSentry, and every other module is built around them. What you can do is narrow them: whitelist the domains you want allowed, exempt roles or specific viewers under General Settings, or hand out a `!Permit` for a one-off. Every other module has its own on/off switch precisely because it is optional; these two are not.
+No, they are the core. Narrow them instead: whitelist domains, exempt roles or viewers on General Settings, or hand out a `!permit`.
 
-**Q: Where did the Link Filter settings page go?**
+---
 
-Only the page was dissolved — the module itself is unchanged. **Check Harmful Domains** and its four notification tickboxes are on the **Check Link** page, under "Behavior On Harmful Domains". **Action On Violation** and **Timeout Duration** are at the top of the **Message Filter** page, because the Link Filter, the Spam Filter and the Message Filter have always shared those two. **Whitelisted Domains** is on **General Settings**, where it always was.
+**Q: There is no Link Filter page. Where are its settings?**
 
-**Q: How does the whitelist actually match URLs?**
+**Action On Violation** and **Timeout Duration (Seconds)** are at the top of the Message Filter page (shared with Spam Scoring and the Message Filter). **Whitelisted Domains** and **Always Allowed** are on General Settings. **Check Every Posted Link** is on the Check Link page.
 
-Three patterns, each behaving differently:
+---
+
+**Q: Do I have to whitelist my own clips?**
+
+No. **Always Allowed** on General Settings covers them. **Only Your Channel** allows links with your channel's name in them (`twitch.tv/<you>/clip/<id>`, `youtube.com/@you`); **Any Channel** allows that kind of link from everybody, so tick those only if you are fine with that. Channel names come from the accounts Streamer.bot is signed in to.
+
+---
+
+**Q: How does the whitelist match?**
 
 | Entry | Matches |
 |---|---|
-| `youtube.com` | That exact address only — nothing after it |
+| `youtube.com` | Exactly that address, nothing after it |
 | `youtube.com/*` | Anything after `youtube.com/` |
-| `*.youtube.com/*` | Any subdomain (e.g. `music.youtube.com`) plus anything after it, but **not** bare `youtube.com` |
-| `twitch.tv/aaskjer` | That exact channel link only, nothing after it |
+| `*.youtube.com/*` | Any subdomain (`music.youtube.com`) and anything after it, but not bare `youtube.com` |
+| `twitch.tv/aaskjer` | Exactly that channel link |
 
-An entry without a trailing `/*` is always an **exact match** — it will not accidentally allow sub-pages, clip links, or anything else nested under it.
+So `twitch.tv/yourname` does not cover your clips; add `twitch.tv/yourname/*` for that.
 
-**Q: My own clip link got blocked even though I whitelisted my channel. What's going on?**
-
-Your entry is an exact match. A bare `twitch.tv/yourname` allows that one link and nothing nested under it, so a clip or sub-page URL is still treated as an ordinary link.
-
-Add the wildcard if you want everything under your channel covered: `twitch.tv/yourname/*`. Keep both entries if you also want the bare channel link itself allowed.
+---
 
 **Q: What happens to a link that isn't whitelisted?**
 
-It's scored and, depending on your configured action, deleted/timed-out/banned. If **Check Harmful Domains** is enabled, the same link is *also* sent to the Check Link module afterwards and scanned for malware — the scan sits on top of the ordinary rule, it does not replace it. Anyone your exemptions cover is skipped by both: the broadcaster, moderators, the excluded lists, and whichever of VIPs, subscribers and followers you have exempted.
+It gets your configured action. With **Check Every Posted Link** on, it is also scanned for malware. Exempt viewers are skipped by both.
 
 ---
 
 ## 🚨 Raid Protection
 
-**Q: How is this different from Message Filter's normal flood checks?**
+**Q: How is it different from the Message Filter?**
 
-It's a stricter, temporary version of the same idea that only arms itself for a limited window right after an incoming raid, and adds **swarm detection** — spotting multiple different accounts posting near-identical messages at once, the signature of a bot raid rather than real viewers. Like a repeated message in the Message Filter, a swarm is decisive on its own; velocity and the rest are circumstantial and mean something only in combination.
-
-It has its own sensitivity slider, its own escalation ladder and its own **Progressive Escalation**, running the same algorithm under the same names as the Message Filter. Before that, progressive escalation was a Message Filter setting only, which meant a second wave of the same pattern during a raid re-picked the mode that was already running and did nothing.
-
-**Q: What determines which chat mode gets activated during a raid?**
-
-The dominant spam pattern detected during the wave: emote spam prefers slow mode, waves of fresh/throwaway accounts prefer follower-only (locks out accounts that just followed), and caps/character spam prefers emote-only (makes text spam impossible). Only modes you've enabled are eligible — if your preferred mode is off, it falls through to the next one in the preference order.
+It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once, which is decisive on its own. It has its own slider, escalation ladder and **Progressive Escalation**. A deck button (`tsRaid`) arms it without a raid.
 
 ---
 
-## 👾 Twitch AutoMod Integration
+**Q: Which chat mode does a raid get?**
 
-**Q: What does this module actually do?**
-
-Twitch's own built-in AutoMod holds back messages it thinks might be harmful and normally waits for a moderator to manually approve or deny each one. This module lets TwitchSentry make that call automatically instead, based on the AutoMod level and categories you configure.
-
-**Q: My held messages are still waiting for a moderator. What did I miss?**
-
-**Use AutoMod**, at the top of the AutoMod page — it ships off, and until it is ticked TwitchSentry leaves held messages alone. (In releases before v1.4.0 that tickbox was ignored and the module acted either way, so an install that has been auto-denying without you ticking anything will go quiet until you do.)
-
-**Q: Can I limit it to specific categories instead of everything AutoMod flags?**
-
-Yes — the **AutoMod Categories** setting lets you list exactly which categories to act on (Profanity, Racism, SmartDetection, etc.). Leave it empty to act on everything AutoMod holds.
+The dominant pattern decides: emote spam prefers slow mode, fresh accounts follower-only, caps spam emote-only. Only modes you enabled are used.
 
 ---
 
-## 🕵️ Check Link (Malicious Link Scanning)
+## 👣 Follow Protection
 
-**Q: What services does it use to scan links?**
+**Q: What does it do?**
 
-VirusTotal (required — free API key) and, optionally, IPQualityScore (IPQS) for a second opinion, especially good at catching brand-new/throwaway phishing domains.
-
-**Q: How is the IPQS fraud score threshold chosen?**
-
-IPQS rates every link from 0 (safe) to 100 (certainly malicious). The default threshold is 75, matching IPQS's own "flag for review" guidance (they recommend 85 to outright block). There's a separate, stricter threshold (default 40) that only applies to domains IPQS also flags as *recently registered* — brand-new throwaway domains are a classic phishing tactic, so they're held to a lower bar.
+It watches follows. When enough different accounts follow within a short window (8 in 30 seconds by default), each is checked for a young account, default avatar, empty profile and throwaway name; age decides whether the cosmetic checks count. Off by default, and **Report Only** by default. On **Block**, the follow is removed and the account can't follow again. Blocked accounts are listed on the page, and `!tsundo` lifts the last block.
 
 ---
 
-## ⚠️ Twitch Warn & Escalation
+## 👾 AutoMod
 
-**Q: What is "Twitch Warn"?**
+**Q: What does it do?**
 
-Twitch's own built-in warning system — the flagged viewer has to read and click through a warning screen before they can chat again. It's a step below a timeout: firm, but it doesn't remove them from chat entirely.
+It answers the messages Twitch's AutoMod holds back, by the level and categories you set, so nobody has to sit in the queue. **AutoMod Categories** limits it to certain categories; empty means all.
 
-**Q: How does escalation to a timeout/ban work?**
+---
 
-Once a viewer racks up enough warnings (**Warns Before Final Warning**), the *next* violation escalates straight to a timeout (or ban, if **Use Ban** is enabled) instead of another warning. Warning counts reset automatically after a configurable number of hours without a new violation.
+**Q: Held messages are still waiting. What did I miss?**
+
+The switch in the AutoMod page header. It ships off.
+
+---
+
+## 🕵️ Check Link
+
+**Q: Which services does it use?**
+
+VirusTotal (required, free key) and optionally IPQualityScore. IPQS flags links at a fraud score of 75, or 40 for recently registered domains, a classic phishing sign.
+
+---
+
+## ⚠️ Twitch Warn
+
+**Q: What is Twitch Warn?**
+
+Twitch's own warning screen: the viewer has to click through it before they can chat again. A step below a timeout.
+
+---
+
+**Q: How does escalation work?**
+
+On the **Warning Escalation** card: after **Warns Before Final Warning** warnings the viewer gets a final warning, and the next violation gets the **Escalation Action**: Timeout, Ban or **Restrict** (they stay in chat, but only moderators see their messages). Counts reset after **Warn Count Reset (Hours)** without a violation.
+
+**Monitor From The Final Warning** also flags the viewer as monitored on Twitch with the final warning. **Count Warnings From Moderators** counts a `/warn` from your mods towards the same ladder; it needs the trigger *Twitch > Moderation > Warned User* on the TwitchWarn action. Restrictions and monitoring are lifted with `!tsundo`.
 
 ---
 
 ## 🔓 Permits
 
-**Q: What's a permit?**
+**Q: What is a permit?**
 
-A temporary, per-user exception that lets someone post a link even while Link Filter would normally block it — useful for letting a specific viewer share something once without changing your whitelist. It waives the ordinary link, spam, message and raid checks for that viewer; if **Check Harmful Domains** is on, their links are still scanned for malware.
+A temporary exception that lets one viewer post a link. It waives the link, spam, message and raid checks for them; with **Check Every Posted Link** on, their links are still scanned for malware.
 
-**Q: Can more than one viewer hold a permit at a time?**
+---
 
-Yes. Each permit runs its own countdown, so permits granted at different moments end at different moments. A permit that is already running is never extended — `!Permit` for someone who already holds one is refused, so end it with `!EndPermit @user` and grant a fresh one. `!EndPermit` with no name ends every active permit at once.
+**Q: Can several viewers hold one?**
 
-Permits are deliberately not remembered across restarts: closing Streamer.bot clears them all.
+Yes, each with its own countdown. A running permit is never extended: end it with `!endpermit @user` first. Permits are cleared when Streamer.bot restarts.
+
+---
 
 **Q: What stops a mistyped duration?**
 
-**Max Permit Duration Seconds** on the Permits page. Any longer time a moderator types is cut back to it, and so is a default or self-permit duration set above it. There is a hard ceiling of 86400 seconds (24 hours) whatever you configure.
+**Max Permit Duration Seconds** caps every permit, with a hard ceiling of 24 hours.
 
-**Q: Can viewers grant themselves a permit?**
+---
 
-Yes, if **Allow Self-Permit** is enabled — viewers can redeem a Channel Points reward to grant themselves a temporary permit without needing a moderator. Point that reward's Streamer.bot trigger at the same Permit action and put its ID in **Self-Permit Reward ID**.
+**Q: Can viewers grant themselves one?**
 
-Set the reward up with **Skip Reward Requests Queue** turned OFF. That is what lets TwitchSentry give the points back when a redemption cannot become a permit — the viewer already holds one, or the feature is off. A reward that skips the queue is spent the moment it is redeemed and Twitch will not allow a refund.
+Yes, with **Allow Self-Permit** and a Channel Points reward: point the reward's trigger at the Permit action and put its ID in **Self-Permit Reward ID**. Turn the reward's **Skip Reward Requests Queue** OFF, or TwitchSentry can't refund points when a redemption can't become a permit.
 
 ---
 
@@ -262,150 +353,150 @@ Set the reward up with **Skip Reward Requests Queue** turned OFF. That is what l
 
 **Q: How does vote-kick work?**
 
-Viewers vote against someone breaking chat rules (e.g. `!vote @username`). Once enough unique votes are cast within the time window, that user is automatically timed out (or banned, if **Allow Ban** is enabled). If the window runs out before enough votes come in, the vote resets.
-
-**Q: Can specific users be protected from being voted against?**
-
-Yes — subscribers and VIPs can be excluded globally, and you can add specific usernames or Streamer.bot groups to the exclusion lists.
+`!vote @username`. Enough unique votes inside the time window time the viewer out, or ban them with **Allow Ban**. Otherwise the vote resets.
 
 ---
 
-## 🔔 Discord Webhook Alerts
+**Q: Can viewers be protected from votes?**
 
-**Q: What can it send alerts for?**
-
-Deletions, timeouts, bans, raid escalations, AutoMod holds, malicious/suspicious link scans, TwitchWarn actions, permit grants/revokes, config changes made via chat commands, and Spam Learner auto-applies — each toggled independently on the **Discord Alerts** page, under Setup.
-
-**Q: What does an alert look like?**
-
-User, Action, Score, Triggers, Message and the rest arrive as separate labeled fields rather than one dense block, and internal details like raw regex patterns are summarized in plain terms instead of being dumped verbatim.
+Yes: subscribers and VIPs globally, plus users and Streamer.bot groups on the exclusion lists. Everyone above VIP can never be voted against.
 
 ---
 
-## 🧭 Commands
+## 🦝 Discord Alerts
 
-TwitchSentry ships with these built-in commands for managing its lists from chat (moderator-only unless noted):
+**Q: What can it post?**
 
-| Command | Manages |
-|---|---|
-| `!checklink <url>` / `!linkcheck <url>` | Scans a link with Check Link |
-| `!wladd` / `!wlremove` / `!wllist` | Whitelisted Domains |
-| `!amadd` / `!amremove` / `!amlist` | AutoMod Whitelist |
-| `!euadd` / `!euremove` / `!eulist` | Excluded Users |
-| `!egadd` / `!egremove` / `!eglist` | Excluded Groups |
-| `!veuadd` / `!veuremove` / `!veulist` | Vote-Excluded Users |
-| `!vegadd` / `!vegremove` / `!veglist` | Vote-Excluded Groups |
-| `!kwadd` / `!kwremove` / `!kwlist` | Spam Keywords |
-| `!tldadd` / `!tldremove` / `!tldlist` | Spaced-URL TLDs |
-| `!permit @user [seconds]` | Grants a temporary link permit |
-| `!endpermit [@user]` | Ends that viewer's permit, or all of them if no name is given |
-| `!vote @user` | Starts/joins a vote-kick |
-
-These are always recognized as commands (never scanned as regular chat) regardless of how they're wired up in Streamer.bot.
+Twenty-one kinds of event, each with its own switch: deletions, timeouts, bans; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions and blocks; malicious and suspicious scans; permits granted, expired and revoked; follow waves and blocked followers; Shield Mode; Spam Learner auto-applies; and settings changed by chat command.
 
 ---
 
-## 🌍 Language & Translations
+**Q: An alert says *TIMEOUT REFUSED*.**
+
+Twitch turned the action down, so nothing happened to the viewer. Usual reasons: the target is a moderator or the broadcaster, the message was already removed, or the Streamer.bot Twitch account lacks a scope (`moderator:manage:banned_users`, `moderator:manage:chat_messages`, `moderator:manage:warnings`). The **Status Log** names which; a missing scope is fixed by re-authorising the account in Streamer.bot.
+
+---
+
+**Q: Will a raid get me throttled by Discord?**
+
+No. Alerts are queued, and a burst is merged into messages of up to ten.
+
+---
+
+**Q: Can I change the name alerts post under?**
+
+**Display Name** and **Avatar URL** on the Discord Alerts page. Clear them to use the webhook's own. Discord refuses names over 80 characters or containing *discord* or *clyde*, so TwitchSentry drops such a name instead of sending it.
+
+---
+
+## 🔔 Windows Notifications
+
+**Q: Can TwitchSentry tell me things on the desktop?**
+
+Yes, on the **Windows Notifications** page (Setup): a new TwitchSentry release (on by default), what a deck button just did, and a deck button that could not do what it was asked (both off by default). They show while the settings window is closed too. A profile never carries these switches.
+
+---
+
+**Q: The test notification never shows up.**
+
+Windows is holding it back. Check *Do Not Disturb* (*Focus Assist*) and *Settings → System → Notifications*, where Streamer.bot has to be allowed to send notifications.
+
+---
+
+## 🏠 Home
+
+**Q: Can I change anything on Home?**
+
+No, it only reports. Its shortcuts lead to the page that owns each setting.
+
+---
+
+**Q: What do the numbers count?**
+
+*Activity* counts lines in `action-log.txt` (today, the last seven days, all time; all time includes the earlier months' `action-log-<yyyy-MM>.txt` files); the details below it cover the last seven days. *What It Knows* counts the active block lists and waiting suggestions.
+
+---
+
+## 🐞 Reporting A Bug Or An Idea
+
+**Q: How do I open a ticket?**
+
+☰ → **Report...**, or **Report An Issue Or Idea** on Home. Fill in the form and TwitchSentry opens GitHub's new-issue page with everything filled in. Nothing is sent from the window: you submit it yourself on GitHub, which needs a GitHub account.
+
+---
+
+**Q: What does it say about my setup?**
+
+Versions (TwitchSentry, Streamer.bot, language file), profile, whether betas are announced, language and theme, expert and test mode, which modules are on, the sensitivity steps, whether the API keys and webhook are **set or not set**, and your Windows version and screen size. Never your channel name, keys, webhook URL or file paths. It is shown in full before anything opens.
+
+---
+
+**Q: What helps most in a ticket?**
+
+A line from the **Status Log** page. It usually names the problem.
+
+---
+
+## 🌍 Languages
 
 **Q: Can I use TwitchSentry in my language?**
 
-English, German, Spanish, French and Brazilian Portuguese all ship as translations. Open **Languages…** in the ☰ menu, pick one and click **Use This Language** — the window closes and reopens in it.
-
-That dialog lists every published and installed language together, with a 🔔 against any that has a newer build available, and **Download** fetches or refreshes the one you have selected. English is a published translation like the rest rather than a special case: it is downloaded and version-checked on the same path, so a correction to the English wording actually reaches you.
-
-It also sits *under* the other four. A lookup goes to your chosen language first, then to `en.json`, then to the text built into the window — so where a translation is incomplete you get the current English sentence rather than whichever one happened to be compiled in. A missing or broken `en.json` still leaves a working window, which is why English is the one language you can select without having its file.
+English, German, Spanish, French and Brazilian Portuguese ship, and Dutch comes from the community. ☰ → **Change Language**, pick one, **Use This Language**. Missing translations fall back to English.
 
 ---
 
-**Q: I switched language but the bot still writes English in chat.**
+**Q: The bot still writes English in chat.**
 
-That's working as intended. Translations cover the *settings window* — labels, tooltips, page names, dialogs. Everything TwitchSentry says in chat comes from the **Messages** pages, and those are yours to write: they're your wording, your tone, your language. Nothing translates them for you, because nothing should be putting words in your bot's mouth.
-
-So to run a German channel, pick Deutsch for the window *and* write your chat messages in German on the Messages pages.
+Intended. Translations cover the settings window only. What the bot says comes from the **Messages** pages, in your own words and language.
 
 ---
 
-**Q: Where do the language files live, and how do they stay current?**
+**Q: Can a chat message use a viewer's pronouns?**
 
-In `TwitchSentry/Settings/Language/`, one `<code>.json` per language. The 📁 button at the bottom left of the **Languages…** dialog opens the folder; drop a translation in there by hand and it appears in the list.
-
-When you open the settings window, TwitchSentry checks GitHub for a newer copy of the language you're using, at most once every 15 minutes per language. `en.json` is fetched as well even when the window is not in English, because it is the layer under whichever language is. If GitHub is unreachable the window opens anyway, on the copy you already have.
+Yes, for viewers who set theirs on [pronouns.alejo.io](https://pronouns.alejo.io). Switch on **Use Viewer Pronouns** (General Settings → Behavior) and put `{pronoun:he|she|they}` into a message, with the words your language needs: the first form is for he/him, the second for she/her, the third for they/them and anyone not known. Other pronouns (xe/xem, fae/faer, it/its…) get the first form with their own words, as long as it is English. Details: [Manual → pronouns](Manual.md#speaking-of-a-viewer-by-their-pronouns).
 
 ---
 
-**Q: Can I fix or write a translation myself?**
+**Q: Can I fix or write a translation?**
 
-Yes. The files are flat JSON: each key is the exact English string from the window, each value is what gets shown instead.
-
-```json
-{
-  "__languageName": "Nederlands",
-  "__languageCode": "nl",
-  "__version": 1,
-  "Use Bot Account": "Botaccount gebruiken"
-}
-```
-
-`__languageName` is what appears in the dropdown. Drop the file in the Language folder and it shows up in the list — no restart needed beyond reopening the window.
-
-Two things to watch:
-
-- **Keep the placeholders.** If the English text contains `{user}`, `{count}`, `{duration}` or similar, the translation has to contain them too, spelled the same way. They're filled in at runtime; a dropped one is a hole in the message.
-- **Don't edit a shipped language in place.** `en`, `de`, `es`, `fr` and `pt-BR` are all refreshed from GitHub, so your changes there get overwritten on the next check — `en.json` included, now that English is published like the others. Save your version under a code that isn't published and it's left alone permanently. Better still, [open an issue](https://github.com/aaskjer/TwitchSentry/issues) so the fix reaches everyone.
+Yes. One text that reads badly: ☰ → **Report...** → *A translation*, pick the text and write the better wording. A whole language: ☰ → **Share With Others...** → *A complete translation file*. The files live in `TwitchSentry/Settings/Language/` (📁 in the Change Language dialog); each key is the exact English text, each value its translation, and placeholders like `{user}` stay as they are. Shipped languages are refreshed from GitHub, so a file of your own belongs under an unused code.
 
 ---
 
 ## 🔄 Updates
 
-**Q: How do I know if a new version is out?**
+**Q: How do I know a new version is out?**
 
-Every time you open the settings window, TwitchSentry checks GitHub's releases for you. If a newer one is out it appears as a line in the **notice strip** across the top, with a button that opens the releases page — it used to be a Yes/No box in front of the window, where answering "Yes" closed your settings outright. Now the window opens either way and the releases page is one optional click. Dismiss the notice with its **✕** if you would rather not be told again.
-
-The update channel is `updateChannel` in `configs.json` — `stable` (the default) or `beta`, which notifies you about pre-releases too. It currently has no control in the settings window.
+The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notification banner has a button that allows you to ignore futue beta notifications. ☰ → **Show hidden notices again** brings betas back.
 
 ---
 
 ## 💾 Backup & Restore
 
-**Q: What happens to my settings if a file gets corrupted?**
+**Q: What should I back up?**
 
-Nothing, if you have a backup. The **Backup & Restore** page under Help writes a dated copy of the
-TwitchSentry folder wherever you point it, and copies it back on request.
-
-Two things in there cannot be recreated: `configs.json` and `messages.json` (every setting in the
-window, and every line TwitchSentry says in chat), and `spam.json` (the keywords, phrases and domain
-endings the Spam Learner has built up from months of your own chat). Everything else — the language
-files, the caches — re-downloads itself, and the logs are a record rather than a setting. Those first
-two are ticked by default; tick all five and you have copied the whole folder.
-
-**Q: Where should I put my backups?**
-
-Somewhere that is not the disk TwitchSentry is on, if you have the option — a second drive, a USB
-stick, or a folder your cloud storage syncs. Left empty, the *Backup Folder* box defaults to a
-`Backups` folder inside TwitchSentry itself, which survives a bad file but not a bad disk.
-
-**Q: Is a restore safe if I pick the wrong backup?**
-
-It is undoable. A copy of the current state is put aside in the same backup folder before anything is
-written, so the state you just replaced is still there. A restore also only touches what that backup
-actually contains and never deletes anything — restoring a settings-only backup leaves your logs and
-learned spam data alone — and a folder that holds no TwitchSentry files is refused rather than copied
-over your install.
-
-**Q: Can I just copy a file back by hand?**
-
-Yes. A backup is a plain folder of ordinary files with the same layout as the TwitchSentry folder, not
-an archive, so you can open it and drag one file back yourself. Streamer.bot re-reads the settings
-when the file changes, so no restart is needed.
+`configs.json` and `messages.json` (every setting and chat message) and `spam.json` (what the Spam Learner built up) can't be recreated; those are ticked by default. Language files and caches download themselves again.
 
 ---
 
-# Is TwitchSentry an AI Slop?
+**Q: Where should backups go?**
 
-Partially, yes. This script was built with heavy AI assistance and input from the Streamer.bot community.
+Ideally another drive, a USB stick or a cloud-synced folder. Left empty, **Backup Folder** uses `TwitchSentry/Backups`, which survives a bad file but not a bad disk.
 
-I'm not a developer in the classical sense, this project was my intention to improve my coding skills, learn how to handle AI and also make twitch a better place *cough*. 
-In the beginning of this project (formerly known as TwitchLinkGuard) there wasn't much available in the streamer.bot community to battle scam in twitch chat, so i thought it would be a good start for me and i had and still have a ton of fun creating, prompting, breaking and fixing stuff and love to hear from you about things to make it better!
-I do understand that there will be a lot of people hating the project or even me for using AI to create this slop work which probably kinda break anytime for no reason and is horrible written. I fully support their point of view, admire their handcrafted work and i will never act as i did everything by myself, as i'm probably never be able to. But AI won't vanish and AI gets better and in that matter, why not make a use of it. Of course, prompting something is easy peasy, but you still need to know where your goal is and how to fix things if necessary. TwitchLinkGuard, TwitchSentry and everything around it burned away a year or work, sitting on my ass for hours a day testing stuff. Maybe it's very inefficient and a real coder would do this in a couple weeks but again, i have fun doing it and all i can say is: Try it out, speak up if something's wrong and help me out making it better :)
+---
 
-Nonetheless, AI-assisted code can and does introduce bugs. Feel free to [open an issue](https://github.com/aaskjer/TwitchSentry/issues) — I'd rather hear about it than have it sit there quietly.
+**Q: Is a restore safe if I pick the wrong backup?**
+
+Yes. The current state is saved first, a restore only replaces what the backup contains, and it never deletes anything.
+
+---
+
+**Q: Can I copy a file back by hand?**
+
+Yes. A backup is a plain folder with the same layout as TwitchSentry. Streamer.bot picks up the changed file without a restart.
+
+---
+
+# Is TwitchSentry AI slop?
+
+Partially, yes. It was built with heavy AI assistance and input from the Streamer.bot community, and it is tested against real chat before it ships. AI-assisted code can have bugs, so please [open an issue](https://github.com/aaskjer/TwitchSentry/issues) when you find one.
