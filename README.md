@@ -24,7 +24,7 @@
 
 ---
 
-Spam ruins the vibe. One minute you are reacting to a hilarious donation, the next your chat is full of fake gift links, sketchy URLs and copy-paste scams. TwitchSentry removes them, tells you what it removed and why, and does all of it from one window.
+Spam ruins the vibe. One minute you are reacting to a hilarious donation, the next your chat is full of fake gift links, sketchy URLs and copy-paste scams. TwitchSentry removes them, tells you why it was removed and from whom. Any many more!
 
 ---
 
