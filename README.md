@@ -66,7 +66,7 @@ TwitchSentry covers all of those and more, and answers AutoMod's queue for you s
 # What you need
 
 - **[Streamer.bot](https://streamer.bot)**, connected to your Twitch account. That is the whole dependency.
-- Nothing to pay for, no extra bot account, no extra .dll file. Everything lives in files beside your Streamer.bot install.
+- Nothing to pay for, no extra bot account, no extra .dll file. Everything lives inside streamer.bot and files beside your Streamer.bot install TwitchSentry creates itself.
 - (Optional) a free **[VirusTotal](https://www.virustotal.com/gui/join-us)** API key and/or **[IPQualityScore](https://www.ipqualityscore.com/create-account)** one if you want a second opinion. *Only* for the optional [Check Link](Manual.md#check-link) module.
 
 ## Decide how strict, in one click
