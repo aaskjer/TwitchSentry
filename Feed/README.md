@@ -59,5 +59,3 @@ Two files on your PC belong to the feed:
   and a share ticket that holds one leaves it out.
 - The lists: `spamDomains`, `strongKeywords`, `keywords`, `spacedUrlTlds`, `beatRapport`,
   `beatCritique`, `beatSolution`, `beatPitch`, `handoffPhrases`, `serviceOffers`.
-
-# This is not in the final build yet
