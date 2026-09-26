@@ -1,0 +1,53 @@
+name: Share a complete translation file
+description: A whole language, ready to use or brought up to date after an update
+title: "Language: "
+labels: ["share: language"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **For a language TwitchSentry does not have yet, or to catch an existing one up** after an update added new English text. A single line that reads badly is a smaller fix - use *Suggest a better translation* for that instead.
+
+        **A pull request is opened for this automatically,** into the [`submissions` branch](https://github.com/aaskjer/TwitchSentry/tree/submissions), and once it is merged this ticket is closed and the file is brought into `Language/` with the next language update.
+
+        **The file itself does not fit in a text box** - drag it into the *Language file* field below rather than pasting its text; GitHub turns the drop into a link, and that is what the check reads. It does not need to translate every text: whatever is left in English stays that way until somebody fills it in, the same as any other language.
+
+  - type: input
+    id: language-name
+    attributes:
+      label: Language name
+      description: As it should appear in the ☰ menu, in that language.
+      placeholder: Italiano
+    validations:
+      required: true
+
+  - type: input
+    id: language-code
+    attributes:
+      label: Language code
+      description: it, or something like pt-BR for a regional one.
+      placeholder: it
+    validations:
+      required: true
+
+  - type: input
+    id: credit
+    attributes:
+      label: Credit (optional)
+      description: How you would like to be named for this. Left blank, your GitHub username is used.
+
+  - type: textarea
+    id: file
+    attributes:
+      label: Language file
+      description: Drag the finished `.json` file in here (or use the paperclip below the box). Exported from a working install, or written by hand against `Language/en.json`.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Before you submit
+      options:
+        - label: This is my own translation of TwitchSentry's English text, or one I checked myself - not unread machine output.
+          required: true

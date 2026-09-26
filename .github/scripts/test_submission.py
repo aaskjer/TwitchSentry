@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import urllib.error
 from unittest import mock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -25,8 +26,10 @@ TEMPLATES = {
     "spam": os.path.join(REPO_ROOT, ".github", "ISSUE_TEMPLATE", "share-spam-list.yml"),
     "profile": os.path.join(REPO_ROOT, ".github", "ISSUE_TEMPLATE", "share-profile.yml"),
     "translation": os.path.join(REPO_ROOT, ".github", "ISSUE_TEMPLATE", "share-translation.yml"),
+    "language": os.path.join(REPO_ROOT, ".github", "ISSUE_TEMPLATE", "share-language.yml"),
 }
-LABEL = {"spam": "share: spam list", "profile": "share: profile", "translation": "share: translation"}
+LABEL = {"spam": "share: spam list", "profile": "share: profile", "translation": "share: translation",
+        "language": "share: language"}
 TICKED = "- [X] Nothing above is a chat message, a username, or anything else that identifies a person."
 
 
@@ -72,6 +75,26 @@ def profile_pairs(name="Small chat, strict links", purpose="For small English ch
 def translation_pairs(language="Deutsch (de)", english="Save", current="Speichern!", suggestion="Speichern", why=""):
     return [("Language", language), ("The English text", english), ("What it says now", current),
             ("What it should say", suggestion), ("Why is it better?", why)]
+
+
+def sample_language_file(count=25, prefix="Word"):
+    """A file with enough texts to pass the not-a-language-file check, none of them in the tiny en.json
+    workspace() writes by default - a test that wants some of them to count as coverage passes its own en."""
+    return {"%s%d" % (prefix, i): "Vertaling%d" % i for i in range(count)}
+
+
+def language_pairs(name="Nederlands", code="nl", credit="", file_url="https://github.com/user-attachments/files/9999999/language.json",
+                   file_text=None,
+                   privacy="- [X] This is my own translation of TwitchSentry's English text, or one I checked myself - "
+                           "not unread machine output."):
+    if file_text is not None:
+        file_field = file_text
+    elif file_url:
+        file_field = "[language.json](%s)" % file_url
+    else:
+        file_field = ""
+    return [("Language name", name), ("Language code", code), ("Credit (optional)", credit),
+            ("Language file", file_field), ("Before you submit", privacy)]
 
 
 class TemplatesMatchTheScript(unittest.TestCase):
@@ -344,6 +367,85 @@ class Translations(unittest.TestCase):
     def test_an_invisible_character_in_the_suggestion(self):
         r = self.build(suggestion="Spei\u200bchern")
         self.assertTrue(any("invisible character" in p for p in r.problems))
+
+
+class Languages(unittest.TestCase):
+    def setUp(self):
+        self.root = workspace(en=sample_language_file(count=25, prefix="Word"))
+        patcher = mock.patch.object(s, "fetch_attachment",
+                                    return_value=json.dumps(sample_language_file()).encode("utf-8"))
+        self.fetch = patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def build(self, **kw):
+        return s.build("language", ticket("language", language_pairs(**kw)), self.root)
+
+    def test_a_new_language_is_accepted(self):
+        r = self.build()
+        self.assertEqual(r.problems, [])
+        self.assertEqual(r.document["languageCode"], "nl")
+        self.assertEqual(r.document["languageName"], "Nederlands")
+        self.assertTrue(r.document["isNewLanguage"])
+        self.assertEqual(r.path, "languages/42.json")
+        self.assertEqual(r.title, "Language (nl) from #42")
+        self.fetch.assert_called_once()
+        self.assertIn("https://github.com/user-attachments/files/9999999/language.json", self.fetch.call_args[0][0])
+
+    def test_the_file_is_stamped_with_the_form_s_language_and_credit(self):
+        document = self.build().document
+        self.assertEqual(document["file"]["__languageName"], "Nederlands")
+        self.assertEqual(document["file"]["__languageCode"], "nl")
+        self.assertEqual(document["file"]["__by"], "somestreamer")
+        self.assertEqual(document["file"]["__version"], 1)
+
+    def test_credit_is_used_instead_of_the_login_when_given(self):
+        r = self.build(credit="dutchyray")
+        self.assertEqual(r.document["credit"], "dutchyray")
+        self.assertEqual(r.document["file"]["__by"], "dutchyray")
+
+    def test_updating_a_language_twitchsentry_already_has(self):
+        r = self.build(name="Deutsch", code="de")
+        self.assertFalse(r.document["isNewLanguage"])
+
+    def test_coverage_counts_texts_the_published_english_file_also_has(self):
+        root = workspace(en=sample_language_file(count=25, prefix="Word"))
+        r = s.build("language", ticket("language", language_pairs()), root)
+        self.assertIn("25 of 25 texts", r.summary)
+
+    def test_a_small_pasted_file_works_without_an_attachment(self):
+        # Discouraged in the form's own instructions, but not something the check has to fail over.
+        r = self.build(file_url=None, file_text=json.dumps(sample_language_file(count=20)))
+        self.assertEqual(r.problems, [])
+        self.fetch.assert_not_called()
+
+    def test_a_bad_language_code_is_refused(self):
+        r = self.build(code="Nederlands")
+        self.assertTrue(any("does not look like a language code" in p for p in r.problems))
+
+    def test_a_file_with_too_few_texts_is_not_a_language_file(self):
+        r = self.build(file_url=None, file_text=json.dumps({"Save": "Opslaan", "Cancel": "Annuleren"}))
+        self.assertTrue(any("carries only 2 text" in p for p in r.problems))
+
+    def test_invalid_json_is_refused(self):
+        r = self.build(file_url=None, file_text="{not json")
+        self.assertTrue(any("not valid JSON" in p for p in r.problems))
+
+    def test_something_that_is_not_an_object_is_refused(self):
+        r = self.build(file_url=None, file_text=json.dumps(["a", "list"]))
+        self.assertTrue(any("mapping text to text" in p for p in r.problems))
+
+    def test_no_file_at_all_is_refused(self):
+        r = self.build(file_url=None, file_text="")
+        self.assertTrue(any("no language file" in p for p in r.problems))
+
+    def test_a_download_failure_is_reported_not_thrown(self):
+        self.fetch.side_effect = urllib.error.URLError("timed out")
+        r = self.build()
+        self.assertTrue(any("could not be read back" in p for p in r.problems))
+
+    def test_the_privacy_box_must_be_ticked(self):
+        r = self.build(privacy="")
+        self.assertTrue(any("is not ticked" in p for p in r.problems))
 
 
 class AwkwardCharacters(unittest.TestCase):
