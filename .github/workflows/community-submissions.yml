@@ -36,7 +36,8 @@ jobs:
       github.event_name == 'issues' && github.event.issue.state == 'open' && (
       contains(github.event.issue.labels.*.name, 'share: spam list') ||
       contains(github.event.issue.labels.*.name, 'share: profile') ||
-      contains(github.event.issue.labels.*.name, 'share: translation'))
+      contains(github.event.issue.labels.*.name, 'share: translation') ||
+      contains(github.event.issue.labels.*.name, 'share: language'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

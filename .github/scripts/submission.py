@@ -35,6 +35,8 @@ import subprocess
 import sys
 import tempfile
 import unicodedata
+import urllib.error
+import urllib.request
 
 SPAM_LISTS = ["spamDomains", "strongKeywords", "keywords", "spacedUrlTlds", "beatRapport",
               "beatCritique", "beatSolution", "beatPitch", "handoffPhrases", "serviceOffers"]
@@ -45,11 +47,14 @@ MAX_ENTRIES = 200
 MAX_TEXT = 2000
 MAX_PROFILE_CHARS = 60000
 MAX_PROFILE_SETTINGS = 400
+MAX_LANGUAGE_FILE_BYTES = 2000000    # today's en.json is a small fraction of this
+MIN_LANGUAGE_KEYS = 20               # enough to rule out an empty or wildly wrong file
 
 KIND_BY_LABEL = {
     "share: spam list": "spam",
     "share: profile": "profile",
     "share: translation": "translation",
+    "share: language": "language",
 }
 
 # Each form field shows up in the ticket as a heading carrying the field's label. These have to match
@@ -62,11 +67,19 @@ FIELDS = {
     "translation": [("language", "Language"), ("english", "The English text"),
                     ("current", "What it says now"), ("suggestion", "What it should say"),
                     ("why", "Why is it better?")],
+    "language": [("language-name", "Language name"), ("language-code", "Language code"),
+                 ("credit", "Credit (optional)"), ("file", "Language file"),
+                 ("privacy", "Before you submit")],
 }
 
 # Where each kind that goes through a pull request keeps its files on the submissions branch.
-FOLDER = {"spam": "spam", "translation": "translations"}
+FOLDER = {"spam": "spam", "translation": "translations", "language": "languages"}
 NO_RESPONSE = "_No response_"
+
+LANGUAGE_CODE = re.compile(r"^[a-z]{2,3}(-[A-Za-z]{2,4})?$")
+# The two shapes a dropped file's link has taken on github.com, old and current.
+ATTACHMENT_URL = re.compile(
+    r"https://github\.com/(?:user-attachments/files/\d+|[\w.-]+/[\w.-]+/files/\d+)/[^\s)\]]+")
 
 SUBMISSION_BRANCH = "submissions"
 PROFILE_BRANCH = "profiles"
@@ -100,6 +113,7 @@ PROFILE_EXCLUDED = [
     "settingsSchema", "activeProfile", "updateChannel", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
     "dryRunEnabled", "dryRunMinutes",
+    "useToastNotifications", "toastNotifyUpdates", "toastNotifyDeckActions", "toastNotifyDeckProblems",
     "spamFeedEnabled",
 ]
 SECRET_NAME_PARTS = ["apikey", "webhook", "token", "secret", "password"]
@@ -604,7 +618,118 @@ def build_translation(issue, values, root, elsewhere=None):
     return result
 
 
-BUILDERS = {"spam": build_spam, "profile": build_profile, "translation": build_translation}
+def fetch_attachment(url):
+    """The bytes behind a file someone dropped into the ticket. Public repositories serve these to anyone,
+    so this needs no token - only a plain GET, with a User-Agent because GitHub refuses requests without one."""
+    request = urllib.request.Request(url, headers={"User-Agent": "TwitchSentry-submission-bot"})
+    with urllib.request.urlopen(request, timeout=30) as response:
+        return response.read()
+
+
+def build_language(issue, values, root, elsewhere=None):
+    result = Result("language")
+    if not is_checked(values.get("privacy")):
+        result.problems.append("The box saying this is your own translation of TwitchSentry's English text, "
+                               "not unread machine output, is not ticked.")
+
+    name = _net_trim(values.get("language-name") or "")
+    if not name:
+        result.problems.append("The language has no name.")
+    elif len(name) > 60:
+        result.problems.append("The name is longer than 60 characters.")
+
+    code = _net_trim(values.get("language-code") or "")
+    if not LANGUAGE_CODE.match(code):
+        result.problems.append("`%s` does not look like a language code (`it`, or `pt-BR` for a regional one)."
+                               % printable(code, 20))
+
+    credit = _net_trim(values.get("credit") or "")
+    if credit and (len(credit) > 60 or any(unicodedata.category(c) in ("Cc", "Cf") for c in credit)):
+        result.problems.append("The credit holds a character it should not, or is longer than 60 characters.")
+
+    # A file this size only ever arrives dropped into the box, never typed: GitHub turns the drop into a
+    # link to the file, and that link is what actually shows up in the ticket.
+    raw = unfence(values.get("file") or "")
+    attached = ATTACHMENT_URL.search(raw)
+    content = None
+    if attached:
+        try:
+            content = fetch_attachment(attached.group(0)).decode("utf-8-sig")
+        except (urllib.error.URLError, TimeoutError, UnicodeDecodeError) as ex:
+            result.problems.append("The attached file could not be read back (%s)." % printable(str(ex), 80))
+    elif raw.strip():
+        content = raw
+    else:
+        result.problems.append("There is no language file. Drag it into the *Language file* box; typing or "
+                               "pasting its text will not fit.")
+
+    parsed = None
+    if content is not None:
+        if len(content.encode("utf-8", "replace")) > MAX_LANGUAGE_FILE_BYTES:
+            result.problems.append("The file is larger than any TwitchSentry language file should be.")
+        else:
+            try:
+                parsed = json.loads(content, object_pairs_hook=_no_duplicate_keys)
+            except ValueError as ex:
+                result.problems.append("The file is not valid JSON (%s)." % printable(str(ex), 80))
+
+    english_file = read_json(os.path.join(root, "Language", "en.json"), {})
+    en_keys = set(english_file) if isinstance(english_file, dict) else set()
+    covered = 0
+    if isinstance(parsed, dict):
+        real_keys = [k for k in parsed if not k.startswith("__")]
+        if len(real_keys) < MIN_LANGUAGE_KEYS:
+            result.problems.append("The file carries only %d text(s) - that is not a language file." % len(real_keys))
+        covered = sum(1 for k in real_keys if k in en_keys)
+    elif parsed is not None:
+        result.problems.append("That is not a language file - it should be one object mapping text to text.")
+
+    if result.problems:
+        return result
+
+    login = issue["user"]["login"]
+    by = credit or login
+    parsed["__languageName"] = name
+    parsed["__languageCode"] = code
+    parsed["__by"] = by
+    if not isinstance(parsed.get("__version"), int) or parsed["__version"] < 1:
+        parsed["__version"] = 1
+
+    index = read_json(os.path.join(root, "Language", "index.json"), [])
+    codes = [str(e.get("code")) for e in index if isinstance(e, dict) and e.get("code")]
+    is_new = code not in codes
+
+    number = issue["number"]
+    document = {
+        "type": "language",
+        "issue": number,
+        "submittedBy": login,
+        "submittedAt": issue.get("created_at"),
+        "languageCode": code,
+        "languageName": name,
+        "credit": by,
+        "isNewLanguage": is_new,
+        "file": parsed,
+    }
+    result.document = document
+    result.path = "%s/%d.json" % (FOLDER["language"], number)
+    result.title = "Language (%s) from #%d" % (code, number)
+
+    coverage = ("%d of %d texts" % (covered, len(en_keys))) if en_keys else "an unknown number of texts"
+    lines = [
+        "**%s** for `%s` (%s), shared in #%d by %s, credited as %s." % (
+            "A new language" if is_new else "An update to an existing language",
+            printable(name, 60), code, number, login, printable(by, 60)),
+        "",
+        "Covers %s from the published `Language/en.json`. Anything short of that stays in English until "
+        "someone fills it in, the same as any string a translated language is still missing." % coverage,
+    ]
+    result.summary = "\n".join(lines)
+    return result
+
+
+BUILDERS = {"spam": build_spam, "profile": build_profile, "translation": build_translation,
+            "language": build_language}
 
 
 class Elsewhere:
@@ -707,9 +832,13 @@ def stored_comment(address, repo, result):
 def accepted_comment(kind, number, pull, repo):
     address = "https://github.com/%s/blob/%s/%s/%d.json" % (repo, SUBMISSION_BRANCH, FOLDER[kind], number)
     merged = "#%d" % pull["number"] if isinstance(pull.get("number"), int) else "The pull request"
-    next_step = ("The entries are weighed together with what other streamers sent, and the ones that hold up go "
-                 "into the spam feed every TwitchSentry install receives." if kind == "spam"
-                 else "The fix goes into the language files with the next language update.")
+    if kind == "spam":
+        next_step = ("The entries are weighed together with what other streamers sent, and the ones that hold up "
+                     "go into the spam feed every TwitchSentry install receives.")
+    elif kind == "language":
+        next_step = "The file is brought into the shipped language files with the next language update."
+    else:
+        next_step = "The fix goes into the language files with the next language update."
     return "\n".join(["Thank you! %s was merged, so this is accepted: %s" % (merged, address), "", next_step])
 
 
@@ -928,9 +1057,10 @@ def profiles_readme(folder, repo):
         "Settings profiles streamers shared from TwitchSentry: how strict to be, one file per profile. Take one, "
         "try it, keep it or go back - your own settings are one *Import* away again.", "",
         "**Use one:** open the file, press *Download raw file*, and drop it into `Settings/Profiles` in your "
-        "TwitchSentry folder. It is then in ☰ → *Profiles* in the settings window, which lists every setting it "
+        "TwitchSentry folder. It is then in ☰ → *Profiles...* in the settings window, which lists every setting it "
         "would change before you pick it.", "",
-        "**Share yours:** ☰ → *Share...* in the settings window, *My settings as a profile*. It fills the form in "
+        "**Share yours:** ☰ → *Share With Others...* in the settings window, *My saved settings, as a profile*. It "
+        "fills the form in "
         "for you, and once the check passes the profile appears here. This list is public and the name is all "
         "anyone sees before they open the file, so name it after the channel it suits: *Small English chat, strict "
         "on links* tells somebody whether to try it, *test2* tells them nothing. The name is yours to change in "
@@ -957,22 +1087,26 @@ def submissions_readme(repo):
     script's wording does."""
     lines = [
         "# Submissions", "",
-        "Spam wording and translation fixes streamers shared from TwitchSentry, one file per ticket, waiting to be "
-        "taken up. Accepted here is not shipped: nothing in this branch reaches an installation.", "",
+        "Spam wording, translation fixes and complete language files streamers shared from TwitchSentry, one file "
+        "per ticket, waiting to be taken up. Accepted here is not shipped: nothing in this branch reaches an "
+        "installation.", "",
         "| Folder | Shared through | Where it goes from here |",
         "|---|---|---|",
-        "| `spam/` | ☰ → *Share...*, spam wording from your lists | Weighed against what other streamers sent. "
+        "| `spam/` | ☰ → *Share With Others...*, spam wording from your lists | Weighed against what other streamers sent. "
         "What holds up is published in the [spam feed](https://github.com/%s/blob/main/Feed/README.md), which every "
         "installation receives within hours. |" % repo,
-        "| `translations/` | ☰ → *Share...*, a better translation | Into the language files, with the next "
+        "| `translations/` | ☰ → *Report...*, *A translation* | Into the language files, with the next "
+        "language update. |",
+        "| `languages/` | ☰ → *Share With Others...*, a complete translation file | Brought into `Language/`, with the next "
         "language update. |", "",
         "**How a file gets here:** the share form fills a ticket in, the ticket becomes a pull request into this "
         "branch, and merging it takes the submission up and closes the ticket. Editing the ticket updates its pull "
         "request; a ticket with a mistake in it is answered with what to correct instead.", "",
         "**What was checked:** for spam wording, that every entry is one an installation would accept, and that "
         "TwitchSentry does not already carry it. For a translation, that the language exists, and whether the "
-        "English text is one the settings window really shows. Whether the wording deserves to reach every channel "
-        "is the judgement the merge stands for - that is the whole point of the wait.", "",
+        "English text is one the settings window really shows. For a complete language file, that it parses and "
+        "carries enough text to be one - not whether the wording is any good. Whether wording deserves to reach "
+        "every channel is the judgement the merge stands for - that is the whole point of the wait.", "",
         "**Profiles are not collected here.** A profile changes nothing about TwitchSentry, so nobody has to take "
         "it up: it goes straight to the [`profiles` branch](https://github.com/%s/tree/profiles)." % repo, "",
         "This branch has no history in common with `main`, and this page is written by the share workflow.",
