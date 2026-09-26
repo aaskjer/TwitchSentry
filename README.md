@@ -24,7 +24,7 @@
 
 ---
 
-Spam ruins the vibe. One minute you are reacting to a hilarious donation, the next your chat is full of fake gift links, sketchy URLs and copy-paste scams. TwitchSentry removes them, tells you why it was removed and from whom. Any many more!
+Spam ruins the vibe. One minute you are reacting to a hilarious donation, the next your chat is full of fake gift links, sketchy URLs and copy-paste scams. TwitchSentry removes them, tells you why it was removed and from whom. And many more!
 
 ---
 
@@ -32,20 +32,20 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 
 | Action | Function |
 |---|---|
-| **[Link Filter](#general-settings)** | Blocks links from viewers you have not trusted, with a whitelist that matches exactly or by wildcard. Always on. |
-| **[Spam Scoring](#spam-scoring)** | Reads a message as an advert with parts — somewhere to go, something on offer, a way to redeem it, a signature — and acts when enough parts fit together. Always on. |
-| **[Message Filter](#message-filter)** | Watches *how* someone and *who* chats: account age, ALL CAPS, emote spam, flooding and repeats. |
-| **[Raid Protection](#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
-| **[Follow Protection](#follow-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
-| **[Spam Learner](#spam-learner)** | Mines what was actually removed for new keywords, phrases and domain endings, and proposes them for review. |
-| **[AutoMod](#automod)** | Answers the messages Twitch's own AutoMod holds back, so nobody has to sit in the queue. |
-| **[Twitch Warn](#twitch-warn)** | Twitch's warning screen with escalation on top: warnings, a final warning, then a timeout, a ban or a restriction. Your moderators' own warnings can count too. |
-| **[Permits](#permits)** | A time-limited link exception for one viewer, granted by you, a moderator, or a Channel Points redeem. |
-| **[Check Link](#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
-| **[Voting](#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
-| **[Discord Alerts](#discord-alerts)** | Posts everything that happened to a webhook to discord. |
-| **[Windows Notifications](#windows-notifications)** | A Windows notification for a new TwitchSentry releases and various deck button actions. |
-| **[Deck Buttons](#deck-buttons)** | Switches profiles, modules, exemptions and test mode, arms Raid Protection or takes the last action back, from a Stream Deck key or a Streamer.bot Deck button. |
+| **[Link Filter](Manual.md#general-settings)** | Blocks links from viewers you have not trusted, with a whitelist that matches exactly or by wildcard. Always on. |
+| **[Spam Scoring](Manual.md#spam-scoring)** | Reads a message as an advert with parts — somewhere to go, something on offer, a way to redeem it, a signature — and acts when enough parts fit together. Always on. |
+| **[Message Filter](Manual.md#message-filter)** | Watches *how* someone and *who* chats: account age, ALL CAPS, emote spam, flooding and repeats. |
+| **[Raid Protection](Manual.md#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
+| **[Follow Protection](Manual.md#follow-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
+| **[Spam Learner](Manual.md#spam-learner)** | Mines what was actually removed for new keywords, phrases and domain endings, and proposes them for review. |
+| **[AutoMod](Manual.md#automod)** | Answers the messages Twitch's own AutoMod holds back, so nobody has to sit in the queue. |
+| **[Twitch Warn](Manual.md#twitch-warn)** | Twitch's warning screen with escalation on top: warnings, a final warning, then a timeout, a ban or a restriction. Your moderators' own warnings can count too. |
+| **[Permits](Manual.md#permits)** | A time-limited link exception for one viewer, granted by you, a moderator, or a Channel Points redeem. |
+| **[Check Link](Manual.md#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
+| **[Voting](Manual.md#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
+| **[Discord Alerts](Manual.md#discord-alerts)** | Posts everything that happened to a webhook to discord. |
+| **[Windows Notifications](Manual.md#windows-notifications)** | A Windows notification for a new TwitchSentry release and various deck button actions. |
+| **[Deck Buttons](Manual.md#deck-buttons)** | Switches profiles, modules, exemptions and test mode, arms Raid Protection or takes the last action back, from a Stream Deck key or a Streamer.bot Deck button. |
 
 ---
 
