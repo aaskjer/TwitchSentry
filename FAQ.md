@@ -393,7 +393,7 @@ No. Alerts are queued, and a burst is merged into messages of up to ten.
 
 **Q: Can TwitchSentry tell me things on the desktop?**
 
-Yes, on the **Windows Notifications** page (Setup): a new TwitchSentry release (on by default), what a deck button just did, and a deck button that could not do what it was asked (both off by default). They show while the settings window is closed too. A profile never carries these switches.
+Yes, on the **Windows Notifications** page (Setup): a new TwitchSentry release and a deck button that could not do what it was asked (both on by default), and what a deck button just did (off by default). They show while the settings window is closed too. A profile never carries these switches.
 
 ---
 
@@ -467,7 +467,7 @@ Yes. One text that reads badly: ☰ → **Report...** → *A translation*, pick 
 
 **Q: How do I know a new version is out?**
 
-The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notification banner has a button that allows you to ignore futue beta notifications. ☰ → **Show hidden notices again** brings betas back.
+The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notification banner has a button that allows you to ignore future beta notifications. ☰ → **Show hidden notices again** brings betas back.
 
 ---
 
@@ -475,7 +475,7 @@ The settings window checks GitHub whenever it opens and shows a notice at the to
 
 **Q: What should I back up?**
 
-`configs.json` and `messages.json` (every setting and chat message) and `spam.json` (what the Spam Learner built up) can't be recreated; those are ticked by default. Language files and caches download themselves again.
+`configs.json` and `messages.json` (every setting and chat message) and `spam.json` (what the Spam Learner built up) can't be recreated; those are ticked by default, and so are the language files. Caches download themselves again.
 
 ---
 
