@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "version": 2,
-  "updated": "2026-09-14",
+  "version": 3,
+  "updated": "2026-09-26",
   "about": "Block-list entries TwitchSentry hands to every install's Machine Learning/spam.json, each exactly once. \"shipped\" names what releases shipped as built-in defaults: those are never handed over, and a share ticket does not offer them.",
   "lists": {
     "spamDomains": [
@@ -100,7 +100,8 @@
       "v1.3.0",
       "v1.3.1",
       "v1.4.0",
-      "v2.0.0"
+      "v2.0.0",
+      "v3.0.0"
     ],
     "lists": {
       "spamDomains": [
