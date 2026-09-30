@@ -84,13 +84,30 @@ The last 25 actions from the last 12 hours. If Twitch refuses the undo, the entr
 
 **Q: Can I switch things from a Stream Deck or a Streamer.bot Deck?**
 
-Yes. A key runs the **`[TS] - Deck`** action with an argument: `tsProfile` (switch profile), `tsModule` (module on/off), `tsExempt` (Followers/Subscribers/VIPs), `tsTestMode`, `tsRaid` (arm Raid Protection now) or `tsUndo`. One key can carry several, e.g. `Under Attack` plus `arm` as a panic button. Setup and examples: [Manual → Deck buttons](Manual.md#deck-buttons).
+Yes. A key runs the **`[TS] - Deck`** action with an argument: `tsPanic` (the panic button: Under Attack and Raid Protection armed, and everything back as it was on the next press), `tsProfile` (switch profile), `tsModule` (module on/off), `tsExempt` (Followers/Subscribers/VIPs), `tsTestMode`, `tsRaid` (arm Raid Protection now) or `tsUndo`. One key can carry several. Setup and examples: [Manual → Deck buttons](Manual.md#deck-buttons).
 
 ---
 
 **Q: Does the settings window notice a key press?**
 
 Yes. Within a couple of seconds its notice strip says so and offers **Reload**. Saving without reloading keeps what the key changed.
+
+---
+
+**Q: Can a key show whether a module is on?**
+
+Yes, it shows the name and **On** or **Off** after every press, or words of your own with placeholders such as `{state:LIVE|OFF}`. `tsColor = auto` colours it too, and an *Action Switch* key always shows the side that is true. Details: [Manual → A key that shows what it switched](Manual.md#a-key-that-shows-what-it-switched).
+
+---
+
+**Q: Can I use the buttons inside OBS?**
+
+Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has four big buttons you set up yourself with ✎: a profile, a module, an exemption or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
+
+
+**Q: Can I use the buttons inside OBS?**
+
+Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has four big buttons you set up yourself with ✎: a profile, a module, an exemption or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
 
 ---
 
