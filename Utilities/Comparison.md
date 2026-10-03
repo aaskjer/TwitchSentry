@@ -50,6 +50,7 @@ Columns: **TS** TwitchSentry · **taw** tawmae MOD TOOLS · **Moo** Moobot · **
 | AutoMod queue and ban evasion handled | ✓ | – | – | – | – | – | – | – | – |
 | Warnings and escalation | ✓ | ✓ | ✓ | ? | ✓ | – | ✓ | ✓ | ✓ |
 | Undo (`!tsundo`) | ✓ | – | – | – | – | – | – | – | – |
+| Vote for action | ✓ | – | – | – | – | – | – | – | – |
 | Fun Commands, timers, points, song requests | – | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
  **✓** yes · **~** partly · **–** not found · **?** not documented.
@@ -94,6 +95,7 @@ Columns: **TS** TwitchSentry · **taw** tawmae MOD TOOLS · **Moo** Moobot · **
 - **Every timeout, ban and restriction can be taken back** with `!tsundo`, whole nukes included.
 - **Around it:** a handy test mode, Discord alerts, Windows notifications, shareable profiles, backup&import features, no extra bot account and no external .DLL needed.
 - **Streamer.bot Deck, Elgato StreamDeck and OBS Dock support** to switch profiles, modules, exemptions and test mode, arm Raid Protection or take the last action back.
+- **Users vote actions** and makes them able to punish other users by working together with unique votes
 
 
 ## Bottom line
