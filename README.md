@@ -63,22 +63,6 @@ TwitchSentry covers all of those and more, and answers AutoMod's queue for you s
 
 ---
 
-# What you need
-
-- **[Streamer.bot](https://streamer.bot)**, connected to your Twitch account. That is the whole dependency.
-- Nothing to pay for, no extra bot account, no extra .dll file. Everything lives inside streamer.bot and files beside your Streamer.bot install TwitchSentry creates itself.
-- (Optional) a free **[VirusTotal](https://www.virustotal.com/gui/join-us)** API key and/or **[IPQualityScore](https://www.ipqualityscore.com/create-account)** one if you want a second opinion. *Only* for the optional [Check Link](Manual.md#check-link) module.
-
-## Decide how strict, in one click
-
-**Profiles**, at the top of the ☰ menu. Five of them — Relaxed, Balanced, Strict, Under Attack, Just Chatting — and picking one sets the message, raid, follow and spam sides together instead of forty settings one at a time. A fresh install already sits at Balanced, so it is the way back rather than a change. Save your own tuning under a name and it joins the list, or share it for others to import. [More →](Manual.md#profiles)
-
-## Block lists that keep up
-
-New viewer-selling sites and bot wording are published once, to the spam feed in this repository, and reach every install within a few hours. An entry you delete stays deleted. Found one yourself? **Share With Others...** in the ☰ menu sends it in for review, and once accepted it reaches everyone else. [More →](Manual.md#known-patterns)
-
----
-
 ## Try it without anyone getting hurt
 
 Switch on **test mode** from the ☰ menu. While it runs nothing is deleted, timed out or banned: every module posts what it *would* have done instead, so you can point a real chat at your settings and nobody gets punished for helping you test them. It ends on its own after five minutes and the notice strip counts it down, so a chat is never left unguarded because somebody forgot to switch it back.
@@ -101,6 +85,29 @@ The settings window checks for new releases whenever it opens and says so at the
 
 ---
 
+# What you need
+
+- **[Streamer.bot](https://streamer.bot)**, connected to your Twitch account. That is the whole dependency.
+- Nothing to pay for, no extra bot account, no extra .dll file. Everything lives inside streamer.bot and files beside your Streamer.bot install TwitchSentry creates itself.
+- (Optional) a free **[VirusTotal](https://www.virustotal.com/gui/join-us)** API key and/or **[IPQualityScore](https://www.ipqualityscore.com/create-account)** one if you want a second opinion. *Only* for the optional [Check Link](Manual.md#check-link) module.
+
+## Decide how strict, in one click
+
+**Profiles**, at the top of the ☰ menu. Five of them — Relaxed, Balanced, Strict, Under Attack, Just Chatting — and picking one sets the message, raid, follow and spam sides together instead of forty settings one at a time. A fresh install already sits at Balanced, so it is the way back rather than a change. Save your own tuning under a name and it joins the list, or share it for others to import. [More →](Manual.md#profiles)
+
+## Block lists that keep up
+
+New viewer-selling sites and bot wording are published once, to the spam feed in this repository, and reach every install within a few hours. An entry you delete stays deleted. Found one yourself? **Share With Others...** in the ☰ menu sends it in for review, and once accepted it reaches everyone else. [More →](Manual.md#known-patterns)
+
+## Still not sure if TwitchSentry is the right one for you?
+
+Check out this [Comparison](https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Comparison.md) between TwitchSentry and eight other common bots to make a choice!
+
+---
+
 # Credits
 
-[aaskjer on Twitch](https://twitch.tv/aaskjer) · [TwitchSentry on the Streamer.bot Discord](https://discord.com/channels/834650675224248362/1512133095246270616) · [Streamer.bot](https://streamer.bot) by [nate1280](https://www.patreon.com/c/nate1280/home) · [enNemMesS](https://extensions.streamer.bot/u/ennemmess/summary) · YOU ♡
+[Streamer.bot](https://streamer.bot) by [nate1280](https://www.patreon.com/c/nate1280/home) · [enNemMesS](https://extensions.streamer.bot/u/ennemmess/summary) · [Stoshy89 (Tester)](https://www.twitch.tv/stoshy89) · [DutchyRay (Dutch Translation)](https://www.twitch.tv/dutchyray) · YOU ♡
+
+## Socials
+[aaskjer on Twitch](https://twitch.tv/aaskjer) · [TwitchSentry on the Streamer.bot Discord](https://discord.com/channels/834650675224248362/1512133095246270616)
