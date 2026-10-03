@@ -10,17 +10,17 @@ How TwitchSentry stands next to eight moderation tools streamers commonly use: w
 
 ## At a glance
 
-| Tool | What it is | Runs where | Platforms | Cost |
-|---|---|---|---|---|
-| **TwitchSentry** | a moderation suite, nothing else | locally in Streamer.bot (Windows) ² | Twitch ¹ | free, MIT licence |
-| **tawmae MOD TOOLS** | a moderation toolkit for Streamer.bot | locally, needs `TawmaeUI.dll` and the WebSocket server | Twitch | not stated on its page |
-| **Moobot** | all-round chat bot | cloud | Twitch | free version plus a paid tier |
-| **Fossabot** | all-round chat bot, common on large channels | cloud | Twitch, YouTube, Kick | free |
-| **Nightbot** | all-round chat bot, the classic | cloud | Twitch, YouTube, Trovo, SOOP | free |
-| **Sery_Bot** | specialist against hate raids and follow bots | cloud | Twitch | free |
-| **StreamElements** | chat bot inside an overlay platform | cloud | Twitch, YouTube, Kick | free |
-| **Mix It Up** | all-round bot as a desktop app | locally (Windows) | Twitch, YouTube, Kick and more | free |
-| **PhantomBot** | open-source bot with a web panel | self-hosted (Java) | Twitch | free |
+| Tool | What it is | Runs where | Dependencies | Platforms | Cost |
+|---|---|---|---|---|---|
+| **TwitchSentry** | a moderation suite, nothing else | locally in Streamer.bot (Windows) ² | Streamer.bot only: no extra DLL, no extra bot account (optional: free VirusTotal and IPQualityScore keys for Check Link) | Twitch ¹ | free, MIT licence |
+| **tawmae MOD TOOLS** | a moderation toolkit for Streamer.bot | locally in Streamer.bot (Windows) ² | Streamer.bot, plus `TawmaeUI.dll` in the Streamer.bot folder and Streamer.bot's WebSocket server switched on | Twitch | not stated on its page |
+| **Moobot** | all-round chat bot | cloud | nothing to install; make its bot account a moderator | Twitch | free version plus a paid tier |
+| **Fossabot** | all-round chat bot, common on large channels | cloud | nothing to install; make its bot account a moderator | Twitch, YouTube, Kick | free |
+| **Nightbot** | all-round chat bot, the classic | cloud | nothing to install; make its bot account a moderator | Twitch, YouTube, Trovo, SOOP | free |
+| **Sery_Bot** | specialist against hate raids and follow bots | cloud | nothing to install; make it a moderator and authorise it on Twitch | Twitch | free |
+| **StreamElements** | chat bot inside an overlay platform | cloud | nothing to install; a StreamElements account, and its bot account as moderator | Twitch, YouTube, Kick | free |
+| **Mix It Up** | all-round bot as a desktop app | locally (Windows) | the Mix It Up app | Twitch, YouTube, Kick and more | free |
+| **PhantomBot** | open-source bot with a web panel | self-hosted | a PC or server that keeps it running; Java comes bundled on most systems, Docker images exist | Twitch | free |
 
 ¹ **Twitch only, on purpose.** TwitchSentry's main opponent is link and scam spam, and on YouTube and Kick a viewer cannot natively post a clickable link (on Kick only when the channel's settings allow it, and limited even then). The problem it is built for barely exists there.
 
@@ -115,4 +115,4 @@ No tool leads in everything.
 - [Sery_Bot](https://serycodes.carrd.co/)
 - [StreamElements spam filters](https://docs.streamelements.com/chatbot/filters), [on Kick](https://support.streamelements.com/hc/en-us/articles/25794373983122-StreamElements-Chatbot-on-Kick), [on YouTube](https://support.streamelements.com/hc/en-us/articles/18486326016402-StreamElements-Chatbot-on-YouTube)
 - [Mix It Up moderation](https://mixitup.bot/docs/moderation)
-- [PhantomBot chat moderator](https://github.com/PhantomBot/PhantomBot/blob/master/javascript-source/core/chatModerator.js), [releases](https://github.com/PhantomBot/PhantomBot/releases)
+- [PhantomBot chat moderator](https://github.com/PhantomBot/PhantomBot/blob/master/javascript-source/core/chatModerator.js), [releases](https://github.com/PhantomBot/PhantomBot/releases), [requirements](https://github.com/PhantomBot/PhantomBot#readme)
