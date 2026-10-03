@@ -23,7 +23,7 @@ This is how TwitchSentry stands next to eight other moderation tools streamers c
 | **Mix It Up** | all-round bot as a desktop app | locally (Windows) | the Mix It Up app | Twitch, YouTube, Kick and more | free |
 | **PhantomBot** | open-source bot with a web panel | self-hosted | a PC or server that keeps it running; Java comes bundled on most systems, Docker images exist | Twitch | free |
 
-> ¹ **Streamer.bot is built for Windows.** The Project may run alike under Linux or Mac but they aren't officially supported.
+> ¹ **Streamer.bot is built for Windows.** The Project may run alike with Linux or Mac but they aren't officially supported.
 
 ---
 
