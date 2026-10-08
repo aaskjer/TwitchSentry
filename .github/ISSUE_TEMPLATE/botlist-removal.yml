@@ -1,0 +1,29 @@
+name: Remove an account from the bot list
+description: An account on the shared bot list that is not a bot
+title: "Bot list removal: "
+labels: ["botlist: removal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Taken off at once.** The accounts below come off the [shared bot list](https://github.com/aaskjer/TwitchSentry/tree/botlist) as soon as this ticket is read, and every TwitchSentry installation that banned them through the list lifts that ban by itself within minutes. The channels that reported them are not counted for them again.
+
+        You do not need TwitchSentry for this, and nothing else about you or the accounts is asked. **Everything on this page is public.**
+
+  - type: textarea
+    id: accounts
+    attributes:
+      label: Accounts
+      description: Twitch names, one per line, at most 50. An @ or a whole channel address is fine too.
+      placeholder: |
+        some_account
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it not a bot?
+      description: Optional. The removal does not depend on it.
+    validations:
+      required: false
