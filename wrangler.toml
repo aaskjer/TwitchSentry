@@ -18,6 +18,3 @@ GITHUB_BRANCH = "botlist"
 
 [observability]
 enabled = true
-
-# Secrets live in the Cloudflare dashboard (Settings -> Variables and Secrets), never here:
-# GITHUB_TOKEN, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET, REMOVAL_KEY, HASH_SALT
