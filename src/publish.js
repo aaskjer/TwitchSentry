@@ -9,22 +9,44 @@ export const REMOVAL_FORM = "botlist-removal.yml";
 
 const TOUCHED_PER_ROUND = 500;
 const ROUNDS = 3;
+const LOOKUPS_PER_RUN = 16;
+
+// Twitch refuses a whole lookup for one id it calls bad, so a refused lookup is halved until the bad ids stand alone;
+// what is not reached within the budget waits for the next run.
+async function lookUp(env, db, ids, budget) {
+  if (budget.left <= 0) return { users: new Map(), invalid: [], skipped: ids };
+  budget.left--;
+  try {
+    return { users: await getUsers(env, db, { ids }), invalid: [], skipped: [] };
+  } catch (err) {
+    if (err.status !== 400 || !/identifier/i.test(err.message)) throw err;
+    if (ids.length === 1) return { users: new Map(), invalid: ids, skipped: [] };
+    const half = Math.ceil(ids.length / 2);
+    const a = await lookUp(env, db, ids.slice(0, half), budget);
+    const b = await lookUp(env, db, ids.slice(half), budget);
+    return { users: new Map([...a.users, ...b.users]), invalid: [...a.invalid, ...b.invalid], skipped: [...a.skipped, ...b.skipped] };
+  }
+}
 
 export async function verifyAccounts(env, db, now) {
   if (!twitchConfigured(env)) return { checked: 0, error: "Twitch is not configured" };
-  const rows = await store.accountsToCheck(db, now, now - LIMITS.recheckDays * 86400, 100);
-  if (rows.length === 0) return { checked: 0 };
-  let users;
+  const candidates = await store.accountsToCheck(db, now, now - LIMITS.recheckDays * 86400, 100);
+  if (candidates.length === 0) return { checked: 0 };
+  let found;
   try {
-    users = await getUsers(env, db, { ids: rows.map(r => r.id) });
+    found = await lookUp(env, db, candidates.map(r => r.id), { left: LOOKUPS_PER_RUN });
   } catch (err) {
     const error = String(err.message || err).slice(0, 300);
     await store.writeMeta(db, { twitch_error: error }).run();
     return { checked: 0, error };
   }
+  const { users } = found;
+  const invalid = new Set(found.invalid);
+  const skipped = new Set(found.skipped);
+  const rows = candidates.filter(r => !skipped.has(r.id));
   const updates = rows.map(r => {
     const u = users.get(r.id);
-    return { id: r.id, status: verdictOf(u), login: u ? u.login : null };
+    return { id: r.id, status: invalid.has(r.id) ? "invalid" : verdictOf(u), login: u ? u.login : null };
   });
   const changed = updates.filter((u, i) => u.status !== rows[i].status || (u.login && u.login !== rows[i].login)).map(u => u.id);
   const stmts = [store.setChecked(db, updates, now), store.writeMeta(db, { twitch_error: "" })];

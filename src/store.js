@@ -75,6 +75,7 @@ export async function recordReports(db, { install, net, now, items }) {
   const ignored = [];
   for (const item of items) {
     if (status.get(item.id) === "protected") ignored.push({ i: item.i, why: "protected" });
+    else if (status.get(item.id) === "invalid") ignored.push({ i: item.i, why: "invalid" });
     else if (isVoided.has(item.id)) ignored.push({ i: item.i, why: "removed" });
     else accepted.push(item);
   }

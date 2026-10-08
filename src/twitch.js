@@ -47,7 +47,11 @@ export async function getUsers(env, db, { ids = [], logins = [] }) {
       headers: { "Client-Id": env.TWITCH_CLIENT_ID, Authorization: "Bearer " + await token(env, db, attempt > 0) },
     });
     if (res.status === 401 && attempt === 0) continue;
-    if (!res.ok) throw new Error(`Twitch Get Users answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    if (!res.ok) {
+      const err = new Error(`Twitch Get Users answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
+      err.status = res.status;
+      throw err;
+    }
     const body = await res.json();
     for (const u of body.data || [])
       found.set(String(u.id), { id: String(u.id), login: String(u.login).toLowerCase(), type: u.type || "", broadcaster_type: u.broadcaster_type || "" });

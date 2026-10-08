@@ -16,7 +16,7 @@ const DAY = 86400;
 
 // ---- fake Twitch and GitHub ----
 
-const twitch = { users: new Map(), tokenCalls: 0, lookups: [], failUsers: 0 };
+const twitch = { users: new Map(), tokenCalls: 0, lookups: [], failUsers: 0, bad: new Set() };
 const github = { ref: null, trees: new Map(), commits: new Map(), failTrees: 0, n: 0, auth: [] };
 
 function send(res, status, body) {
@@ -41,11 +41,13 @@ const fake = http.createServer(async (req, res) => {
     if (req.headers.authorization !== "Bearer app-token" || req.headers["client-id"] !== "client-id") return send(res, 401, {});
     if (twitch.failUsers > 0) {
       twitch.failUsers--;
-      return send(res, 400, { error: "Bad Request", status: 400, message: "Invalid id" });
+      return send(res, 503, { error: "Service Unavailable", status: 503, message: "try again" });
     }
     const ids = url.searchParams.getAll("id");
     const logins = url.searchParams.getAll("login");
     twitch.lookups.push({ ids, logins });
+    if (ids.some(id => twitch.bad.has(id)))
+      return send(res, 400, { error: "Bad Request", status: 400, message: "Invalid username(s), email(s), or ID(s). Bad Identifiers." });
     const data = [...twitch.users.values()].filter(u => ids.includes(u.id) || logins.includes(u.login));
     return send(res, 200, { data });
   }
@@ -361,7 +363,7 @@ test("a failed Twitch check shows in health and the account waits for the next p
   await publish(T0 + 16 * DAY + 340);
   let h = await call("GET", "/v1/health");
   assert.equal(h.body.ok, false);
-  assert.match(h.body.twitchError, /Twitch Get Users answered 400: .*Invalid id/);
+  assert.match(h.body.twitchError, /Twitch Get Users answered 503: .*try again/);
   assert.equal(h.body.pendingChecks, 1);
   assert.ok(!branch().spam.accounts.some(a => a.id === "1006"));
   await publish(T0 + 16 * DAY + 350);
@@ -369,6 +371,27 @@ test("a failed Twitch check shows in health and the account waits for the next p
   assert.equal(h.body.twitchError, null);
   assert.equal(h.body.pendingChecks, 0);
   assert.ok(branch().spam.accounts.some(a => a.id === "1006"));
+});
+
+test("an id Twitch calls bad is set aside instead of blocking every other check", async () => {
+  user("1007", "bot_seven");
+  twitch.bad.add("99999999999");
+  const before = twitch.lookups.length;
+  const r = await report("A", [
+    { category: "spam", id: "99999999999", login: "no_such_account", reason: "keyword" },
+    { category: "spam", id: "1007", login: "bot_seven", reason: "keyword" },
+  ], { now: T0 + 16 * DAY + 360 });
+  assert.equal(r.body.accepted, 2);
+  await publish(T0 + 16 * DAY + 370);
+  const h = await call("GET", "/v1/health");
+  assert.equal(h.body.twitchError, null);
+  assert.equal(h.body.pendingChecks, 0);
+  assert.equal(twitch.lookups.length - before, 3, "one refused lookup, then each id alone");
+  const accounts = branch().spam.accounts.map(a => a.id);
+  assert.ok(accounts.includes("1007"));
+  assert.ok(!accounts.includes("99999999999"));
+  const again = await report("C", [{ category: "spam", id: "99999999999", login: "no_such_account", reason: "keyword" }], { ip: "192.0.2.10", now: T0 + 16 * DAY + 380 });
+  assert.deepEqual(again.body.ignored, [{ i: 0, why: "invalid" }]);
 });
 
 test("a refused commit is kept and retried on the next pass", async () => {
