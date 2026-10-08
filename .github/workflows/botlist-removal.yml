@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   removal:
-    if: github.event.issue.state == 'open' && contains(github.event.issue.labels.*.name, 'botlist: removal')
+    if: "github.event.issue.state == 'open' && contains(github.event.issue.labels.*.name, 'botlist: removal')"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
