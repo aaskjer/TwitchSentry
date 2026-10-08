@@ -23,7 +23,7 @@ export const LIMITS = {
 };
 
 export const REASONS = new Set([
-  "spam_domain", "keyword", "handoff", "service_offer", "custom_pattern", "conversation_scam",
+  "spam_domain", "keyword", "handoff", "service_offer", "custom_pattern", "conversation_scam", "invite_link", "offer",
   "search_redirect", "offer_quantity", "offer_repeated", "offer_catalogue", "campaign_tag",
   "assembly_instruction", "redemption_code", "voucher_code", "voucher_pattern",
   "lurkbot_name", "known_day", "same_day", "bare_profile",
