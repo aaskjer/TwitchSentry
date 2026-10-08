@@ -18,14 +18,16 @@ export async function verifyAccounts(env, db, now) {
   try {
     users = await getUsers(env, db, { ids: rows.map(r => r.id) });
   } catch (err) {
-    return { checked: 0, error: String(err.message || err) };
+    const error = String(err.message || err).slice(0, 300);
+    await store.writeMeta(db, { twitch_error: error }).run();
+    return { checked: 0, error };
   }
   const updates = rows.map(r => {
     const u = users.get(r.id);
     return { id: r.id, status: verdictOf(u), login: u ? u.login : null };
   });
   const changed = updates.filter((u, i) => u.status !== rows[i].status || (u.login && u.login !== rows[i].login)).map(u => u.id);
-  const stmts = [store.setChecked(db, updates, now)];
+  const stmts = [store.setChecked(db, updates, now), store.writeMeta(db, { twitch_error: "" })];
   if (changed.length) stmts.push(store.touch(db, changed));
   await db.batch(stmts);
   return { checked: rows.length, changed: changed.length };

@@ -12,7 +12,7 @@ async function newToken(env) {
   url.searchParams.set("client_secret", env.TWITCH_CLIENT_SECRET);
   url.searchParams.set("grant_type", "client_credentials");
   const res = await fetch(url, { method: "POST" });
-  if (!res.ok) throw new Error(`Twitch refused an app token (${res.status})`);
+  if (!res.ok) throw new Error(`Twitch refused an app token (${res.status}): ${(await res.text()).slice(0, 200)}`);
   const body = await res.json();
   if (!body.access_token) throw new Error("Twitch answered without an app token");
   return { token: body.access_token, expires: Math.floor(Date.now() / 1000) + Number(body.expires_in || 3600) };
@@ -47,7 +47,7 @@ export async function getUsers(env, db, { ids = [], logins = [] }) {
       headers: { "Client-Id": env.TWITCH_CLIENT_ID, Authorization: "Bearer " + await token(env, db, attempt > 0) },
     });
     if (res.status === 401 && attempt === 0) continue;
-    if (!res.ok) throw new Error(`Twitch Get Users answered ${res.status}`);
+    if (!res.ok) throw new Error(`Twitch Get Users answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
     const body = await res.json();
     for (const u of body.data || [])
       found.set(String(u.id), { id: String(u.id), login: String(u.login).toLowerCase(), type: u.type || "", broadcaster_type: u.broadcaster_type || "" });

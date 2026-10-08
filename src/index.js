@@ -149,12 +149,13 @@ async function health(env) {
   const meta = await store.readMeta(env.DB);
   const { lists, pending } = await store.counts(env.DB, LIMITS.banFrom);
   return reply(200, {
-    ok: !meta.error,
+    ok: !meta.error && !meta.twitch_error,
     version: meta.version,
     commit: meta.commit || null,
     committedAt: meta.commit_at ? new Date(meta.commit_at * 1000).toISOString() : null,
     waitingToCommit: meta.pending_commit === 1,
     error: meta.error || null,
+    twitchError: meta.twitch_error || null,
     lists,
     pendingChecks: pending,
     configured: {

@@ -30,7 +30,7 @@ export function ensureSchema(db) {
   return schemaReady;
 }
 
-const META_DEFAULTS = { version: 0, diff_at: 0, pending_commit: 0, changes_since: 0, prune_at: 0, commit: "", commit_at: 0, error: "" };
+const META_DEFAULTS = { version: 0, diff_at: 0, pending_commit: 0, changes_since: 0, prune_at: 0, commit: "", commit_at: 0, error: "", twitch_error: "" };
 
 export async function readMeta(db) {
   const { results } = await db.prepare("SELECT k, v FROM meta").all();

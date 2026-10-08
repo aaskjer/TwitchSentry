@@ -16,7 +16,7 @@ const DAY = 86400;
 
 // ---- fake Twitch and GitHub ----
 
-const twitch = { users: new Map(), tokenCalls: 0, lookups: [] };
+const twitch = { users: new Map(), tokenCalls: 0, lookups: [], failUsers: 0 };
 const github = { ref: null, trees: new Map(), commits: new Map(), failTrees: 0, n: 0, auth: [] };
 
 function send(res, status, body) {
@@ -39,6 +39,10 @@ const fake = http.createServer(async (req, res) => {
   }
   if (p === "/twitch/helix/users") {
     if (req.headers.authorization !== "Bearer app-token" || req.headers["client-id"] !== "client-id") return send(res, 401, {});
+    if (twitch.failUsers > 0) {
+      twitch.failUsers--;
+      return send(res, 400, { error: "Bad Request", status: 400, message: "Invalid id" });
+    }
     const ids = url.searchParams.getAll("id");
     const logins = url.searchParams.getAll("login");
     twitch.lookups.push({ ids, logins });
@@ -348,6 +352,23 @@ test("a removal finds a renamed account through Twitch", async () => {
   assert.deepEqual(r.body.removed, [{ id: "1004", login: "old_name" }], r.text);
   assert.deepEqual(r.body.unlisted, []);
   assert.ok(!branch().spam.accounts.some(a => a.id === "1004"));
+});
+
+test("a failed Twitch check shows in health and the account waits for the next pass", async () => {
+  user("1006", "bot_six");
+  await report("A", [{ category: "spam", id: "1006", login: "bot_six", reason: "keyword" }], { now: T0 + 16 * DAY + 330 });
+  twitch.failUsers = 1;
+  await publish(T0 + 16 * DAY + 340);
+  let h = await call("GET", "/v1/health");
+  assert.equal(h.body.ok, false);
+  assert.match(h.body.twitchError, /Twitch Get Users answered 400: .*Invalid id/);
+  assert.equal(h.body.pendingChecks, 1);
+  assert.ok(!branch().spam.accounts.some(a => a.id === "1006"));
+  await publish(T0 + 16 * DAY + 350);
+  h = await call("GET", "/v1/health");
+  assert.equal(h.body.twitchError, null);
+  assert.equal(h.body.pendingChecks, 0);
+  assert.ok(branch().spam.accounts.some(a => a.id === "1006"));
 });
 
 test("a refused commit is kept and retried on the next pass", async () => {
