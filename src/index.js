@@ -95,9 +95,10 @@ async function retract(env, request) {
 
 // Called by the removal workflow only; a removal is written to the branch before this answers.
 async function remove(env, request) {
-  if (!env.REMOVAL_KEY) return refuse(503, "removals are not configured yet");
-  const auth = request.headers.get("Authorization") || "";
-  if (!constantTimeEqual(auth, "Bearer " + env.REMOVAL_KEY)) return refuse(401, "not allowed");
+  const key = (env.REMOVAL_KEY || "").trim();
+  if (!key) return refuse(503, "removals are not configured yet");
+  const auth = (request.headers.get("Authorization") || "").trim();
+  if (!constantTimeEqual(auth, "Bearer " + key)) return refuse(401, "not allowed");
   const now = clock(env, request);
   const read = await readJson(request);
   if (read.error) return refuse(read.status, read.error);
