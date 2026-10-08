@@ -104,7 +104,7 @@ class Handling(unittest.TestCase):
         code, gh, asked = self.run_ticket(ticket("bot_a"), status=0, result=None)
         self.assertEqual(code, 1)
         self.assertEqual(gh.calls, [["gh", "issue", "comment"]])
-        self.assertIn("could not be reached", gh.texts[0])
+        self.assertIn("Nothing was removed yet", gh.texts[0])
 
     def test_a_refusing_relay_is_no_success_either(self):
         code, gh, _ = self.run_ticket(ticket("bot_a"), status=401, result={"ok": False, "error": "not allowed"})
@@ -112,8 +112,14 @@ class Handling(unittest.TestCase):
         self.assertNotIn(["gh", "issue", "close"], gh.calls)
 
     def test_without_the_key_nothing_is_asked_or_said(self):
-        code, gh, asked = self.run_ticket(ticket("bot_a"), key="")
-        self.assertEqual((code, gh.calls, asked), (1, [], []))
+        for key in ("", " \n"):
+            code, gh, asked = self.run_ticket(ticket("bot_a"), key=key)
+            self.assertEqual((code, gh.calls, asked), (1, [], []))
+
+    def test_a_key_pasted_with_spaces_or_a_line_break_still_fits(self):
+        result = {"ok": True, "removed": [], "cleared": [], "unlisted": ["bot_a"], "committed": False}
+        _, _, asked = self.run_ticket(ticket("bot_a"), result=result, key=" secret\n")
+        self.assertEqual(asked[0][3], "secret")
 
     def test_other_tickets_are_left_alone(self):
         for event in (ticket("bot_a", state="closed"), ticket("bot_a", labels=("bug",)), {"issue": {}}):

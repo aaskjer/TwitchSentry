@@ -152,6 +152,7 @@ def handle(event, repo, key, relay=ask_relay, gh=run):
         print("Not an open removal ticket - nothing to do.")
         return 0
     number = issue["number"]
+    key = (key or "").strip()
     if not key:
         print("BOTLIST_REMOVAL_KEY is not set for this repository - nothing can be removed.", file=sys.stderr)
         return 1
@@ -171,7 +172,7 @@ def handle(event, repo, key, relay=ask_relay, gh=run):
     status, result = relay(names, number, login if GITHUB_LOGIN.match(login) else None, key)
     if status != 200 or not isinstance(result, dict) or not result.get("ok"):
         print("The relay answered %s: %s" % (status, json.dumps(result)[:300]), file=sys.stderr)
-        comment(repo, number, "The bot list could not be reached just now, so nothing was removed yet. It is tried "
+        comment(repo, number, "Nothing was removed yet: the bot list did not take the request just now. It is tried "
                               "again as soon as the ticket is edited.", gh)
         return 1
 
