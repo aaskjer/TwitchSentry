@@ -1,0 +1,34 @@
+{
+ "schema": 1,
+ "version": 0,
+ "updated": "2026-10-08T20:22:32Z",
+ "banFrom": 2,
+ "lists": {
+  "spam": {
+   "file": "spam.json",
+   "text": "spam.txt",
+   "count": 0,
+   "confirmed": 0
+  },
+  "lurkbot": {
+   "file": "lurkbots.json",
+   "text": "lurkbots.txt",
+   "count": 0,
+   "confirmed": 0
+  },
+  "botwave": {
+   "file": "botwaves.json",
+   "text": "botwaves.txt",
+   "count": 0,
+   "confirmed": 0
+  }
+ },
+ "changes": {
+  "file": "changes.json",
+  "since": 0
+ },
+ "removed": {
+  "file": "removed.json",
+  "count": 0
+ }
+}
