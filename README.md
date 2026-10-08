@@ -28,19 +28,6 @@ the GitHub and Twitch keys live only in this Worker's secrets.
 - Reports expire after a year; `changes.json` keeps a week.
 - Limits per hour: 120 requests and 3000 items per network, 2000 items per installation.
 
-## Setup
-
-1. Cloudflare: *Workers & Pages -> Create -> Import a repository*, this repository, branch `relay`, Worker name
-   `botlist`. Cloudflare builds and deploys every push to this branch.
-2. Secrets under *Settings -> Variables and Secrets*:
-   - `GITHUB_TOKEN`: a classic token with `public_repo` from an account with write access but no bypass of
-     `main`'s ruleset, so the Worker can write `botlist` and never `main`.
-   - `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`: a Twitch application (dev.twitch.tv), used for Get Users only.
-   - `REMOVAL_KEY`: a long random string; the same value is the removal workflow's Actions secret.
-   - `HASH_SALT`: a long random string. **Never change it**: every network and installation would count anew.
-3. The D1 database `twitchsentry-botlist` is bound as `DB`; the tables create themselves on first use.
-
 ## Tests
 
 `npm test` runs the rules and the real Worker under `wrangler dev` against a fake GitHub and Twitch.
-In the TwitchSentry folder, `tools/run-relay-tests.ps1 -NodeDir <folder with node.exe>` does the same.
