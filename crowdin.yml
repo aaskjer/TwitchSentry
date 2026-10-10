@@ -1,0 +1,16 @@
+files:
+  - source: /Language
+    translation: /crowdin/de/%language%
+    multilingual: 1
+  - source: /Language
+    translation: /crowdin/fr/%language%
+    multilingual: 1
+  - source: /Language
+    translation: /crowdin/en/%language%
+    multilingual: 1
+  - source: /Language
+    translation: /crowdin/es/%language%
+    multilingual: 1
+  - source: /Language
+    translation: /crowdin/pt-BR/%language%
+    multilingual: 1
