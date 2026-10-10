@@ -2,31 +2,31 @@
   {
     "code": "en",
     "name": "English",
-    "version": 12
+    "version": 13
   },
   {
     "code": "de",
     "name": "Deutsch",
-    "version": 11
+    "version": 12
   },
   {
     "code": "es",
     "name": "Español",
-    "version": 10
+    "version": 11
   },
   {
     "code": "fr",
     "name": "Français",
-    "version": 10
+    "version": 11
   },
   {
     "code": "pt-BR",
     "name": "Português (Brasil)",
-    "version": 10
+    "version": 11
   },
   {
     "code": "nl",
     "name": "Dutch",
-    "version": 2
+    "version": 3
   }
 ]

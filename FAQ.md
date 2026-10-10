@@ -102,12 +102,7 @@ Yes, it shows the name and **On** or **Off** after every press, or words of your
 
 **Q: Can I use the buttons inside OBS?**
 
-Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has four big buttons you set up yourself with ✎: a profile, a module, an exemption or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
-
-
-**Q: Can I use the buttons inside OBS?**
-
-Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has four big buttons you set up yourself with ✎: a profile, a module, an exemption or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
+Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has six big buttons you set up yourself with ✎: a profile, a module, an exemption, an Always Allowed link, AutoMod Action, Test Mode, Raid Protection or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
 
 ---
 
@@ -153,9 +148,15 @@ Yes. No webhook URL or API key is ever written into one, and the same filter run
 
 **Q: What does it check?**
 
-*How* someone chats: account age, caps and repeated characters, emote spam, and flooding or repeated messages. Each check has its own switch (**Account Check**, **Caps Check**, **Emote Check**, **Flood Check**); untick all four to switch the filter off.
+*How* someone chats: account age, caps, repeated characters and words, emote spam, flooding or repeated messages, symbol spam, long messages, mass mentions, ASCII art and Zalgo text. Each check has its own switch; untick all of them to switch the filter off. A list of words you do not want in chat is the [Word Filter](Manual.md#word-filter)'s job.
 
 One signal is not enough, because people shout and spam emotes when something good happens: it takes two on the same message, or one that is hard to do by accident. A repeated message is enough on its own. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance.
+
+---
+
+**Q: Can it remove ASCII art?**
+
+Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of Braille dots (⣿⠄) or block and box characters (█▀═), whether a raid, a bot wave or an ordinary viewer pastes them. A message with at least **Min. Art Characters** of them (20, in Expert mode) is acted on the way **Action On Violation** says. It is a rule rather than a score, so **Require Two Signals** and the regular's discount do not apply and regulars are caught too. Exempted viewers and anyone with a permit are not.
 
 ---
 
@@ -165,9 +166,9 @@ A moderator's or the broadcaster's never: they are exempt from every filter. A v
 
 ---
 
-**Q: What is Escalation?**
+**Q: What are chat modes?**
 
-A chat-wide safety net: when enough *different* users trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What actually happens** table shows the order live from your ticks. Emote-only and sub-only are opt-in.
+A chat-wide safety net on the Message Filter's **Chat Modes** tab: when enough *different* viewers trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What Happens** table shows the order live from your ticks. Emote-only and sub-only are opt-in.
 
 ---
 
@@ -176,6 +177,12 @@ A chat-wide safety net: when enough *different* users trigger violations in a sh
 **Q: What does it catch?**
 
 Keywords, custom patterns, disguised links (`twitch. tv`), lookalike characters, @mentions of accounts that don't exist, and voucher codes. None of them is a verdict alone: a message has to look like an **advert**, with at least two parts out of somewhere to go (Destination), something for sale (Offer), a way to redeem it (Instrument), a bot's random `@handle` (Tag) and wording seen in spam before (Signature). The sensitivity slider shifts that balance; **Require Two Parts** is a separate decision and keeps its own switch.
+
+---
+
+**Q: Can spam hide behind fancy fonts?**
+
+No. Before any list is read, letters from other alphabets that only look Latin are read back as the letters they show: Cherokee (`ᏙᏆᎬᎳᎬᎡᏚ`), Lisu, Greek, Cyrillic, Canadian syllabics, small capitals, boxed and circled letters (`🅰`, `ⓐ`), letters with strokes or stacked accents, and invisible padding. That holds for the Spam Filter, the Spam Learner and Raid Protection. Disguised letters that reveal wording from your lists count as deliberate evasion; harmless words in such a font stay harmless. A Telegram bot named next to "tg" or "telegram" in a message selling viewers or followers counts as a hand-off, like "add me on Discord".
 
 ---
 
@@ -245,19 +252,19 @@ Each month starts a new `action-log.txt` and `violation-log.txt`. The previous m
 
 **Q: Can I switch the Link Filter or Spam Scoring off?**
 
-No, they are the core. Narrow them instead: whitelist domains, exempt roles or viewers on General Settings, or hand out a `!permit`.
+No, they are the core. Narrow them instead: whitelist domains on the Link Filter page, exempt roles or viewers on General Settings, or hand out a `!permit`.
 
 ---
 
-**Q: There is no Link Filter page. Where are its settings?**
+**Q: Where are the Link Filter's settings?**
 
-**Action On Violation** and **Timeout Duration (Seconds)** are at the top of the Message Filter page (shared with Spam Scoring and the Message Filter). **Whitelisted Domains** and **Always Allowed** are on General Settings. **Check Every Posted Link** is on the Check Link page.
+On the **Link Filter** page: **Whitelisted Domains** and **Always Allowed**, with its chat texts on the Messages tab. **Default Action** and **Timeout Duration (Seconds)** are on General Settings, shared with the Message Filter and Spam Scoring. **Check Every Posted Link** is on the Check Link page.
 
 ---
 
 **Q: Do I have to whitelist my own clips?**
 
-No. **Always Allowed** on General Settings covers them. **Only Your Channel** allows links with your channel's name in them (`twitch.tv/<you>/clip/<id>`, `youtube.com/@you`); **Any Channel** allows that kind of link from everybody, so tick those only if you are fine with that. Channel names come from the accounts Streamer.bot is signed in to.
+No. **Always Allowed** on the Link Filter page covers them. **Only Your Channel** allows links with your channel's name in them (`twitch.tv/<you>/clip/<id>`, `youtube.com/@you`); **Any Channel** allows that kind of link from everybody, so tick those only if you are fine with that. Channel names come from the accounts Streamer.bot is signed in to.
 
 ---
 
@@ -284,7 +291,7 @@ It gets your configured action. With **Check Every Posted Link** on, it is also 
 
 **Q: How is it different from the Message Filter?**
 
-It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once, which is decisive on its own. It has its own slider, escalation ladder and **Progressive Escalation**. A deck button (`tsRaid`) arms it without a raid.
+It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once, which is decisive on its own. It has its own slider and its own **Chat Modes** tab, with *Step Up If The Wave Continues*. A deck button (`tsRaid`) arms it without a raid.
 
 ---
 
@@ -340,7 +347,7 @@ On the **Warning Escalation** card: after **Warns Before Final Warning** warning
 
 ---
 
-## 🔓 Permits
+## 🔓 Permit
 
 **Q: What is a permit?**
 
@@ -464,7 +471,7 @@ English, German, Spanish, French and Brazilian Portuguese ship, and Dutch comes 
 
 **Q: The bot still writes English in chat.**
 
-Intended. Translations cover the settings window only. What the bot says comes from the **Messages** pages, in your own words and language.
+Intended. Translations cover the settings window only. What the bot says comes from each module's **Messages** tab, in your own words and language.
 
 ---
 

@@ -121,7 +121,7 @@ PROFILE_EXCLUDED = [
     "toastNotifyAutoModRestricted", "toastNotifyAutoModBlocked", "toastNotifyUnbanRequests", "toastNotifyMalicious",
     "toastNotifySuspicious", "toastNotifyPermitGranted", "toastNotifyPermitExpired", "toastNotifyPermitRevoked",
     "toastNotifyLearner", "toastNotifyFollowArmed", "toastNotifyFollowBlocked", "toastNotifyOffline",
-    "toastNotifyShieldMode", "toastNotifyConfigChanges", "toastNotifyUndo",
+    "toastNotifyShieldMode", "toastNotifyConfigChanges", "toastNotifyUndo", "toastNotifyBotList",
 ]
 SECRET_NAME_PARTS = ["apikey", "webhook", "token", "secret", "password"]
 RESERVED_PROFILE_NAMES = ["Relaxed", "Balanced", "Strict", "Under Attack", "Just Chatting"]
