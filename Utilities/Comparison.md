@@ -1,6 +1,6 @@
 # ⚖️ TwitchSentry — Comparison
 
-Not sure if TwitchSentry is the right tool for you? Might want to compare it to other common bots?
+Not sure if TwitchSentry is the right tool for you? Might want to compare it to other common bots/tools?
 This is how TwitchSentry stands next to eight other moderation tools streamers commonly use.
 
 **[Overview](https://github.com/aaskjer/TwitchSentry/tree/main)** · **[Manual](Manual.md)** · **[FAQ](FAQ.md)** · **[Report a problem](https://github.com/aaskjer/TwitchSentry/issues)**
@@ -13,13 +13,13 @@ This is how TwitchSentry stands next to eight other moderation tools streamers c
 
 | Tool | What it is | Runs where | Dependencies | Platforms | Cost |
 |---|---|---|---|---|---|
-| **TwitchSentry** | a moderation suite, nothing else | locally in Streamer.bot (Windows) ¹ | Streamer.bot only: no extra DLL, no extra bot account (optional: free VirusTotal and IPQualityScore keys for Check Link) | Twitch | free, MIT licence |
-| **tawmae MOD TOOLS** | a moderation toolkit for Streamer.bot | locally in Streamer.bot (Windows) ¹ | Streamer.bot, plus `TawmaeUI.dll` in the Streamer.bot folder and Streamer.bot's WebSocket server switched on | Twitch | free |
-| **Moobot** | all-round chat bot | cloud | nothing to install; make its bot account a moderator | Twitch | free version plus a paid tier |
-| **Fossabot** | all-round chat bot, common on large channels | cloud | nothing to install; make its bot account a moderator | Twitch, YouTube, Kick, X | free |
-| **Nightbot** | all-round chat bot, the classic | cloud | nothing to install; make its bot account a moderator | Twitch, YouTube, Trovo, SOOP | free |
-| **Sery_Bot** | protection bot against spam bots, hate raids and follow bots, with community extras | cloud | nothing to install; make it a moderator and authorise it on Twitch | Twitch | free |
-| **StreamElements** | chat bot inside an overlay platform | cloud | nothing to install; a StreamElements account, and its bot account as moderator | Twitch, YouTube, Kick | free |
+| **TwitchSentry** | a moderation suite for Streamer.bot | locally in Streamer.bot (Windows) ¹ | Streamer.bot, SB's WebSocket server (optional: VirusTotal and/or IPQualityScore API-Key) | Twitch | free |
+| **tawmae MOD TOOLS** | a toolkit for Streamer.bot | locally in Streamer.bot (Windows) ¹ | Streamer.bot, `TawmaeUI.dll`, SB's WebSocket server | Twitch | free |
+| **Moobot** | all-round chat bot | cloud | nothing; make its bot account a moderator | Twitch | free, paid tier |
+| **Fossabot** | all-round chat bot, common on large channels | cloud | nothing; make its bot account a moderator | Twitch, YouTube, Kick, X | free |
+| **Nightbot** | all-round chat bot, the classic | cloud | nothing; make its bot account a moderator | Twitch, YouTube, Trovo, SOOP | free |
+| **Sery_Bot** | protection bot against spam bots, hate raids and follow bots, with community extras | cloud | nothing; make its bot account as moderator | Twitch | free |
+| **StreamElements** | chat bot inside an overlay platform | cloud | Create an Account on their site; make its bot account as moderator | Twitch, YouTube, Kick | free |
 | **Mix It Up** | all-round bot as a desktop app | locally (Windows) | the Mix It Up app | Twitch, YouTube, Kick and more | free |
 | **PhantomBot** | open-source bot with a web panel | self-hosted | a PC or server that keeps it running; Java comes bundled on most systems, Docker images exist | Twitch | free |
 
@@ -83,12 +83,13 @@ Columns: **TS** TwitchSentry · **taw** tawmae MOD TOOLS · **Moo** Moobot · **
 
 - **No protection as long as the PC is turned off.** If TwitchSentry is not running specifically on a server, there is no way to automatically protect yourself from attacks offline. Cloud bots provide round-the-clock protection, including offline chat.
 - **No all-round features.** No timers, points, song requests or other fun features, so most channels likely run a second bot next to it for those.
-- **A smaller network.** TwitchSentry needs active contribution by the community, so spam feed sees far less than Sery_Bot, Fossabot or Moobot which see across thousands of channels.
+- **A smaller network.** TwitchSentry needs active contribution by the community, so spam feed sees only what it knows today than Sery_Bot, Fossabot or Moobot which see across thousands of channels everyday.
 - **One-man project with strong AI support.** AI tends to cause errors, and despite extensive testing, there is always room for error.
 
 ## Where TwitchSentry leads
 
-- **It recognises spam by how it is built, not just by a word list.** The Spam Learner learns from what was removed, and spam lists arrive through a community feed.
+- **It recognises spam by how it is built, not just by a word list** that means even if the content of spam changes over several iterations, TwitchSentry stays able to detect it.
+- **The Spam Learner learns from what was removed** and reads spam lists that arrive through a community feed.
 - **Links are checked for malware** as optional feature with VirusTotal and IPQualityScore.
 - **It answers AutoMod's queue and acts on ban evasion.** Unban requests arrive in Discord with the account's history from the logs beside them.
 - **Utilizes Twitch's own warning system** features escalation steps, like a 3-strikes rule up to a restriction or timeout/ban.
