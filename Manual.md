@@ -157,7 +157,7 @@ Switched on from the ☰ menu. While it runs, nothing is deleted, timed out or b
 
 
 `Easy Mode` is active by default, intended for users new to TwitchSentry or this type of system at all. Simplified settings with a **sensitivity slider** to choose — `Very relaxed` through `Very strict`, with a line under it saying what the step actually means and does. 
-Also in the ☰ menu. Expert mode reveals the individual numbers the slider is moving for you. In expert mode `Custom` gives you the possibility to create your own slider sensitivity and is remembered by the GUI if you move away from it, as long as you have hit `save` once.
+Also in the ☰ menu. Expert mode reveals the individual numbers the slider is moving for you; a page that has such settings says so under its last card while expert mode is off. In expert mode `Custom` gives you the possibility to create your own slider sensitivity and is remembered by the GUI if you move away from it, as long as you have hit `save` once.
 
 `Custom` only appears while expert mode is on: the rows it keeps *are* the expert rows, so there is nothing to tune without them, and with expert mode off the slider ends at `Very strict`. A slider that is *already* sitting on `Custom` keeps the stop either way — switching expert mode off never drops a preset column over numbers you tuned yourself.
 

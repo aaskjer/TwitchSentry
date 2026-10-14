@@ -92,5 +92,14 @@ The settings window ships in English but you can download also: German, Spanish,
 
 [Streamer.bot](https://streamer.bot) by [nate1280](https://www.patreon.com/c/nate1280/home) · [enNemMesS](https://extensions.streamer.bot/u/ennemmess/summary) · [Stoshy89 (Tester)](https://www.twitch.tv/stoshy89) · [DutchyRay (Dutch Translation)](https://www.twitch.tv/dutchyray) · YOU ♡
 
+## Data and services
+
+- [stop-words](https://github.com/Alir3z4/stop-words) by Alir3z4 ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)): the Spam Learner downloads these lists to leave ordinary words alone.
+- [Unicode confusables](https://www.unicode.org/reports/tr39/) (© Unicode, Inc., [Unicode License V3](https://www.unicode.org/license.txt)) and [YayText](https://yaytext.com): the lookalike-letter table that reads fancy-font spam as plain letters is built from them.
+- [IANA](https://www.iana.org/domains/root/db): the list of top-level domains the link checks recognise.
+- [Stop The Bots](https://transparent-aluminium.net): the spam domains and keywords TwitchSentry ships with.
+- [pronouns.alejo.io](https://pronouns.alejo.io) by Alejo: viewer pronouns, looked up through Streamer.bot.
+- [Reward checker](https://ayrtonalexis.com/reward_checker/reward_check.html) by ayrtonalexis: finds a Channel Points reward's ID for Permit.
+
 ## Socials
 [aaskjer on Twitch](https://twitch.tv/aaskjer) · [TwitchSentry on the Streamer.bot Discord](https://discord.com/channels/834650675224248362/1512133095246270616)

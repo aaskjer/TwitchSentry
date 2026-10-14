@@ -797,7 +797,7 @@
   "Score added when a user exceeds the duplicate threshold.\nAt the default of 1.5 one duplicate hit reaches the threshold on its own at Normal and stricter.": "Verdachtspunkte, wenn jemand die Duplikat-Schwelle überschreitet.\nBeim Standardwert 1,5 genügt ein einzelner Duplikat-Treffer ab 'Normal' und strenger für sich allein.",
   "Message Filter: every check is switched off, so nothing is ever scored.": "Message Filter: Jede Prüfung ist abgeschaltet, es wird also nie etwas bewertet.",
   "Message Filter: only one check can produce evidence and 'Require Two Signals' is on, so only viewers new to your channel can ever be acted on. Turn on a second check, or turn off 'Require Two Signals' under Expert Tuning.": "Message Filter: Nur eine Prüfung kann Belege liefern und 'Zwei Signale verlangen' ist an, also können nur Zuschauer geahndet werden, die neu in deinem Kanal sind. Schalte eine zweite Prüfung ein oder 'Zwei Signale verlangen' unter Experten-Feinjustierung aus.",
-  "How this works": "Wie das funktioniert",
+  "How this works": "Was ist das",
   "controls 1 setting": "steuert 1 Einstellung",
   "controls {count} settings": "steuert {count} Einstellungen",
   "on": "an",
@@ -2019,5 +2019,14 @@
   "One line per account, with when it was found, what was done and the day the account was made. A new file starts each month; the months before stay beside it as lurkbot-finds-2026-09.txt and so on.": "Eine Zeile pro Konto, mit dem Zeitpunkt des Funds, dem, was getan wurde, und dem Tag, an dem das Konto erstellt wurde. Jeden Monat beginnt eine neue Datei; die Monate davor bleiben daneben als lurkbot-finds-2026-09.txt und so weiter.",
   "{count} this month": "{count} diesen Monat",
   "Opens the Logs folder with this file selected.": "Öffnet den Logs-Ordner mit dieser Datei ausgewählt.",
-  "translated by {name}": "übersetzt von {name}"
+  "translated by {name}": "übersetzt von {name}",
+  "More options on this page under {menu}.": "Mehr Optionen auf dieser Seite unter {menu}.",
+  "Data And Services": "Daten und Dienste",
+  "Alir3z4 stop-words (Spam Learner)": "Alir3z4 stop-words (Spam Learner)",
+  "Unicode confusables (lookalike letters)": "Unicode confusables (ähnlich aussehende Zeichen)",
+  "YayText (lookalike letters)": "YayText (ähnlich aussehende Zeichen)",
+  "IANA (top-level domains)": "IANA (Top-Level-Domains)",
+  "Stop The Bots (Known Patterns)": "Stop The Bots (Known Patterns)",
+  "Alejo (pronouns)": "Alejo (Pronomen)",
+  "ayrtonalexis (Permit)": "ayrtonalexis (Permit)"
 }

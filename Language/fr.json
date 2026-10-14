@@ -2019,5 +2019,14 @@
   "One line per account, with when it was found, what was done and the day the account was made. A new file starts each month; the months before stay beside it as lurkbot-finds-2026-09.txt and so on.": "Une ligne par compte, avec le moment où il a été trouvé, ce qui a été fait et le jour où le compte a été créé. Un nouveau fichier commence chaque mois ; les mois précédents restent à côté sous le nom lurkbot-finds-2026-09.txt et ainsi de suite.",
   "{count} this month": "{count} ce mois-ci",
   "Opens the Logs folder with this file selected.": "Ouvre le dossier Logs avec ce fichier sélectionné.",
-  "translated by {name}": "traduit par {name}"
+  "translated by {name}": "traduit par {name}",
+  "More options on this page under {menu}.": "Plus d'options sur cette page dans {menu}.",
+  "Data And Services": "Données et services",
+  "Alir3z4 stop-words (Spam Learner)": "Alir3z4 stop-words (Spam Learner)",
+  "Unicode confusables (lookalike letters)": "Unicode confusables (caractères ressemblants)",
+  "YayText (lookalike letters)": "YayText (caractères ressemblants)",
+  "IANA (top-level domains)": "IANA (domaines de premier niveau)",
+  "Stop The Bots (Known Patterns)": "Stop The Bots (Known Patterns)",
+  "Alejo (pronouns)": "Alejo (pronoms)",
+  "ayrtonalexis (Permit)": "ayrtonalexis (Permit)"
 }

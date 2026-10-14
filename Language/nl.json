@@ -2309,5 +2309,14 @@
   "One line per account, with when it was found, what was done and the day the account was made. A new file starts each month; the months before stay beside it as lurkbot-finds-2026-09.txt and so on.": "One line per account, with when it was found, what was done and the day the account was made. A new file starts each month; the months before stay beside it as lurkbot-finds-2026-09.txt and so on.",
   "{count} this month": "{count} this month",
   "Opens the Logs folder with this file selected.": "Opens the Logs folder with this file selected.",
-  "translated by {name}": "translated by {name}"
+  "translated by {name}": "translated by {name}",
+  "More options on this page under {menu}.": "More options on this page under {menu}.",
+  "Data And Services": "Data And Services",
+  "Alir3z4 stop-words (Spam Learner)": "Alir3z4 stop-words (Spam Learner)",
+  "Unicode confusables (lookalike letters)": "Unicode confusables (lookalike letters)",
+  "YayText (lookalike letters)": "YayText (lookalike letters)",
+  "IANA (top-level domains)": "IANA (top-level domains)",
+  "Stop The Bots (Known Patterns)": "Stop The Bots (Known Patterns)",
+  "Alejo (pronouns)": "Alejo (pronouns)",
+  "ayrtonalexis (Permit)": "ayrtonalexis (Permit)"
 }
