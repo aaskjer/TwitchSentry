@@ -57,19 +57,13 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 
 Twitch's AutoMod reads messages for offensive language, and it is good at that. It has nothing to say about:
 
-- typos like `hey.how` or `Super...Bis später`, which it may hold back for nothing more than looking like a link.
+- typos like `hey.how` or `Super.Bis später`, which it may hold back for nothing more than looking like a link.
 - forty accounts arriving on a raid and posting the same line.
 - hundreds of throwaway accounts pushing the follow button to corrupt your statistics.
 - the "your channel would look great with a logo" chat that only turns into a sales pitch on the fifth message.
 - the messages it *does* hold back, which sit in a queue until a moderator answers them one by one.
 
-TwitchSentry covers all of those and more, and answers AutoMod's queue for you so nothing sits in it waiting on a moderator.
-
----
-
-## Try it without anyone getting hurt
-
-Switch on **test mode** from the ☰ menu. While it runs nothing is deleted, timed out or banned: every module posts what it *would* have done instead, so you can point a real chat at your settings and nobody gets punished for helping you test them. It ends on its own after five minutes and the notice strip counts it down, so a chat is never left unguarded because somebody forgot to switch it back.
+TwitchSentry covers all of those and more, and handles AutoMod's queue for you so nothing sits in it waiting on a moderator.
 
 ---
 
@@ -83,29 +77,14 @@ Found a bug or have an idea? **Report...** in the ☰ menu opens a pre-filled Gi
 
 The settings window ships in English but you can download also: German, Spanish, French and Brazilian Portuguese, plus languages contributed by the community, switchable from the ☰ menu. What the bot says in chat is yours to write, in whatever language your channel speaks, and it can speak of a viewer by the pronouns they set on [pronouns.alejo.io](https://pronouns.alejo.io). The translations are made with AI help and human review. If a text reads badly, **Report...** in the ☰ menu → *A translation* sends in a better wording. Want your own language in there? **Share With Others...** takes a complete translation file: [Adding a translation](Manual.md#languages).
 
-## Updates
-
-The settings window checks for new releases whenever it opens and says so at the top, betas included. Rather wait for stable releases? **Ignore Betas** on the notice.
-
 ---
 
 # What you need
 
 - **[Streamer.bot](https://streamer.bot)**, connected to your Twitch account. That is the whole dependency.
-- Nothing to pay for, no extra bot account, no extra .dll file. Everything lives inside streamer.bot and files beside your Streamer.bot install TwitchSentry creates itself.
+- Nothing to pay for, no extra .dll file. Everything lives inside streamer.bot and files beside your Streamer.bot install TwitchSentry creates itself.
 - (Optional) a free **[VirusTotal](https://www.virustotal.com/gui/join-us)** API key and/or **[IPQualityScore](https://www.ipqualityscore.com/create-account)** one if you want a second opinion. *Only* for the optional [Check Link](Manual.md#check-link) module.
-
-## Decide how strict, in one click
-
-**Profiles**, at the top of the ☰ menu. Five of them — Relaxed, Balanced, Strict, Under Attack, Just Chatting — and picking one sets the message, raid, follow and spam sides together instead of forty settings one at a time. A fresh install already sits at Balanced, so it is the way back rather than a change. Save your own tuning under a name and it joins the list, or share it for others to import. [More →](Manual.md#profiles)
-
-## Block lists that keep up
-
-New viewer-selling sites and bot wording are published once, to the spam feed in this repository, and reach every install within a few hours. An entry you delete stays deleted. Found one yourself? **Share With Others...** in the ☰ menu sends it in for review, and once accepted it reaches everyone else. [More →](Manual.md#known-patterns)
-
-## Still not sure if TwitchSentry is the right one for you?
-
-Check out this [Comparison](https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Comparison.md) between TwitchSentry and eight other common bots to make a choice!
+- Not sure if TwitchSentry is the right tool for you? Check out this fair **[Comparison](Utilities/Comparison.md)**
 
 ---
 
