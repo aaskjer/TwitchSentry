@@ -17,7 +17,7 @@ not have**. Create these, or the area survives only as the `**Area:**` line in t
 - `message-filter` - Message Filter
 - `spam` - Spam Scoring and Learner
 - `raid-protection` - Raid Protection
-- `follow-protection` - Follow Protection
+- `followbot-protection` - FollowBot Protection
 - `lurkbot-filter` - LurkBot Filter
 - `word-filter` - Word Filter
 - `bot-list` - Shared Bot List

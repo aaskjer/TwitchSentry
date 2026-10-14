@@ -36,7 +36,7 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 | **[Spam Scoring](Manual.md#spam-scoring)** | Reads a message as an advert with parts — somewhere to go, something on offer, a way to redeem it, a signature — and acts when enough parts fit together. Always on. |
 | **[Message Filter](Manual.md#message-filter)** | Watches *how* someone and *who* chats: account age, ALL CAPS, emote spam, flooding and repeats, and if you want them, repeated words, symbol spam, walls of text, mass mentions, ASCII art and Zalgo text. |
 | **[Raid Protection](Manual.md#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
-| **[Follow Protection](Manual.md#follow-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
+| **[FollowBot Protection](Manual.md#followbot-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
 | **[LurkBot Filter](Manual.md#lurkbot-filter)** | Watches who sits in chat without writing, and reports or bans accounts from a known bot wave. |
 | **[Word Filter](Manual.md#word-filter)** | Your own list of words and phrases, found through their disguises, kept in step with Twitch's Blocked Terms, and `!nuke` for the wave no list knows yet. |
 | **[Shared Bot List](Manual.md#shared-bot-list)** | Bans the accounts other TwitchSentry channels identified as bots, from a shared list on GitHub, and reports the bots your channel is sure of. |

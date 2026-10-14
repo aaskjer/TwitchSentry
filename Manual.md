@@ -16,7 +16,7 @@ Everything is configured from one window. There is no config file you are expect
 | **[Spam Scoring](#spam-scoring)** | Reads a message as an advert with parts — somewhere to go, something on offer, a way to redeem it, a signature — and acts when enough parts fit together. Always on. |
 | **[Message Filter](#message-filter)** | Watches *how* someone chats: account age, ALL CAPS, emote spam, flooding and repeats, and if you want them, repeated words, symbol spam, walls of text, mass mentions, ASCII art and Zalgo text. |
 | **[Raid Protection](#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
-| **[Follow Protection](#follow-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
+| **[FollowBot Protection](#followbot-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
 | **[LurkBot Filter](#lurkbot-filter)** | Watches who sits in chat without writing. Looks up accounts with a bot wave's name shape and reports or bans the ones made on a known bot day, or on the same day as several others. |
 | **[Word Filter](#word-filter)** | Your own list of words and phrases, found through their disguises, kept in step with Twitch's Blocked Terms, and `!nuke` for the wave no list knows yet. |
 | **[Shared Bot List](#shared-bot-list)** | Bans the accounts other TwitchSentry channels identified as bots, from a shared list on GitHub, and reports the bots this channel is sure of to it. |
@@ -53,7 +53,7 @@ Then enable all the commands under **Commands**, as in the picture.
 
 Go to the `[TS] - Settings` action, right-click **Test** and choose **Test Trigger**. That opens the settings window. *(The first start takes a moment — it fetches the language files.)*
 
-The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, Follow Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and Discord Alerts stay off until you switch them on.
+The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, FollowBot Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and Discord Alerts stay off until you switch them on.
 
 ---
 
@@ -129,7 +129,7 @@ of how strict this channel is, which is 261 of the 297 settings in `configs.json
 
 **What it deliberately does not:** your Discord webhook and your VirusTotal and IPQS keys; the people
 and addresses this channel knows, meaning your whitelist, your excluded and trusted users, the AutoMod
-allow list and the Follow Protection block list; and what belongs to this install rather than to a
+allow list and the FollowBot Protection block list; and what belongs to this install rather than to a
 policy — bot account, language, theme, backup folder, and whether test mode is running.
 
 **Import Profile...** reads a file from anywhere, copies it into the Profiles folder so you can come
@@ -389,15 +389,16 @@ reaches text-to-speech or alerts. Tick **Pause Queues During A Raid** and enter 
 line, exactly as Streamer.bot lists them under *Action Queues*. They are paused the first time a raid
 message crosses the score threshold, or when Raid Protection is armed from a deck button or the panic
 button; a friendly raid that never crosses it leaves every queue running. When the raid window ends they
-run again, with what piled up meanwhile, or without it when **Clear Queues On Resume** is ticked. Only
-queues TwitchSentry paused are resumed, and test mode pauses nothing. Never name a queue TwitchSentry's own
+run again, with what piled up meanwhile, or without it when **Clear Queues On Resume** is ticked. A queue
+FollowBot Protection holds as well stays paused until its follow wave is over too. Only queues TwitchSentry
+paused are resumed, and test mode pauses nothing. Never name a queue TwitchSentry's own
 actions run in.
 
-## Follow Protection
+## FollowBot Protection
 
 | Easy Mode | Expert Mode |
 |:---:|:---:|
-| ![Easy mode](docs/screenshots/follow-protection.png) | ![Expert mode](docs/screenshots/follow-protection-expert.png) |
+| ![Easy mode](docs/screenshots/followbot-protection.png) | ![Expert mode](docs/screenshots/followbot-protection-expert.png) |
 
 **Off by default**. It counts how many **different** accounts arrive inside **Window (Seconds)**, and
 only once **Accounts Needed** is crossed, it looks them up and compares their account data against your settings, if there's a match, the accounts get blocked, which removes their follow and blocks them from any further action on your channel.
@@ -408,9 +409,14 @@ Avatar**, **Empty Profile** and **Throwaway Name**.
 is somebody who never filled the form in. 
 - **It blocks rather than bans** A ban leaves the follower on your list while a block removes the follow and stops that account following again.
 - **Report Only is default**, because a block is invisible from the viewer's side: they simply cannot follow,
-and nobody tells them why. Every account it blocks is written to **Blocked Accounts** on the page with the
-evidence that convicted it beside it, and [`!tsundo`](#chat-commands) lifts the last one.
+and nobody tells them why. Every account it blocks is written to `followbot-blocks.txt` in the Logs folder,
+with the evidence that convicted it, and [`!tsundo`](#chat-commands) lifts the last one. **Open Folder**
+under *Blocked Accounts* on the page shows the file in Explorer; a new one starts each month, like the other logs.
 - Off by Default: **Judge Single Follows Too** runs the checks on every follow rather than only inside a wave.
+- **Pause Queues** holds the Streamer.bot queues you name, your follow alerts for example, while a wave is
+going on, and lets them run again when the wave window ends, with what piled up meanwhile or without it when
+**Clear Queues On Resume** is ticked. A queue Raid Protection holds as well stays paused until both are done.
+Test mode pauses nothing, and like on Raid Protection, never name a queue TwitchSentry's own actions run in.
 - Its one chat message, **Follower Blocked**, is on the page's Messages tab and empty by default: the account it blocked is not there to read it.
 
 ## LurkBot Filter
@@ -431,8 +437,8 @@ same short name pattern, no picture, no bio.
   day as at least **Same Day Accounts** (3) other accounts of that name shape. Accounts are remembered for
   30 days, so a group does not have to sit in chat at the same time. **Bare Profiles Only** (on) judges
   only accounts with Twitch's default picture, no bio, and neither affiliate nor partner.
-- **Report Only** writes each account to the Action Log and **Found Accounts**, and to Discord and a Windows
-  notification if those are on. **Ban** bans each account once; one [`!tsundo`](#chat-commands) lifts the whole
+- **Report Only** writes each account to the Action Log and `lurkbot-finds.txt` in the Logs folder (**Open Folder**
+  under *Found Accounts* shows it), and to Discord and a Windows notification if those are on. **Ban** bans each account once; one [`!tsundo`](#chat-commands) lifts the whole
   round, `!tsundo @name` one account, and an account let back in is never banned again by LurkBot Filter.
 - A real viewer can be caught: somebody whose name happens to fit, who never set a picture or a bio, and who
   made the account on such a day. Watch Report Only for a while before you switch to Ban.
@@ -448,7 +454,7 @@ channels reported there.
 
 - **What is reported**, automatically and without a switch: a decisive hit in Spam Scoring (a known spam
   domain, a strong keyword, a conversation scam) from a viewer who is not a regular; a LurkBot Filter verdict
-  with the name shape, a bot day and a bare profile together; an account in one of Follow Protection's follow
+  with the name shape, a bot day and a bare profile together; an account in one of FollowBot Protection's follow
   waves; and an account in a Raid Protection swarm whose wording is on a spam list. Only the account is sent,
   never a chat message or which channel reported it. Test mode reports nothing, and lifting a ban or a
   timeout on Twitch takes the report back.
@@ -553,8 +559,8 @@ Everything TwitchSentry says in chat is on the **Messages** tab of the module th
 | ![AutoMod → Messages](docs/screenshots/automod-messages.png) | ![Twitch Warn → Messages](docs/screenshots/twitch-warn-messages.png) | ![Permit → Messages](docs/screenshots/permit-messages.png) |
 | Check Link → Messages | Voting → Messages | Word Filter → Messages |
 | ![Check Link → Messages](docs/screenshots/check-link-messages.png) | ![Voting → Messages](docs/screenshots/voting-messages.png) | ![Word Filter → Messages](docs/screenshots/word-filter-messages.png) |
-| Follow Protection → Messages |  |  |
-| ![Follow Protection → Messages](docs/screenshots/follow-protection-messages.png) |  |  |
+| FollowBot Protection → Messages |  |  |
+| ![FollowBot Protection → Messages](docs/screenshots/followbot-protection-messages.png) |  |  |
 
 ## Speaking of a viewer by their pronouns
 
@@ -594,7 +600,7 @@ word to change, so these viewers get the third form instead.
 
 <img width="926" alt="Action Log" src="docs/screenshots/action-log.png" />
 
-Every action involving a viewer this month, filterable by module and by result, with the raw line underneath. This is the page for *what happened*.
+Every action involving a viewer this month, filterable by module and by result, with the raw line underneath. This is the page for *what happened*. Each module brings its own columns, and **Details** holds whatever a line says that has no column of its own, such as the changes of a Word Filter sync.
 
 Each month starts a new `action-log.txt` (and a new `violation-log.txt`). The month before is moved aside in the same `Logs` folder as `action-log-2026-09.txt` and so on, and nothing is deleted. The Home counters still count the older months, and the Spam Learner's History Lines reach back into them, so a new month does not start its memory from nothing.
 
@@ -682,7 +688,7 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 |---|---|---|
 | `tsPanic` | `toggle` | The panic button: switches to **Under Attack** and arms Raid Protection, and pressed again puts back every setting the way it was before. `on` and `off` work too |
 | `tsProfile` | `Under Attack` | Switches to that profile: `Relaxed`, `Balanced`, `Strict`, `Under Attack`, `Just Chatting`, or the name of one of your saved profiles |
-| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `Follow Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner`, `Discord Alerts` |
+| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `FollowBot Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner`, `Discord Alerts` |
 | `tsExempt` | `VIPs on` | Whether `Followers`, `Subscribers` or `VIPs` are left alone by the filters — *Exclude Followers*, *Exclude Subscribers* and *Exclude VIPs* on General Settings |
 | `tsAllow` | `YouTube Videos on` | One of the twelve *Always Allowed* switches on General Settings: `Your Twitch Clips`, `Your Twitch Channel Page`, `Your YouTube Channel Page`, `Your Kick Clips`, `Your Kick VODs`, `Twitch Clips`, `Twitch VOD Links`, `YouTube Videos`, `YouTube Shorts`, `YouTube Live Streams`, `YouTube Clips`, `Kick VOD Links` |
 | `tsAutoMod` | `allow` | What AutoMod does with held messages (*AutoMod Action*): `deny`, `allow`, or `toggle` |
@@ -698,7 +704,7 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 
 The state after a module or an exemption is `on` or `off` (`an` and `aus` work too). Left out, the key
 switches the setting over, which is what a plain key wants. Names ignore upper and lower case, spaces and
-dashes, so `follow-protection on` is Follow Protection.
+dashes, so `followbot-protection on` is FollowBot Protection.
 
 - **Stream Deck**, with the Streamer.bot plugin: an **Action** key on `[TS] - Deck`, with the argument
   under its arguments. For something that goes on and off, an **Action Switch** key with `[TS] - Deck`

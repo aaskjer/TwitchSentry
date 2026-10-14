@@ -34,7 +34,7 @@ Make sure Streamer.bot does **not** run as administrator, and not from inside a 
 
 **Q: What is Expert Mode?**
 
-Message Filter, Raid Protection, Follow Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
+Message Filter, Raid Protection, FollowBot Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
 
 ---
 
@@ -134,7 +134,7 @@ Yes: **Save Current Settings** in the Profiles dialog writes them to `TwitchSent
 
 **Q: I imported someone's profile and my whitelist didn't change. Broken?**
 
-No. A profile carries how strict to be, never who is exempt. Your whitelist, excluded and trusted users, AutoMod allow list and Follow Protection block list stay yours.
+No. A profile carries how strict to be, never who is exempt. Your whitelist, excluded and trusted users, AutoMod allow list and FollowBot Protection block list stay yours.
 
 ---
 
@@ -301,11 +301,11 @@ The dominant pattern decides: emote spam prefers slow mode, fresh accounts follo
 
 ---
 
-## 👣 Follow Protection
+## 👣 FollowBot Protection
 
 **Q: What does it do?**
 
-It watches follows. When enough different accounts follow within a short window (8 in 30 seconds by default), each is checked for a young account, default avatar, empty profile and throwaway name; age decides whether the cosmetic checks count. Off by default, and **Report Only** by default. On **Block**, the follow is removed and the account can't follow again. Blocked accounts are listed on the page, and `!tsundo` lifts the last block.
+It watches follows. When enough different accounts follow within a short window (8 in 30 seconds by default), each is checked for a young account, default avatar, empty profile and throwaway name; age decides whether the cosmetic checks count. Off by default, and **Report Only** by default. On **Block**, the follow is removed and the account can't follow again. Every blocked account is written to `followbot-blocks.txt` in the Logs folder (**Open Folder** under *Blocked Accounts* on the page shows it), and `!tsundo` lifts the last block. **Pause Queues** can hold your follow alerts while a wave is going on.
 
 ---
 

@@ -108,7 +108,7 @@ PROFILE_EXCLUDED = [
     "virusTotalApiKey", "ipqsApiKey",
     "excludedUsers", "excludedGroups", "trustedUsers", "trustedRaiders", "whitelistDomains",
     "autoModWhitelist", "voteExcludedUsers", "voteExcludedGroups", "fgBlockedList", "lbFoundList",
-    "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames",
+    "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames", "fgPauseQueueNames",
     "useBotAccount", "DarkMode", "guiLanguage", "uiExpertMode", "dismissedHints",
     "settingsSchema", "activeProfile", "updateChannel", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",

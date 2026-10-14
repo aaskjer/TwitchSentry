@@ -19,7 +19,7 @@ body:
         - "Message Filter"
         - "Spam Scoring and Learner"
         - "Raid Protection"
-        - "Follow Protection"
+        - "FollowBot Protection"
         - "LurkBot Filter"
         - "Word Filter"
         - "Shared Bot List"
