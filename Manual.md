@@ -294,7 +294,7 @@ The third tab, **Messages**, holds what the Message Filter says in chat, includi
 
 Always on. A link from a viewer who is not exempt and holds no [permit](#permit) is removed the way **Default Action** on General Settings says, unless this page allows it. Two tabs: **Settings** and **Messages**.
 
-**Whitelisted Domains**, under *Allowed Domains*, is your own list of addresses that always pass. A whitelist entry without a trailing `/*` is an exact match: `twitch.tv/yourname` allows that one link and nothing nested under it, so anything below it needs `twitch.tv/yourname/*`.
+**Whitelisted Domains**, under *Allowed Domains*, is your own list of addresses that always pass. A domain on its own is an exact match: `youtube.com` allows that address and nothing after it. An entry with a path covers everything below it, on whole path segments: `twitch.tv/yourname` allows your channel and its clips, but not `twitch.tv/yournamefan`. A trailing `/*` allows anything after the part before it, and `*.youtube.com` covers youtube.com itself as well as every subdomain.
 
 **Always Allowed**, the card below it, is the shortcut for the entry most people write first: switches that let your own clips and videos through for everybody, without a permit and without a whitelist line. The channel names are read from whichever accounts Streamer.bot is signed in to, so a rename follows along.
 

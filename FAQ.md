@@ -274,10 +274,10 @@ No. **Always Allowed** on the Link Filter page covers them. **Only Your Channel*
 |---|---|
 | `youtube.com` | Exactly that address, nothing after it |
 | `youtube.com/*` | Anything after `youtube.com/` |
-| `*.youtube.com/*` | Any subdomain (`music.youtube.com`) and anything after it, but not bare `youtube.com` |
-| `twitch.tv/aaskjer` | Exactly that channel link |
+| `*.youtube.com/*` | `youtube.com` and any subdomain (`music.youtube.com`), and anything after it |
+| `twitch.tv/aaskjer` | That channel link and everything below it, such as its clips |
 
-So `twitch.tv/yourname` does not cover your clips; add `twitch.tv/yourname/*` for that.
+So `twitch.tv/yourname` already covers your clips, but not a channel whose name only starts the same way (`twitch.tv/yournamefan`).
 
 ---
 
