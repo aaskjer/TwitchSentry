@@ -173,7 +173,7 @@ Behaviour shared by every module: whether to speak through your bot account, whe
 
 **Default Action** is what the Message Filter, the Link Filter and Spam Scoring do with a message that breaks a rule: delete it, time the viewer out for *Timeout Duration*, or ban them. It is one choice for all three; Raid Protection has its own, on its Detection tab.
 
-Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message, and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
+Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message (followers are read from Twitch once per Streamer.bot session and kept in `Cache/followers.txt`, so someone who follows mid-stream counts from the next session), and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
 
 ## Command Replies
 
@@ -343,7 +343,7 @@ One part on its own is a coincidence — plenty of ordinary messages have one. T
 
 <img width="926" alt="Known Patterns" src="docs/screenshots/known-patterns.png" />
 
-The actual active rules every module checks against — `spam.json`, editable in place. Spam domains, keywords, strong keywords, domain endings, custom patterns and voucher-code patterns, plus the four **conversation beats** the scam detector matches on. Add your own here, or approve what the Learner suggests. Don't forget **Save**.
+The actual active rules every module checks against — `spam.json`, editable in place. Spam domains, keywords, strong keywords, domain endings, custom patterns and voucher-code patterns, plus the four **conversation beats** the scam detector matches on, and the **hand-off phrases** and **service offers** it acts on for accounts new to your chat. Add your own here, or approve what the Learner suggests. Don't forget **Save**.
 
 **New entries arrive on their own.** When a new viewer-selling site starts circulating, it is added once to the [spam feed](https://github.com/aaskjer/TwitchSentry/blob/main/Feed/README.md), and within a few hours it shows up in these lists — no new version to import. Each entry arrives exactly once: delete one here and it stays deleted. The feed only ever adds to the plain-text lists; custom patterns and voucher patterns are yours alone. **Receive New Entries** at the top of the page switches it off.
 
