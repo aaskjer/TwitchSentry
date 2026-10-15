@@ -31,8 +31,7 @@ body:
         - "Chat Commands"
         - "Offline Protection"
         - "Deck Buttons and OBS Dock"
-        - "Discord Alerts"
-        - "Windows Notifications"
+        - "Notifications"
         - "The settings window"
         - "A translation"
     validations:

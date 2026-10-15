@@ -387,7 +387,7 @@ Yes: subscribers and VIPs globally, plus users and Streamer.bot groups on the ex
 
 ---
 
-## 🦝 Discord Alerts
+## 🔔 Notifications
 
 **Q: What can it post?**
 
@@ -409,15 +409,13 @@ No. Alerts are queued, and a burst is merged into messages of up to ten.
 
 **Q: Can I change the name alerts post under?**
 
-**Display Name** and **Avatar URL** on the Discord Alerts page. Clear them to use the webhook's own. Discord refuses names over 80 characters or containing *discord* or *clyde*, so TwitchSentry drops such a name instead of sending it.
+**Display Name** and **Avatar URL** on the Discord tab of the Notifications page. Clear them to use the webhook's own. Discord refuses names over 80 characters or containing *discord* or *clyde*, so TwitchSentry drops such a name instead of sending it.
 
 ---
 
-## 🔔 Windows Notifications
-
 **Q: Can TwitchSentry tell me things on the desktop?**
 
-Yes, on the **Windows Notifications** page (Setup): a new TwitchSentry release and a deck button that could not do what it was asked (both on by default), and what a deck button just did (off by default). They show while the settings window is closed too. A profile never carries these switches.
+Yes, on the **Windows** tab of the **Notifications** page (Setup): a new TwitchSentry release and a deck button that could not do what it was asked (both on by default), and what a deck button just did (off by default). They show while the settings window is closed too. A profile never carries these switches.
 
 ---
 

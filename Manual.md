@@ -26,8 +26,7 @@ Everything is configured from one window. There is no config file you are expect
 | **[Permit](#permit)** | A time-limited link exception for one viewer, granted by you, a moderator, or a Channel Points redeem. |
 | **[Check Link](#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
 | **[Voting](#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
-| **[Discord Alerts](#discord-alerts)** | Posts what happened to a webhook, one toggle per kind of action. |
-| **[Windows Notifications](#windows-notifications)** | A Windows notification for a new TwitchSentry release and, if you want them, for what a deck button did or could not do and for any alert Discord Alerts can post. |
+| **[Notifications](#notifications)** | Posts what happened to a Discord webhook, one toggle per kind of action, and shows the same alerts as Windows notifications if you want them, along with a new TwitchSentry release and what a deck button did or could not do. |
 | **[Offline Protection](#offline-protection)** | Puts chat into the modes you pick when the stream ends, so an empty channel is guarded while Streamer.bot is closed, and lifts them when you go live. |
 | **[Deck Buttons](#deck-buttons)** | Switches profiles, modules, exemptions, Always Allowed links, AutoMod's answer and test mode, arms Raid Protection, takes the last action back or grants a link permit, from a Stream Deck key, a Streamer.bot Deck button or the [OBS dock](#the-obs-dock). A key can show what it switched. |
 
@@ -53,7 +52,7 @@ Then enable all the commands under **Commands**, as in the picture.
 
 Go to the `[TS] - Settings` action, right-click **Test** and choose **Test Trigger**. That opens the settings window. *(The first start takes a moment — it fetches the language files.)*
 
-The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, FollowBot Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and Discord Alerts stay off until you switch them on.
+The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, FollowBot Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and the Discord notifications stay off until you switch them on.
 
 ---
 
@@ -175,13 +174,19 @@ Behaviour shared by every module: whether to speak through your bot account, whe
 
 Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message (followers are read from Twitch when Streamer.bot starts and kept in `Cache/followers.txt`; a new follow counts the moment it arrives unless FollowBot Protection takes the account for a bot, and an unfollow drops out at the next start), and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
 
-## Command Replies
+### Command Replies
 
-<img width="926" alt="Command Replies" src="docs/screenshots/command-replies.png" />
+The second tab of General Settings.
+
+<img width="926" alt="General Settings → Command Replies" src="docs/screenshots/general-settings-command-replies.png" />
 
 What TwitchSentry answers when a moderator uses a [chat command](#chat-commands): confirmations, what `!tsundo` says, rejections and replies to input it could not read. The placeholders each reply accepts are listed under its box.
 
-## Discord Alerts
+## Notifications
+
+Two tabs: **Discord** posts to a channel through a webhook, **Windows** shows a notification on this PC. Each tab has its own switch in its first card, and every alert has a switch on both, so they can be on screen instead of, or as well as, in a Discord channel.
+
+### Discord
 
 One switch per thing that can happen, not per module: what you are deciding is how much you want to
 hear, and a permit being granted happens hundreds of times more often than one being revoked.
@@ -198,7 +203,7 @@ Alerts are queued and sent on a background thread, so moderation never waits on 
 alert goes out immediately; a burst arrives as one message carrying up to ten of them, which is what
 keeps a raid from spending Discord's rate limit on thirty separate requests.
 
-<img width="926" alt="Discord Alerts" src="docs/screenshots/discord-alerts.png" />
+<img width="926" alt="Notifications → Discord" src="docs/screenshots/notifications.png" />
 
 Off by default, a discord webhook and one toggle per kind of action. A pasted webhook is covered with dots straight away, so the window is safe to have on stream; the eye beside it uncovers it.
 
@@ -214,7 +219,7 @@ Example:
 * Copy WebHook URL
 
 **Send A Test Message**, under *Test Message* at the bottom of the page, posts one message to the webhook in
-the box, under the display name and avatar set there, whether Discord Alerts is on or not and without saving
+the box, under the display name and avatar set there, whether Discord is switched on or not and without saving
 first. The line beside the button says whether Discord took it, and if not, what Discord answered: *404
 Unknown Webhook* is a webhook that was deleted in Discord, *401 Invalid Webhook Token* a URL that lost part of
 itself on the way in.
@@ -223,14 +228,14 @@ itself on the way in.
 
 **How the alerts look in Discord:** under *Webhook Appearance* on the *Discord Webhook* card there are two more fields, **Display Name** and **Avatar URL**. Discord names a new webhook itself and that name says nothing about what is posting, so these ship as `TwitchSentry-Log` and the TwitchSentry logo and ride along with every alert — you do not have to give the webhook a fancy name and a logo yourself unless you want to. Empty either box and that override is not sent at all, and whatever the webhook carries in Discord shows through instead; that is the way back. Discord refuses a display name over 80 characters, or one containing *discord* or *clyde*, and refuses the whole post along with it, so TwitchSentry drops such a name rather than lose the alert — and the window warns you when you save one.
 
-## Windows Notifications
+### Windows
 
-<img width="926" alt="Windows Notifications" src="docs/screenshots/windows-notifications.png" />
+<img width="926" alt="Notifications → Windows" src="docs/screenshots/notifications-windows.png" />
 
 A small Windows notification in the corner of the screen, kept afterwards in Windows' notification
 centre. It works while the settings window is closed, and carries TwitchSentry's icon once the window
-has been opened at least once. The switch in the page's title bar turns all of them on or off; below it
-is one switch per kind:
+has been opened at least once. **Show Windows Notifications** at the top of the tab turns all of them on or
+off; below it is one switch per kind:
 
 | Switch | Default | When |
 |---|---|---|
@@ -239,8 +244,8 @@ is one switch per kind:
 | **On Deck Button Problems** | on | A deck button could not do what it was asked, and why: a profile that no longer exists, a name that matches nothing, a `configs.json` that cannot be read. |
 | **On LurkBots Found** | on | [LurkBot Filter](#lurkbot-filter) found bot accounts sitting in chat, once per round, naming them. |
 
-Below those come the same switches as on [Discord Alerts](#discord-alerts), group for group and all off until
-you switch them on. They do not need Discord Alerts at all, so the alerts can be on screen instead of, or as
+Below those come the same switches as on the [Discord](#discord) tab, group for group and all off until
+you switch them on. They do not need Discord at all, so the alerts can be on screen instead of, or as
 well as, in a Discord channel. What one module reports within a few seconds arrives as one notification
 (*Raid Protection — Action Taken (5)*, with the first viewers named), so a raid does not bury the screen.
 
@@ -484,7 +489,7 @@ what this page switched on, and nothing else.
 
 - It runs as its own action, **`OfflineProtection`**, with two triggers: *Twitch → Stream Offline* and
   *Twitch → Stream Online*. Streamer.bot has to be running when the stream ends.
-- With [Discord Alerts](#discord-alerts) on, **On Chat Modes Switched** posts *Chat Modes On* as the stream ends
+- With [Discord](#discord) switched on, **On Chat Modes Switched** posts *Chat Modes On* as the stream ends
   and *Chat Modes Lifted* as it goes live, naming any mode Twitch would not switch.
 - What it switched on is remembered across a restart of Streamer.bot, so going live lifts it even then.
 - A Shield Mode that was already on is left alone, and never switched off when you go live.
@@ -506,7 +511,7 @@ These are off by default, except Permit. Each is genuinely optional — the chat
 
 **Ban Evasion** (off by default, needs the trigger *Twitch > Moderation > Suspicious User Message*) acts on the rating Twitch gives an account it compares with the ones banned here before: *likely* only, or *possible* too. Twitch's own Suspicious User Controls can already monitor or restrict such accounts; this adds a ban if you want one, the Action Log, Discord and `!tsundo`. Each account is acted on once a day.
 
-**Unban Requests** (on, and working with the AutoMod module switched off too, needs the trigger *Twitch > Moderation > Unban Request Created*) posts every unban request to Discord with what TwitchSentry's logs say about the account beside it: which module acted, when, why and on which message, archived months included. The decision is still made in Twitch's moderator view.
+**Unban requests** are always written to the Action Log, and posted to Discord or shown as a Windows notification wherever **On Unban Requests** is switched on under [Notifications](#notifications), with what TwitchSentry's logs say about the account beside them: which module acted, when, why and on which message, archived months included. This works with the AutoMod module switched off too. The decision is still made in Twitch's moderator view.
 
 ## Twitch Warn
 
@@ -548,11 +553,11 @@ Lets chat decide! `!vote @user` starts or joins a vote, and enough *unique* vote
 
 # Messages
 
-Everything TwitchSentry says in chat is on the **Messages** tab of the module that says it, with the placeholders each message accepts listed under the box. Its answers to chat commands are on [Command Replies](#command-replies), under Setup. Nothing here is translated for you — this is your bot's voice, your wording and your language, so a German channel picks Deutsch for the window *and* writes these in German.
+Everything TwitchSentry says in chat is on the **Messages** tab of the module that says it, with the placeholders each message accepts listed under the box. Its answers to chat commands are on the [Command Replies](#command-replies) tab of General Settings. Nothing here is translated for you — this is your bot's voice, your wording and your language, so a German channel picks Deutsch for the window *and* writes these in German.
 
-| Command Replies | Message Filter → Messages | Raid Protection → Messages |
+| General Settings → Command Replies | Message Filter → Messages | Raid Protection → Messages |
 |:---:|:---:|:---:|
-| ![Command Replies](docs/screenshots/command-replies.png) | ![Message Filter → Messages](docs/screenshots/message-filter-messages.png) | ![Raid Protection → Messages](docs/screenshots/raid-protection-messages.png) |
+| ![General Settings → Command Replies](docs/screenshots/general-settings-command-replies.png) | ![Message Filter → Messages](docs/screenshots/message-filter-messages.png) | ![Raid Protection → Messages](docs/screenshots/raid-protection-messages.png) |
 | Link Filter → Messages | Spam Scoring → Messages | Spam Learner → Messages |
 | ![Link Filter → Messages](docs/screenshots/link-filter-messages.png) | ![Spam Scoring → Messages](docs/screenshots/spam-scoring-messages.png) | ![Spam Learner → Messages](docs/screenshots/spam-learner-messages.png) |
 | AutoMod → Messages | Twitch Warn → Messages | Permit → Messages |
@@ -630,7 +635,7 @@ The **Clean Chat Log** is the opposite of the violation log: a sample of ordinar
 
 <img width="926" alt="Manual" src="docs/screenshots/manual.png" />
 
-The longer explanation behind every card with a **?** in its corner, page by page in the order of the sidebar, and a list of every [chat command](#chat-commands) under *Command Replies*. A **?** opens the Manual at its card's section and lights it up for a moment; **← Back to …** at the top takes you back to the page you came from, scrolled to where you left it. Opened from the sidebar or from Home, the Manual has no back button.
+The longer explanation behind every card with a **?** in its corner, page by page in the order of the sidebar, and a list of every [chat command](#chat-commands) under *General Settings*. A **?** opens the Manual at its card's section and lights it up for a moment; **← Back to …** at the top takes you back to the page you came from, scrolled to where you left it. Opened from the sidebar or from Home, the Manual has no back button.
 
 The cards themselves stay short: an explanation of a sentence or two lives only in the Manual, a longer one keeps a short version under the card's *How this works*. Installing TwitchSentry, the deck buttons and where the files live are covered only here, in the online manual, which the Manual page links to.
 
@@ -688,7 +693,7 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 |---|---|---|
 | `tsPanic` | `toggle` | The panic button: switches to **Under Attack** and arms Raid Protection, and pressed again puts back every setting the way it was before. `on` and `off` work too |
 | `tsProfile` | `Under Attack` | Switches to that profile: `Relaxed`, `Balanced`, `Strict`, `Under Attack`, `Just Chatting`, or the name of one of your saved profiles |
-| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `FollowBot Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner`, `Discord Alerts` |
+| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `FollowBot Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner`, `Discord` |
 | `tsExempt` | `VIPs on` | Whether `Followers`, `Subscribers` or `VIPs` are left alone by the filters — *Exclude Followers*, *Exclude Subscribers* and *Exclude VIPs* on General Settings |
 | `tsAllow` | `YouTube Videos on` | One of the twelve *Always Allowed* switches on General Settings: `Your Twitch Clips`, `Your Twitch Channel Page`, `Your YouTube Channel Page`, `Your Kick Clips`, `Your Kick VODs`, `Twitch Clips`, `Twitch VOD Links`, `YouTube Videos`, `YouTube Shorts`, `YouTube Live Streams`, `YouTube Clips`, `Kick VOD Links` |
 | `tsAutoMod` | `allow` | What AutoMod does with held messages (*AutoMod Action*): `deny`, `allow`, or `toggle` |
@@ -733,7 +738,7 @@ A Stream Deck key shows a ✓ when everything it asked for went through and a �
 for a moment, and then goes back to its own picture. The blue lightning bolt is that picture: it is the
 Streamer.bot plugin's standard icon for an *Action* key, not a warning, and it stays until you give the
 key an icon of your own. A Streamer.bot Deck button shows neither mark: what it did is in the logs, in the
-[OBS dock](#the-obs-dock), and in a [Windows notification](#windows-notifications) if you switch those on. Either way the Streamer.bot log and the **Status Log** page say what happened, or why not: a name that
+[OBS dock](#the-obs-dock), and in a [Windows notification](#windows) if you switch those on. Either way the Streamer.bot log and the **Status Log** page say what happened, or why not: a name that
 matches nothing (the line lists what there is), a `configs.json` that cannot be read, or one from an older
 TwitchSentry, which the settings window brings up to date the next time you open it and press Save.
 Whatever fails writes nothing.

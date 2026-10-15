@@ -29,8 +29,7 @@ not have**. Create these, or the area survives only as the `**Area:**` line in t
 - `chat-commands` - Chat Commands
 - `offline-protection` - Offline Protection
 - `deck` - Deck Buttons and OBS Dock
-- `discord` - Discord Alerts
-- `windows-notifications` - Windows Notifications
+- `notifications` - Notifications
 - `settings-window` - The settings window
 - `translations` - A translation
 
