@@ -33,7 +33,3 @@ the GitHub and Twitch keys live only in this Worker's secrets.
   for it again, and it needs three fresh networks to return.
 - Reports expire after a year; `changes.json` keeps a week.
 - Limits per hour: 120 requests and 3000 items per network, 2000 items per installation.
-
-## Tests
-
-`npm test` runs the rules and the real Worker under `wrangler dev` against a fake GitHub and Twitch.
