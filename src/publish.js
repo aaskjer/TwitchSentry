@@ -4,6 +4,7 @@ import { LIMITS, CATEGORIES, diff, isPublishable, keyOf, whyGoneOf, verdictOf, b
 import * as store from "./store.js";
 import { getUsers, twitchConfigured } from "./twitch.js";
 import { commitFiles } from "./github.js";
+import { refreshExternal } from "./sources.js";
 
 export const REMOVAL_FORM = "botlist-removal.yml";
 
@@ -102,6 +103,7 @@ export async function publish(env, { force = false, now = Math.floor(Date.now() 
   try {
     const meta = await store.readMeta(db);
     const verified = await verifyAccounts(env, db, now);
+    const external = await refreshExternal(env, db, meta, now);
     let since = meta.changes_since;
     if (now - meta.prune_at >= 3600) since = await store.prune(db, now, meta, LIMITS);
 
@@ -115,10 +117,10 @@ export async function publish(env, { force = false, now = Math.floor(Date.now() 
     }
 
     const due = events.length > 0 || meta.pending_commit === 1 || !meta.commit || force;
-    if (!due) return { ok: true, changed: false, version, verified };
+    if (!due) return { ok: true, changed: false, version, verified, external };
     if (!env.GITHUB_TOKEN || !env.GITHUB_REPO || !env.GITHUB_BRANCH) {
       await store.writeMeta(db, { error: "GitHub is not configured" }).run();
-      return { ok: false, changed: events.length > 0, committed: false, version, verified, error: "GitHub is not configured" };
+      return { ok: false, changed: events.length > 0, committed: false, version, verified, external, error: "GitHub is not configured" };
     }
 
     const [published, changes, removals] = await Promise.all([
@@ -128,16 +130,16 @@ export async function publish(env, { force = false, now = Math.floor(Date.now() 
     ]);
     const files = buildFiles({
       version, now, published, events: changes, changesSince: since, removals,
-      repo: env.GITHUB_REPO, form: REMOVAL_FORM,
+      repo: env.GITHUB_REPO, form: REMOVAL_FORM, external: env.EXTERNAL_REPO || null,
     });
     try {
       const sha = await commitFiles(env, files, commitMessage(version, events));
       await store.writeMeta(db, { pending_commit: 0, commit: sha, commit_at: now, error: "" }).run();
-      return { ok: true, changed: events.length > 0, committed: true, version, commit: sha, verified };
+      return { ok: true, changed: events.length > 0, committed: true, version, commit: sha, verified, external };
     } catch (err) {
       const error = String(err.message || err).slice(0, 300);
       await store.writeMeta(db, { pending_commit: 1, error }).run();
-      return { ok: false, changed: events.length > 0, committed: false, version, verified, error };
+      return { ok: false, changed: events.length > 0, committed: false, version, verified, external, error };
     }
   } finally {
     await store.releaseLock(db);

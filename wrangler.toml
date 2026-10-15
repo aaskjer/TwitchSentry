@@ -16,6 +16,8 @@ database_id = "f8e3a83d-12f1-4010-b6f9-c421ce8af32e"
 [vars]
 GITHUB_REPO = "aaskjer/TwitchSentry"
 GITHUB_BRANCH = "botlist"
+EXTERNAL_REPO = "isdsdataarchive/twitch_ban_lists"
+EXTERNAL_BRANCH = "main"
 
 [observability]
 enabled = true

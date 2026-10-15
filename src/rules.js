@@ -20,7 +20,26 @@ export const LIMITS = {
   changesDays: 7,
   recheckDays: 7,
   lockSeconds: 110,
+  externalCheckSeconds: 1800,
+  externalMaxNames: 100000,
 };
+
+// The second witness: a report is confirmed by the matching group of isdsdataarchive/twitch_ban_lists, never made
+// by it. The exempt groups (harmless accounts, unbanned ones) cancel that confirmation.
+export const EXTERNAL_LISTS = {
+  "spam_bot_list.txt": "spam",
+  "porn_bot_acc_list.txt": "spam",
+  "seller_advertising_list.txt": "spam",
+  "viewer_bot_list.txt": "lurkbot",
+  "follower_bot_list.txt": "botwave",
+  "hate_troll_list_0_g.txt": "botwave",
+  "hate_troll_list_h_m.txt": "botwave",
+  "hate_troll_list_n_z.txt": "botwave",
+  "whitelisted_bots.txt": "exempt",
+  "greylisted_bots.txt": "exempt",
+  "unban_list": "exempt",
+};
+export const EXTERNAL_REASON = "external_list";
 
 export const REASONS = new Set([
   "spam_domain", "keyword", "handoff", "service_offer", "custom_pattern", "conversation_scam", "invite_link", "offer",
@@ -195,6 +214,43 @@ export function isPublishable(reports, removed) {
   return reports >= (removed ? LIMITS.afterRemoval : LIMITS.publishFrom);
 }
 
+// One login per line; a chat command in front of it (/unban name) and anything after it are left aside.
+// One expression over the lowered text, duplicates left to SQL: a 13,000-line file has to fit the Worker's CPU budget.
+const EXTERNAL_LINE = /^[ \t]*(?:\/[a-z]+[ \t]+)?@?([a-z0-9_]{1,25})(?![a-z0-9_])(?=[ \t\r]|$)/gm;
+
+export function parseExternalList(text) {
+  const logins = [];
+  const lower = String(text ?? "").toLowerCase();
+  EXTERNAL_LINE.lastIndex = 0;
+  for (let m; logins.length < LIMITS.externalMaxNames && (m = EXTERNAL_LINE.exec(lower));) logins.push(m[1]);
+  return logins;
+}
+
+// The next list file to bring up to date: new or changed at the source, or one the source or EXTERNAL_LISTS dropped.
+// want: {file: blob sha}; have: {file: {sha, category, n}}. clear names the category to empty first.
+// Exempt files go first, so a first import never confirms an account its exemption arrives for a pass later.
+export function nextExternal(want, have) {
+  const order = Object.entries(EXTERNAL_LISTS).sort(([, a], [, b]) => (a === "exempt" ? 0 : 1) - (b === "exempt" ? 0 : 1));
+  for (const [list, category] of order) {
+    const sha = want[list] || null;
+    const held = have[list];
+    if (sha && (!held || held.sha !== sha || held.category !== category))
+      return { list, sha, category, clear: held && held.category !== category ? held.category : null };
+    if (!sha && held) return { list, sha: null, category: held.category, clear: null };
+  }
+  for (const [list, held] of Object.entries(have))
+    if (!(list in EXTERNAL_LISTS)) return { list, sha: null, category: held.category, clear: null };
+  return null;
+}
+
+// A matching external entry counts as one more independent reporter, never for an exempt or a removed account.
+export function withWitness(row) {
+  const { nets, listed, exempt, ...rest } = row;
+  const reasons = String(row.reasons || "");
+  if (!listed || exempt || row.removed_at != null) return { ...rest, reports: nets };
+  return { ...rest, reports: nets + 1, reasons: reasons ? reasons + "," + EXTERNAL_REASON : EXTERNAL_REASON };
+}
+
 export function keyOf(category, id) {
   return category + ":" + id;
 }
@@ -247,7 +303,7 @@ function json(value) {
 }
 
 // published rows: {category, id, login, reports, first_at, last_at, reasons}; events: {version, at, op, ...}.
-export function buildFiles({ version, now, published, events, changesSince, removals, repo, form }) {
+export function buildFiles({ version, now, published, events, changesSince, removals, repo, form, external = null }) {
   const files = {};
   const lists = {};
   for (const category of CATEGORIES) {
@@ -283,13 +339,35 @@ export function buildFiles({ version, now, published, events, changesSince, remo
     schema: SCHEMA, version, updated: stamp(now), banFrom: LIMITS.banFrom, lists,
     changes: { file: "changes.json", since: changesSince },
     removed: { file: "removed.json", count: removals.length },
+    ...(external ? { witness: { repo: external, lists: EXTERNAL_LISTS } } : {}),
   });
-  files["README.md"] = readme(repo, form);
+  files["README.md"] = readme(repo, form, external);
   return files;
 }
 
-export function readme(repo, form) {
+function witnessSection(external) {
+  if (!external) return "";
+  const groups = category => Object.keys(EXTERNAL_LISTS).filter(f => EXTERNAL_LISTS[f] === category).map(f => `\`${f}\``).join(", ");
+  return `
+## The second witness
+
+An account TwitchSentry reported counts one more independent channel when it is also on the matching list of
+[${external}](https://github.com/${external}), and then carries the reason \`${EXTERNAL_REASON}\`. Those lists
+never put an account here by themselves: every account on this branch was found by TwitchSentry.
+
+| List here | Confirmed by |
+|---|---|
+| \`spam\` | ${groups("spam")} |
+| \`lurkbots\` | ${groups("lurkbot")} |
+| \`botwaves\` | ${groups("botwave")} |
+
+An account on ${groups("exempt")} is never confirmed that way, nor is one removed on request.
+`;
+}
+
+export function readme(repo, form, external = null) {
   const removal = `https://github.com/${repo}/issues/new?template=${form}`;
+  const sources = external ? "independent sources (channels, or a channel and the second witness below)" : "independent channels";
   return `# TwitchSentry Bot List
 
 Twitch accounts that [TwitchSentry](https://github.com/${repo}) installations identified as bots, in three lists:
@@ -298,7 +376,7 @@ Twitch accounts that [TwitchSentry](https://github.com/${repo}) installations id
 |---|---|
 | \`spam.json\` / \`spam.txt\` | Spam Filter: a decisive hit (known spam domain, spam keyword, conversation scam, ...) |
 | \`lurkbots.json\` / \`lurkbots.txt\` | LurkBot Filter: a bot-shaped name created on a known bot day, or with others the same day |
-| \`botwaves.json\` / \`botwaves.txt\` | Follow Protection follow waves and Raid Protection spam swarms |
+| \`botwaves.json\` / \`botwaves.txt\` | FollowBot Protection follow waves and Raid Protection spam swarms |
 
 This branch is written automatically every few minutes and holds nothing else. Use it freely: the data is
 dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
@@ -311,9 +389,9 @@ not counted for it again.
 
 ## Reading the lists
 
-- \`*.txt\`: one login per line, only accounts at least **${LIMITS.banFrom} independent channels** reported.
+- \`*.txt\`: one login per line, only accounts at least **${LIMITS.banFrom} ${sources}** reported.
   This is the list to import into a ban tool.
-- \`*.json\`: every listed account, with \`reports\` (independent channels), \`first\`/\`last\` report day
+- \`*.json\`: every listed account, with \`reports\` (${sources}), \`first\`/\`last\` report day
   and \`reasons\`. One report is enough to appear here; TwitchSentry only bans from \`banFrom\` reports.
   Twitch ids are stable, logins are refreshed when an account renames.
 - \`index.json\`: the current \`version\` and counts. Poll this file; the others only change with it.
@@ -325,5 +403,5 @@ not counted for it again.
 
 Partners, affiliates, Twitch staff and well-known service bots are never listed. Neither the reporting
 channels nor any chat message are published.
-`;
+${witnessSection(external)}`;
 }
