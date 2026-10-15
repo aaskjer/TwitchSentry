@@ -1,5 +1,7 @@
 // D1 access. Lists travel as one JSON parameter through json_each, so a batch costs one query, not one per row.
 
+import { withWitness } from "./rules.js";
+
 const TABLES = [
   "CREATE TABLE IF NOT EXISTS accounts (id TEXT PRIMARY KEY, login TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', checked_at INTEGER NOT NULL DEFAULT 0, removed_at INTEGER)",
   "CREATE INDEX IF NOT EXISTS accounts_login ON accounts(login)",
@@ -15,6 +17,7 @@ const TABLES = [
   "CREATE TABLE IF NOT EXISTS removals (account_id TEXT NOT NULL, login TEXT NOT NULL, at INTEGER NOT NULL, issue INTEGER, by TEXT)",
   "CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT NOT NULL)",
   "CREATE TABLE IF NOT EXISTS hits (k TEXT PRIMARY KEY, at INTEGER NOT NULL, n INTEGER NOT NULL)",
+  "CREATE TABLE IF NOT EXISTS external (login TEXT NOT NULL, list TEXT NOT NULL, category TEXT NOT NULL, PRIMARY KEY (login, list)) WITHOUT ROWID",
 ];
 
 const IDS = "SELECT value FROM json_each(?1)";
@@ -30,7 +33,10 @@ export function ensureSchema(db) {
   return schemaReady;
 }
 
-const META_DEFAULTS = { version: 0, diff_at: 0, pending_commit: 0, changes_since: 0, prune_at: 0, commit: "", commit_at: 0, error: "", twitch_error: "" };
+const META_DEFAULTS = {
+  version: 0, diff_at: 0, pending_commit: 0, changes_since: 0, prune_at: 0, commit: "", commit_at: 0, error: "", twitch_error: "",
+  ext_checked_at: 0, ext_want: "{}", ext_have: "{}", ext_error: "",
+};
 
 export async function readMeta(db) {
   const { results } = await db.prepare("SELECT k, v FROM meta").all();
@@ -149,9 +155,22 @@ export async function readTouched(db, limit) {
 }
 
 export async function desiredRows(db, ids) {
-  const { results } = await db.prepare(`SELECT r.category AS category, r.account_id AS id, a.login AS login, a.removed_at AS removed_at, COUNT(DISTINCT r.net) AS reports, MIN(r.first_at) AS first_at, MAX(r.last_at) AS last_at, GROUP_CONCAT(DISTINCT r.reason) AS reasons FROM reports AS r JOIN accounts AS a ON a.id = r.account_id WHERE a.status = 'ok' AND r.account_id IN (${IDS}) GROUP BY r.category, r.account_id`)
+  const { results } = await db.prepare(`SELECT r.category AS category, r.account_id AS id, a.login AS login, a.removed_at AS removed_at, COUNT(DISTINCT r.net) AS nets, EXISTS (SELECT 1 FROM external AS e WHERE e.login = a.login AND e.category = r.category) AS listed, EXISTS (SELECT 1 FROM external AS x WHERE x.login = a.login AND x.category = 'exempt') AS exempt, MIN(r.first_at) AS first_at, MAX(r.last_at) AS last_at, GROUP_CONCAT(DISTINCT r.reason) AS reasons FROM reports AS r JOIN accounts AS a ON a.id = r.account_id WHERE a.status = 'ok' AND r.account_id IN (${IDS}) GROUP BY r.category, r.account_id`)
     .bind(JSON.stringify(ids)).all();
-  return results;
+  return results.map(withWitness);
+}
+
+// One external list file replaces its rows; accounts whose login arrives or leaves are diffed again.
+// Three statements for the caller's batch: a free Worker may send only 50 queries per run.
+export function replaceExternal(db, { list, category, logins }) {
+  const names = JSON.stringify(logins);
+  return [
+    db.prepare("INSERT INTO touched (account_id, at) SELECT a.id, ?3 FROM accounts AS a WHERE EXISTS (SELECT 1 FROM external AS e WHERE e.login = a.login AND e.list = ?1) <> (a.login IN (SELECT value FROM json_each(?2))) ON CONFLICT(account_id) DO UPDATE SET at = excluded.at")
+      .bind(list, names, Date.now()),
+    db.prepare("DELETE FROM external WHERE list = ?1 AND login NOT IN (SELECT value FROM json_each(?2))").bind(list, names),
+    db.prepare("INSERT INTO external (login, list, category) SELECT DISTINCT value, ?1, ?3 FROM json_each(?2) WHERE true ON CONFLICT DO NOTHING")
+      .bind(list, names, category),
+  ];
 }
 
 export async function publishedRows(db, ids) {

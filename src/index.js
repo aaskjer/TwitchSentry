@@ -146,11 +146,23 @@ async function remove(env, request) {
   });
 }
 
+function external(env, meta) {
+  if (!env.EXTERNAL_REPO) return null;
+  let have = {};
+  try { have = JSON.parse(meta.ext_have); } catch { /* shown as empty */ }
+  return {
+    repo: env.EXTERNAL_REPO,
+    checkedAt: meta.ext_checked_at ? new Date(meta.ext_checked_at * 1000).toISOString() : null,
+    lists: Object.fromEntries(Object.entries(have).map(([list, h]) => [list, h.n])),
+    error: meta.ext_error || null,
+  };
+}
+
 async function health(env) {
   const meta = await store.readMeta(env.DB);
   const { lists, pending } = await store.counts(env.DB, LIMITS.banFrom);
   return reply(200, {
-    ok: !meta.error && !meta.twitch_error,
+    ok: !meta.error && !meta.twitch_error && !meta.ext_error,
     version: meta.version,
     commit: meta.commit || null,
     committedAt: meta.commit_at ? new Date(meta.commit_at * 1000).toISOString() : null,
@@ -159,11 +171,13 @@ async function health(env) {
     twitchError: meta.twitch_error || null,
     lists,
     pendingChecks: pending,
+    external: external(env, meta),
     configured: {
       github: Boolean(env.GITHUB_TOKEN && env.GITHUB_REPO && env.GITHUB_BRANCH),
       twitch: twitchConfigured(env),
       salt: Boolean(env.HASH_SALT),
       removals: Boolean(env.REMOVAL_KEY),
+      external: Boolean(env.EXTERNAL_REPO),
     },
   });
 }

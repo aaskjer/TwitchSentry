@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   parseReport, parseRetract, parseRemoval, networkOf, hashKey, constantTimeEqual, verdictOf,
   isPublishable, diff, whyGoneOf, buildFiles, compareIds, normaliseLogin, LIMITS,
+  parseExternalList, nextExternal, withWitness, EXTERNAL_LISTS, EXTERNAL_REASON,
 } from "../src/rules.js";
 
 const INSTALL = "3f2b8c1e-9d4a-4b7e-8a1c-2e5f6a7b8c9d";
@@ -203,4 +204,54 @@ test("the branch files: one list per category, txt only from banFrom, change log
   assert.match(files["README.md"], /issues\/new\?template=botlist-removal\.yml/);
   assert.match(files["README.md"], /CC0 1\.0/);
   for (const [name, text] of Object.entries(files)) if (text) assert.ok(text.endsWith("\n"), name + " ends with a newline");
+});
+
+test("an external list file is read one login per line", () => {
+  const logins = parseExternalList("Viewer_Bot1\r\n@second\t115\n/unban third\n\n# a note\nhas space\n" + "x".repeat(30) + "\n  last_one\r\nlast_one\n/ban");
+  assert.deepEqual(logins, ["viewer_bot1", "second", "third", "has", "last_one", "last_one"], "duplicates are left to SQL");
+  assert.deepEqual(parseExternalList(undefined), []);
+  assert.deepEqual(parseExternalList("a\nb\nc"), ["a", "b", "c"], "a second call starts at the top again");
+});
+
+test("every group confirms one list, the harmless ones confirm nothing", () => {
+  assert.deepEqual(Object.values(EXTERNAL_LISTS).filter((c, i, all) => all.indexOf(c) === i).sort(), ["botwave", "exempt", "lurkbot", "spam"]);
+  for (const left of ["mad_tos_list.txt", "security_ban_list.txt", "readme.md"]) assert.ok(!(left in EXTERNAL_LISTS), left);
+});
+
+test("external files are brought up to date one at a time, exempt ones first", () => {
+  const want = { "viewer_bot_list.txt": "a1", "greylisted_bots.txt": "g1", "mad_tos_list.txt": "m1" };
+  assert.deepEqual(nextExternal(want, {}), { list: "greylisted_bots.txt", sha: "g1", category: "exempt", clear: null });
+  const have = { "greylisted_bots.txt": { sha: "g1", category: "exempt", n: 3 } };
+  assert.deepEqual(nextExternal(want, have), { list: "viewer_bot_list.txt", sha: "a1", category: "lurkbot", clear: null });
+  have["viewer_bot_list.txt"] = { sha: "a1", category: "lurkbot", n: 5 };
+  assert.equal(nextExternal(want, have), null, "an unmapped file is never read");
+  assert.equal(nextExternal({ ...want, "viewer_bot_list.txt": "a2" }, have).sha, "a2");
+  assert.deepEqual(nextExternal({ "greylisted_bots.txt": "g1" }, have), { list: "viewer_bot_list.txt", sha: null, category: "lurkbot", clear: null });
+  assert.deepEqual(nextExternal(want, { ...have, "viewer_bot_list.txt": { sha: "a1", category: "spam", n: 5 } }),
+    { list: "viewer_bot_list.txt", sha: "a1", category: "lurkbot", clear: "spam" });
+  assert.deepEqual(nextExternal(want, { ...have, "old_list.txt": { sha: "o1", category: "spam", n: 1 } }),
+    { list: "old_list.txt", sha: null, category: "spam", clear: null });
+});
+
+test("the second witness adds one reporter, never for an exempt or removed account", () => {
+  const row = { category: "lurkbot", id: "1", login: "a", removed_at: null, nets: 1, reasons: "known_day" };
+  assert.deepEqual(withWitness({ ...row, listed: 1, exempt: 0 }), { category: "lurkbot", id: "1", login: "a", removed_at: null, reports: 2, reasons: "known_day," + EXTERNAL_REASON });
+  assert.deepEqual(withWitness({ ...row, listed: 0, exempt: 0 }), { category: "lurkbot", id: "1", login: "a", removed_at: null, reports: 1, reasons: "known_day" });
+  assert.equal(withWitness({ ...row, listed: 1, exempt: 1 }).reports, 1);
+  assert.equal(withWitness({ ...row, listed: 1, exempt: 0, removed_at: 5 }).reports, 1);
+  assert.equal(withWitness({ ...row, listed: 1, exempt: 0, reasons: null }).reasons, EXTERNAL_REASON);
+});
+
+test("the branch names the second witness only when there is one", () => {
+  const args = { version: 1, now: 1791460800, changesSince: 0, repo: "aaskjer/TwitchSentry", form: "f.yml", published: [], events: [], removals: [] };
+  const without = buildFiles(args);
+  assert.equal(JSON.parse(without["index.json"]).witness, undefined);
+  assert.doesNotMatch(without["README.md"], /second witness/);
+  assert.match(without["README.md"], /2 independent channels\*\*/);
+  const withIt = buildFiles({ ...args, external: "isds/lists" });
+  assert.deepEqual(JSON.parse(withIt["index.json"]).witness, { repo: "isds/lists", lists: EXTERNAL_LISTS });
+  assert.match(withIt["README.md"], /## The second witness/);
+  assert.match(withIt["README.md"], /\| `lurkbots` \| `viewer_bot_list\.txt` \|/);
+  assert.match(withIt["README.md"], /`whitelisted_bots\.txt`, `greylisted_bots\.txt`, `unban_list` is never confirmed/);
+  assert.ok(withIt["README.md"].endsWith("\n") && !withIt["README.md"].endsWith("\n\n\n"));
 });

@@ -8,7 +8,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const T0 = 1790000000;
@@ -18,6 +18,8 @@ const DAY = 86400;
 
 const twitch = { users: new Map(), tokenCalls: 0, lookups: [], failUsers: 0, bad: new Set() };
 const github = { ref: null, trees: new Map(), commits: new Map(), failTrees: 0, n: 0, auth: [] };
+const isds = { files: {}, failTree: 0, trees: 0, blobs: [], auth: [] };
+const shaOf = text => createHash("sha1").update(text).digest("hex");
 
 function send(res, status, body) {
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -50,6 +52,28 @@ const fake = http.createServer(async (req, res) => {
       return send(res, 400, { error: "Bad Request", status: 400, message: "Invalid username(s), email(s), or ID(s). Bad Identifiers." });
     const data = [...twitch.users.values()].filter(u => ids.includes(u.id) || logins.includes(u.login));
     return send(res, 200, { data });
+  }
+  const ext = "/github/repos/isds/lists";
+  if (p.startsWith(ext)) {
+    isds.auth.push(req.headers.authorization);
+    const rest = p.slice(ext.length);
+    if (rest === "/git/trees/main") {
+      if (isds.failTree > 0) {
+        isds.failTree--;
+        return send(res, 502, { message: "Bad Gateway" });
+      }
+      isds.trees++;
+      const tree = Object.entries(isds.files).map(([file, text]) => ({ path: file, type: "blob", sha: shaOf(text) }));
+      return send(res, 200, { sha: "root", tree: [...tree, { path: "docs", type: "tree", sha: "docs" }], truncated: false });
+    }
+    const blob = rest.match(/^\/git\/blobs\/([0-9a-f]+)$/);
+    const text = blob ? Object.values(isds.files).find(t => shaOf(t) === blob[1]) : undefined;
+    if (text !== undefined && req.headers.accept === "application/vnd.github.raw") {
+      isds.blobs.push(blob[1]);
+      res.writeHead(200, { "Content-Type": "application/vnd.github.raw" });
+      return res.end(text);
+    }
+    return send(res, 404, { message: "Not Found" });
   }
   const repo = "/github/repos/aaskjer/TwitchSentry";
   if (p.startsWith(repo)) {
@@ -126,7 +150,7 @@ before(async () => {
   const vars = {
     TEST_MODE: "1", GITHUB_API: f + "/github", TWITCH_API: f + "/twitch/helix", TWITCH_AUTH: f + "/twitch/token",
     GITHUB_TOKEN: "gh-token", TWITCH_CLIENT_ID: "client-id", TWITCH_CLIENT_SECRET: "client-secret",
-    REMOVAL_KEY: "removal-key", HASH_SALT: "salt",
+    REMOVAL_KEY: "removal-key", HASH_SALT: "salt", EXTERNAL_REPO: "isds/lists", EXTERNAL_BRANCH: "main",
   };
   const args = [path.join(root, "node_modules", "wrangler", "bin", "wrangler.js"), "dev", "--local", "--ip", "127.0.0.1",
     "--port", String(port), "--persist-to", persist, "--show-interactive-dev-session=false", "--log-level", "warn"];
@@ -178,7 +202,8 @@ const user = (id, login, extra = {}) => twitch.users.set(id, { id, login, displa
 test("an empty relay creates the branch on its first pass", async () => {
   const h = await call("GET", "/v1/health");
   assert.equal(h.status, 200);
-  assert.deepEqual(h.body.configured, { github: true, twitch: true, salt: true, removals: true });
+  assert.deepEqual(h.body.configured, { github: true, twitch: true, salt: true, removals: true, external: true });
+  assert.deepEqual(h.body.external, { repo: "isds/lists", checkedAt: null, lists: {}, error: null });
   assert.equal(h.body.version, 0);
 
   const p = await publish(T0);
@@ -425,6 +450,105 @@ test("one network is held to its hourly limit", async () => {
   assert.equal(elsewhere.status, 400);
   const nextHour = await call("POST", "/v1/retract", "{nope", { ip: "10.20.30.40", now: at + 3600 });
   assert.equal(nextHour.status, 400);
+});
+
+const iso = seconds => new Date(seconds * 1000).toISOString().replace(/\.\d{3}Z$/, "Z");
+
+test("an external list confirms a report in its own group and never makes one", async () => {
+  const at = T0 + 21 * DAY;
+  user("2001", "viewer_bot1");
+  user("2002", "wave_bot2");
+  user("2003", "harmless_bot3");
+  user("2004", "only_external");
+  isds.files = {
+    "viewer_bot_list.txt": "viewer_bot1\nWave_Bot2\t12\nharmless_bot3\nonly_external\n",
+    "greylisted_bots.txt": "harmless_bot3\n",
+    "unban_list": "/unban somebody\n",
+    "mad_tos_list.txt": "viewer_bot1\n",
+  };
+  await report("A", [
+    { category: "lurkbot", id: "2001", login: "viewer_bot1", reason: "known_day" },
+    { category: "botwave", id: "2002", login: "wave_bot2", reason: "follow_wave" },
+    { category: "lurkbot", id: "2003", login: "harmless_bot3", reason: "known_day" },
+  ], { now: at });
+  const trees = isds.trees;
+  const imports = [];
+  for (let i = 0; i < 4; i++) imports.push((await publish(at + 60 + i * 120)).body.external);
+  assert.deepEqual(imports.map(e => e.imported), ["greylisted_bots.txt", "unban_list", "viewer_bot_list.txt", null], "exempt files first, one per pass");
+  assert.equal(isds.trees - trees, 1, "the tree is read once per half hour");
+  assert.equal(isds.blobs.length, 3, "an unmapped file is never read");
+  assert.ok(isds.auth.every(a => a === "Bearer gh-token"));
+
+  const b = branch();
+  const of = (list, id) => list.accounts.find(a => a.id === id);
+  assert.deepEqual([of(b.lurkbots, "2001").reports, of(b.lurkbots, "2001").reasons], [2, ["external_list", "known_day"]]);
+  assert.match(b.raw["lurkbots.txt"], /^viewer_bot1$/m);
+  assert.equal(of(b.lurkbots, "2003").reports, 1, "an exempt account is not confirmed");
+  assert.doesNotMatch(b.raw["lurkbots.txt"], /harmless_bot3/);
+  assert.equal(of(b.botwaves, "2002").reports, 1, "a group confirms only its own list");
+  assert.ok(![b.spam, b.lurkbots, b.botwaves].some(l => of(l, "2004")), "an external entry alone lists nobody");
+  assert.deepEqual(b.changes.changes.filter(c => c.id === "2001").map(c => [c.op, c.reports]), [["add", 1], ["update", 2]]);
+  assert.equal(b.index.witness.repo, "isds/lists");
+  assert.match(b.raw["README.md"], /## The second witness/);
+
+  const h = await call("GET", "/v1/health");
+  assert.equal(h.body.ok, true);
+  assert.deepEqual(h.body.external, {
+    repo: "isds/lists", checkedAt: new Date((at + 60) * 1000).toISOString(),
+    lists: { "greylisted_bots.txt": 1, "unban_list": 1, "viewer_bot_list.txt": 4 }, error: null,
+  });
+});
+
+test("a failing source shows in health, and a changed file is followed", async () => {
+  const at = T0 + 21 * DAY + 1900;
+  isds.failTree = 1;
+  isds.files["viewer_bot_list.txt"] = "harmless_bot3\nonly_external\n";
+  const failed = await publish(at);
+  assert.match(failed.body.external.error, /isds\/lists answered 502/);
+  let h = await call("GET", "/v1/health");
+  assert.equal(h.body.ok, false);
+  assert.match(h.body.external.error, /502/);
+  assert.equal(branch().lurkbots.accounts.find(a => a.id === "2001").reports, 2, "the last lists stay in force");
+
+  const fixed = await publish(at + 120);
+  assert.equal(fixed.body.external.imported, "viewer_bot_list.txt", fixed.text);
+  h = await call("GET", "/v1/health");
+  assert.equal(h.body.ok, true);
+  assert.equal(h.body.external.error, null);
+  assert.equal(h.body.external.lists["viewer_bot_list.txt"], 2);
+  const b = branch();
+  assert.deepEqual(b.lurkbots.accounts.find(a => a.id === "2001").reasons, ["known_day"]);
+  assert.doesNotMatch(b.raw["lurkbots.txt"], /viewer_bot1/);
+  assert.deepEqual(b.changes.changes.filter(c => c.id === "2001").at(-1),
+    { v: b.index.version, at: iso(at + 120), op: "update", category: "lurkbot", id: "2001", login: "viewer_bot1", reports: 1 });
+});
+
+test("a removed account is never confirmed by the second witness", async () => {
+  const at = T0 + 21 * DAY + 4000;
+  isds.files["viewer_bot_list.txt"] = "viewer_bot1\n";
+  await publish(at);
+  assert.equal(branch().lurkbots.accounts.find(a => a.id === "2001").reports, 2);
+  const r = await removal({ names: ["viewer_bot1"] }, "removal-key", at + 60);
+  assert.deepEqual(r.body.removed, [{ id: "2001", login: "viewer_bot1" }], r.text);
+  const item = [{ category: "lurkbot", id: "2001", login: "viewer_bot1", reason: "same_day" }];
+  await report("D", item, { ip: "100.64.11.1", now: at + 120 });
+  await report("E", item, { ip: "100.64.12.1", now: at + 120 });
+  await publish(at + 180);
+  assert.ok(!branch().lurkbots.accounts.some(a => a.id === "2001"), "two fresh networks and the witness are not three");
+  await report("F", item, { ip: "100.64.13.1", now: at + 240 });
+  await publish(at + 300);
+  const back = branch().lurkbots.accounts.find(a => a.id === "2001");
+  assert.deepEqual([back.reports, back.reasons], [3, ["same_day"]]);
+});
+
+test("a list the size of the real follower list imports in one pass", async () => {
+  const at = T0 + 21 * DAY + 6000;
+  const names = Array.from({ length: 15000 }, (_, i) => "follow_bot_" + i);
+  isds.files["follower_bot_list.txt"] = [...names.slice(0, 7000), "wave_bot2", ...names.slice(7000)].join("\n") + "\n";
+  const p = await publish(at);
+  assert.deepEqual(p.body.external, { imported: "follower_bot_list.txt", names: 15001 }, p.text);
+  assert.deepEqual(branch().botwaves.accounts.find(a => a.id === "2002").reasons, ["external_list", "follow_wave"]);
+  assert.match(branch().raw["botwaves.txt"], /^wave_bot2$/m);
 });
 
 test("reports expire after a year and the change log keeps a week", async () => {

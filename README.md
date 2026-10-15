@@ -12,7 +12,7 @@ the GitHub and Twitch keys live only in this Worker's secrets.
 | `POST /v1/report` | installations | `{install, version, reports: [{category, id, login, reason}]}`, up to 50 |
 | `POST /v1/retract` | installations | `{install, version, retract: [{id, category?}]}`: an action the streamer undid |
 | `POST /v1/remove` | the removal workflow | `{names, issue, by}` with `Authorization: Bearer <REMOVAL_KEY>`; written to the branch before it answers |
-| `GET /v1/health` | anyone | version, last commit, counts, which secrets are set |
+| `GET /v1/health` | anyone | version, last commit, counts, which secrets are set, the second witness's files and errors |
 
 `category` is `spam`, `lurkbot` or `botwave`; `install` is a random version 4 UUID an installation keeps.
 
@@ -21,6 +21,12 @@ the GitHub and Twitch keys live only in this Worker's secrets.
 - **Independent means another network.** Each installation counts once per account, with the network it first
   reported from (IPv4 /24, IPv6 /48). Addresses and install ids are stored only as salted hashes.
 - One report lists an account; installations ban from `banFrom` (2) reports; the `.txt` files hold only those.
+- **The second witness.** A reported account on the matching group of
+  [isdsdataarchive/twitch_ban_lists](https://github.com/isdsdataarchive/twitch_ban_lists) (`EXTERNAL_REPO`) counts one
+  more report: spam, porn and seller lists for `spam`, the viewer bot list for `lurkbot`, follower bot and hate raid
+  lists for `botwave` (`EXTERNAL_LISTS` in `src/rules.js`). Whitelisted, greylisted and unbanned accounts, and accounts
+  removed on request, are never confirmed that way, and an external entry alone lists nobody. The repository's tree is
+  read every 30 minutes through the GitHub API, then one changed file per pass.
 - Twitch decides who may be listed at all: partners, affiliates, staff and well-known service bots never are.
   Accounts are checked again weekly, so renames follow and deleted accounts leave.
 - **A removal is final for its reporters.** The installations that reported a removed account are never counted
