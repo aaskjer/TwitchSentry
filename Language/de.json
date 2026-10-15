@@ -1983,7 +1983,6 @@
   "Save 1 unsaved change before the window reloads?": "1 ungespeicherte Änderung speichern, bevor das Fenster neu lädt?",
   "Save {count} unsaved changes before the window reloads?": "{count} ungespeicherte Änderungen speichern, bevor das Fenster neu lädt?",
   "Nothing was reset: the copy of the current state could not be written.": "Nichts wurde zurückgesetzt: Die Kopie des aktuellen Stands konnte nicht geschrieben werden.",
-  "The follower list is read from Twitch once per Streamer.bot session and kept in Cache/followers.txt. Someone who follows during the stream counts from the next session.": "Die Follower-Liste wird einmal pro Streamer.bot-Sitzung von Twitch gelesen und in Cache/followers.txt abgelegt. Wer während des Streams folgt, zählt ab der nächsten Sitzung.",
   "Hand-Offs And Service Offers": "Weglock-Formulierungen und Dienstleistungsangebote",
   "Reset all settings to defaults?\nA copy of the current state is put aside first, and Backup & Restore can bring it back.": "Alle Einstellungen auf die Standardwerte zurücksetzen?\nVorher wird eine Kopie des aktuellen Stands abgelegt, Backup & Restore kann sie zurückholen.",
   "Which categories of Twitch AutoMod flags TwitchSentry should pay attention to, separated by commas.\nMost slurs and spam are already covered just by \"SmartDetection\" on its own.\nLeave this empty to watch every category — simplest option, but may catch some things you'd rather let through.\n\nValid category names, the ones Twitch sends:\nableism\naggression\nbullying\ndisability\nmisogyny\nnamecalling\nrace_ethnicity_or_religion\nsex_based_terms\nsexuality_sex_or_gender\nswearing\nSmartDetection": "Kategorien von Twitch-AutoMod, auf die TwitchSentry reagieren soll (kommagetrennt).\nDie meisten Beleidigungen und Spam-Arten werden bereits vollständig durch \"SmartDetection\" abgedeckt.\nLeer lassen, um alle Kategorien zu überwachen.\n\nGültige Kategorienamen, so wie Twitch sie schickt:\nableism\naggression\nbullying\ndisability\nmisogyny\nnamecalling\nrace_ethnicity_or_religion\nsex_based_terms\nsexuality_sex_or_gender\nswearing\nSmartDetection",
@@ -2028,5 +2027,6 @@
   "IANA (top-level domains)": "IANA (Top-Level-Domains)",
   "Stop The Bots (Known Patterns)": "Stop The Bots (Known Patterns)",
   "Alejo (pronouns)": "Alejo (Pronomen)",
-  "ayrtonalexis (Permit)": "ayrtonalexis (Permit)"
+  "ayrtonalexis (Permit)": "ayrtonalexis (Permit)",
+  "The follower list is read from Twitch when Streamer.bot starts and kept in Cache/followers.txt. A new follow counts the moment it arrives, unless FollowBot Protection takes the account for a bot. Someone who unfollows stays on the list until Streamer.bot starts again.": "Die Follower-Liste wird beim Start von Streamer.bot von Twitch gelesen und in Cache/followers.txt abgelegt. Ein neuer Follow zählt sofort, außer FollowBot Protection hält das Konto für einen Bot. Wer entfolgt, bleibt bis zum nächsten Start von Streamer.bot auf der Liste."
 }

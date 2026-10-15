@@ -173,7 +173,7 @@ Behaviour shared by every module: whether to speak through your bot account, whe
 
 **Default Action** is what the Message Filter, the Link Filter and Spam Scoring do with a message that breaks a rule: delete it, time the viewer out for *Timeout Duration*, or ban them. It is one choice for all three; Raid Protection has its own, on its Detection tab.
 
-Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message (followers are read from Twitch once per Streamer.bot session and kept in `Cache/followers.txt`, so someone who follows mid-stream counts from the next session), and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
+Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message (followers are read from Twitch when Streamer.bot starts and kept in `Cache/followers.txt`; a new follow counts the moment it arrives unless FollowBot Protection takes the account for a bot, and an unfollow drops out at the next start), and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
 
 ## Command Replies
 

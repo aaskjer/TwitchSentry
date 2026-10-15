@@ -2318,5 +2318,6 @@
   "IANA (top-level domains)": "IANA (top-level domains)",
   "Stop The Bots (Known Patterns)": "Stop The Bots (Known Patterns)",
   "Alejo (pronouns)": "Alejo (pronouns)",
-  "ayrtonalexis (Permit)": "ayrtonalexis (Permit)"
+  "ayrtonalexis (Permit)": "ayrtonalexis (Permit)",
+  "The follower list is read from Twitch when Streamer.bot starts and kept in Cache/followers.txt. A new follow counts the moment it arrives, unless FollowBot Protection takes the account for a bot. Someone who unfollows stays on the list until Streamer.bot starts again.": "The follower list is read from Twitch when Streamer.bot starts and kept in Cache/followers.txt. A new follow counts the moment it arrives, unless FollowBot Protection takes the account for a bot. Someone who unfollows stays on the list until Streamer.bot starts again."
 }
