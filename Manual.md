@@ -8,30 +8,6 @@ Everything is configured from one window. There is no config file you are expect
 
 ---
 
-## Features
-
-| | |
-|---|---|
-| **[Link Filter](#general-settings)** | Blocks links from viewers you have not trusted, with a whitelist that matches exactly or by wildcard. Always on. |
-| **[Spam Scoring](#spam-scoring)** | Reads a message as an advert with parts — somewhere to go, something on offer, a way to redeem it, a signature — and acts when enough parts fit together. Always on. |
-| **[Message Filter](#message-filter)** | Watches *how* someone chats: account age, ALL CAPS, emote spam, flooding and repeats, and if you want them, repeated words, symbol spam, walls of text, mass mentions, ASCII art and Zalgo text. |
-| **[Raid Protection](#raid-protection)** | Arms itself after an incoming raid and watches for a swarm of accounts posting the same line. |
-| **[FollowBot Protection](#followbot-protection)** | Watches follows. It counts how many different accounts arrive inside a short window and judges each on age, avatar, profile and login. |
-| **[LurkBot Filter](#lurkbot-filter)** | Watches who sits in chat without writing. Looks up accounts with a bot wave's name shape and reports or bans the ones made on a known bot day, or on the same day as several others. |
-| **[Word Filter](#word-filter)** | Your own list of words and phrases, found through their disguises, kept in step with Twitch's Blocked Terms, and `!nuke` for the wave no list knows yet. |
-| **[Shared Bot List](#shared-bot-list)** | Bans the accounts other TwitchSentry channels identified as bots, from a shared list on GitHub, and reports the bots this channel is sure of to it. |
-| **[Spam Learner](#spam-learner)** | Mines what was actually removed for new keywords, phrases and domain endings, and proposes them for review. |
-| **[AutoMod](#automod)** | Answers the messages Twitch's own AutoMod holds back, so nobody has to sit in the queue. |
-| **[Twitch Warn](#twitch-warn)** | Twitch's warning screen with escalation on top: warnings, a final warning, then a timeout, a ban or a restriction. Your moderators' own warnings can count too. |
-| **[Permit](#permit)** | A time-limited link exception for one viewer, granted by you, a moderator, or a Channel Points redeem. |
-| **[Check Link](#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
-| **[Voting](#voting)** | Lets chat vote someone out, with roles above VIP permanently unvotable. |
-| **[Notifications](#notifications)** | Posts what happened to a Discord webhook, one toggle per kind of action, and shows the same alerts as Windows notifications if you want them, along with a new TwitchSentry release and what a deck button did or could not do. |
-| **[Offline Protection](#offline-protection)** | Puts chat into the modes you pick when the stream ends, so an empty channel is guarded while Streamer.bot is closed, and lifts them when you go live. |
-| **[Deck Buttons](#deck-buttons)** | Switches profiles, modules, exemptions, Always Allowed links, AutoMod's answer and test mode, arms Raid Protection, takes the last action back or grants a link permit, from a Stream Deck key, a Streamer.bot Deck button or the [OBS dock](#the-obs-dock). A key can show what it switched. |
-
----
-
 # Import
 
 <p align="center"><img alt="The Streamer.bot toolbar, with the Import button highlighted" src="https://github.com/user-attachments/assets/7db12d06-c0ee-42a2-a35a-996566f20b3c" /></p>
