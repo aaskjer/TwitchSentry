@@ -376,7 +376,7 @@ Twitch accounts that [TwitchSentry](https://github.com/${repo}) installations id
 |---|---|
 | \`spam.json\` / \`spam.txt\` | Spam Filter: a decisive hit (known spam domain, spam keyword, conversation scam, ...) |
 | \`lurkbots.json\` / \`lurkbots.txt\` | LurkBot Filter: a bot-shaped name created on a known bot day, or with others the same day |
-| \`botwaves.json\` / \`botwaves.txt\` | FollowBot Protection follow waves and Raid Protection spam swarms |
+| \`botwaves.json\` / \`botwaves.txt\` | Follow Wave Protection follow waves, Raid Protection spam swarms and Hate Raid Protection waves |
 
 This branch is written automatically every few minutes and holds nothing else. Use it freely: the data is
 dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
