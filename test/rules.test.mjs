@@ -255,3 +255,8 @@ test("the branch names the second witness only when there is one", () => {
   assert.match(withIt["README.md"], /`whitelisted_bots\.txt`, `greylisted_bots\.txt`, `unban_list` is never confirmed/);
   assert.ok(withIt["README.md"].endsWith("\n") && !withIt["README.md"].endsWith("\n\n\n"));
 });
+
+test("a hate raid wave is reported with its own reason", () => {
+  const r = parseReport({ ...base, reports: [{ category: "botwave", id: "1001", login: "hoss00312", reason: "hate_raid" }] });
+  assert.deepEqual(r.items.map(i => [i.category, i.reason]), [["botwave", "hate_raid"]]);
+});
