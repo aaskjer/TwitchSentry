@@ -1,13 +1,23 @@
 {
  "schema": 1,
- "version": 1,
- "updated": "2026-10-17T09:50:38Z",
+ "version": 2,
+ "updated": "2026-10-17T10:26:38Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
   {
    "id": "1076701184",
    "login": "cqrgv60",
+   "reports": 1,
+   "first": "2026-10-17",
+   "last": "2026-10-17",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076702674",
+   "login": "mqkhx50",
    "reports": 1,
    "first": "2026-10-17",
    "last": "2026-10-17",
