@@ -65,14 +65,14 @@ anything afterwards.
 
 | Profile | What it is for |
 |---|---|
-| **Relaxed** | Best for small chats or background guard. Every check still runs, the cosmetic ones only look at somebody's first message. |
-| **Balanced** | Best for most chats. Default Preset. |
+| **Relaxed** | Best for small chats or as backup. Every check still runs, the cosmetic ones only look at somebody's first message. |
+| **Balanced** | Best for most chats. The default. |
 | **Strict** | Best for crowded chats. Tighter thresholds and each check fires faster. |
 | **Under Attack** | Best for bot attacks. Everything at its tightest, chat modes enable automatically on an incoming raid rather than after the first message. |
 | **Just Chatting** | Best for talking or reaction streams. The message and spam sides ease off; the raid and follow sides stay as they are. |
 
-Every built-in profile names the same settings, which is what makes coming back work: **Balanced** genuinely
-undoes what **Under Attack** turned on, rather than leaving the heavy switches standing.
+Every built-in profile names the same settings, which is what makes coming back work: **Balanced**
+undoes everything **Under Attack** turned on instead of leaving the heavy switches standing.
 
 **Saved profiles are yours.** Type a name under *Save Your Profile* and **Save Current Settings** writes
 what you are running to `TwitchSentry/Settings/Profiles`, where it joins the list under that name.
@@ -83,13 +83,13 @@ beside one **renames** it, and the **↺** beside that writes what you are runni
 **The title bar says which one you are on.** *TwitchSentry – Settings · Strict*, or *· Strict (modified)*
 once the settings that profile names no longer say what it said.
 
-**When *(modified)* appears is a question about span, and the two kinds of profile have very
-different ones.** A built-in profile claims exactly 34 settings: the four sensitivity sliders, all 23 dials
+**When *(modified)* appears depends on how many settings a profile covers, and the two kinds cover
+very different amounts.** A built-in profile claims exactly 34 settings: the four sensitivity sliders, all 23 dials
 behind them, and seven switches (*Require Two Signals* on the message and raid sides, *Require Two
 Parts*, *First Message Only*, *As Soon As A Raid Arrives*, and Shield Mode on a raid and on a follow
-wave). It has no opinion at all about the other 227, so changing an action, a timeout duration, a
-message, a Discord switch or a whole module on or off leaves you sitting *exactly* on Strict, with no
-marker. That is the honest reading rather than a flag that would be on permanently.
+wave). It has no opinion about the other 227, so changing an action, a timeout duration, a
+message, a Discord switch or a whole module on or off leaves you *exactly* on Strict, with no
+marker. Otherwise the marker would be on all the time and tell you nothing.
 
 A saved profile claims all 261, so almost any change marks it modified. If you want the tight
 reading, save your settings as a profile: that is what makes every one of them something to drift
@@ -131,8 +131,9 @@ Switched on from the ☰ menu. While it runs, nothing is deleted, timed out or b
 | ![Easy mode](docs/screenshots/spam-scoring.png) | ![Expert mode](docs/screenshots/spam-scoring-expert.png) |
 
 
-`Easy Mode` is active by default, intended for users new to TwitchSentry or this type of system at all. Simplified settings with a **sensitivity slider** to choose — `Very relaxed` through `Very strict`, with a line under it saying what the step actually means and does. 
-Also in the ☰ menu. Expert mode reveals the individual numbers the slider is moving for you; a page that has such settings says so under its last card while expert mode is off. In expert mode `Custom` gives you the possibility to create your own slider sensitivity and is remembered by the GUI if you move away from it, as long as you have hit `save` once.
+`Easy Mode` is active by default and meant for anyone new to TwitchSentry or to this kind of tool. It shows simplified settings with a **sensitivity slider**, from `Very relaxed` to `Very strict`, and a line under it that says what each step does.
+
+**Expert mode**, also in the ☰ menu, shows the individual numbers the slider moves for you; while it is off, a page that has such settings says so under its last card. In expert mode the slider gains a `Custom` step for your own numbers, and the window remembers them when you move away from it, as long as you have pressed **Save** once.
 
 `Custom` only appears while expert mode is on: the rows it keeps *are* the expert rows, so there is nothing to tune without them, and with expert mode off the slider ends at `Very strict`. A slider that is *already* sitting on `Custom` keeps the stop either way — switching expert mode off never drops a preset column over numbers you tuned yourself.
 
@@ -144,7 +145,7 @@ Also in the ☰ menu. Expert mode reveals the individual numbers the slider is m
 
 <img width="926" alt="General Settings" src="docs/screenshots/general-settings.png" />
 
-Behaviour shared by every module: whether to speak through your bot account, whether to reply in chat, and whether a message may speak of a viewer by [their pronouns](#speaking-of-a-viewer-by-their-pronouns).
+Behaviour shared by every module: whether to speak through your bot account, whether to reply in chat, and whether a message may refer to a viewer by [their pronouns](#speaking-of-a-viewer-by-their-pronouns).
 
 **Default Action** is what the Message Filter, the Link Filter and Spam Scoring do with a message that breaks a rule: delete it, time the viewer out for *Timeout Duration*, or ban them. It is one choice for all three; Raid Protection has its own, on its Detection tab.
 
@@ -166,7 +167,7 @@ Two tabs: **Discord** posts to a channel through a webhook, **Windows** shows a 
 
 One switch per thing that can happen, not per module: what you are deciding is how much you want to
 hear, and a permit being granted happens hundreds of times more often than one being revoked.
-Twenty-nine of them, grouped by where the alert comes from; the Word Filter has its own group,
+Thirty-one of them, grouped by where the alert comes from; the Word Filter has its own group,
 so its removals do not ride on the Chat Moderation switches.
 
 Every alert says what happened in one word, the same in every module: **DELETED**, **TIMEOUT**,
@@ -181,18 +182,18 @@ keeps a raid from spending Discord's rate limit on thirty separate requests.
 
 <img width="926" alt="Notifications → Discord" src="docs/screenshots/notifications.png" />
 
-Off by default, a discord webhook and one toggle per kind of action. A pasted webhook is covered with dots straight away, so the window is safe to have on stream; the eye beside it uncovers it.
+Off by default: a Discord webhook and one switch per kind of alert. A pasted webhook is covered with dots straight away, so the window is safe to show on stream; the eye beside it uncovers it.
 
 Example:
 <img width="403" height="344" alt="grafik" src="https://github.com/user-attachments/assets/7ecf5eda-d6f6-4325-abfd-dc9e5bbf27ce" />
 <img width="404" height="287" alt="grafik" src="https://github.com/user-attachments/assets/bf33fd04-f4af-4502-b836-24e67152a8be" />
 
-**Create a discord webhook:**
-* Right-Click on desired channel
+**Creating a Discord webhook:**
+* Right-click the channel you want
 * Edit Channel
-* Create WebHook
-* Give your webhook a fancy name and a logo
-* Copy WebHook URL
+* Create Webhook
+* Give it a name and a logo if you like
+* Copy Webhook URL
 
 **Send A Test Message**, under *Test Message* at the bottom of the page, posts one message to the webhook in
 the box, under the display name and avatar set there, whether Discord is switched on or not and without saving
@@ -202,7 +203,7 @@ itself on the way in.
 
 **When Twitch says no:** an alert can read **TIMEOUT REFUSED** rather than **TIMEOUT**. Twitch answers every deletion, timeout, ban and warning with a yes or a no, and a no is reported rather than swallowed: the viewer was not touched, nothing went into the undo trail and nothing was said in chat, so the alert is the only record. The **Status Log** page carries the reason — usually a target Twitch will not let a bot touch, a message somebody else has already removed, or a missing scope on the Streamer.bot Twitch account.
 
-**How the alerts look in Discord:** under *Webhook Appearance* on the *Discord Webhook* card there are two more fields, **Display Name** and **Avatar URL**. Discord names a new webhook itself and that name says nothing about what is posting, so these ship as `TwitchSentry-Log` and the TwitchSentry logo and ride along with every alert — you do not have to give the webhook a fancy name and a logo yourself unless you want to. Empty either box and that override is not sent at all, and whatever the webhook carries in Discord shows through instead; that is the way back. Discord refuses a display name over 80 characters, or one containing *discord* or *clyde*, and refuses the whole post along with it, so TwitchSentry drops such a name rather than lose the alert — and the window warns you when you save one.
+**How the alerts look in Discord:** under *Webhook Appearance* on the *Discord Webhook* card there are two more fields, **Display Name** and **Avatar URL**. Discord names a new webhook itself and that name says nothing about what is posting, so these ship as `TwitchSentry-Log` and the TwitchSentry logo and ride along with every alert. You only need to name the webhook or give it a logo yourself if you want to. Empty either box and that override is not sent at all, and whatever the webhook carries in Discord shows through instead; that is the way back. Discord refuses a display name over 80 characters, or one containing *discord* or *clyde*, and refuses the whole post along with it, so TwitchSentry drops such a name rather than lose the alert — and the window warns you when you save one.
 
 ### Windows
 
@@ -344,7 +345,7 @@ Only *content* violations feed it. The fact that somebody typed too fast tells y
 
 <img width="926" alt="Suggestions" src="docs/screenshots/suggestions.png" />
 
-Everything the Learner has proposed but not applied. Read the **Would hit** column first: that is how many messages from your own clean chat log the rule would have matched. Zero is what you want, and anything above zero is never auto-promoted. **Users** counts how many different people posted it, so one spammer repeating himself counts once; **Discrim.** is how much more often it shows up in spam than in ordinary chat.
+Everything the Learner has proposed but not applied. Read the **Would hit** column first: that is how many messages from your own clean chat log the rule would have matched. Zero is what you want, and anything above zero is never auto-promoted. **Users** counts how many different people posted it, so one spammer repeating themselves counts once; **Discrim.** is how much more often it shows up in spam than in ordinary chat.
 
 **Probation** means a candidate is still building a record; **trusted** means it is proven enough to be auto-promoted, if you have turned that on. **Clear File** wipes the pending list and leaves your active rules alone.
 
@@ -358,7 +359,7 @@ Everything the Learner has proposed but not applied. Read the **Would hit** colu
 |:---:|:---:|
 | ![Easy mode](docs/screenshots/raid-protection.png) | ![Expert mode](docs/screenshots/raid-protection-expert.png) |
 
-The same idea as `Message Filter` but stricter and only armed for a limited window right after an incoming raid. Plus: **swarm detection**, which spots several different accounts posting near-identical messages at once which then gets scored against bot patterns.
+The same idea as the Message Filter, but stricter, and only armed for a limited window right after an incoming raid. It adds **swarm detection**, which spots several different accounts posting near-identical messages at once and checks that line against your spam lists.
 Three tabs: **Detection** (sensitivity, the **Action** for a message it catches, what counts as a raid worth stopping and, in expert mode, the raid window, velocity, duplicate and swarm numbers), **Chat Modes** and **Messages**.
 
 **Chat Modes** works like the [Message Filter's](#message-filter), with three differences: **When It Starts** is one switch, *As Soon As A Raid Arrives* (otherwise the first mode goes on when a raid message crosses the score threshold); **Shield Mode** has its own card; and everything is lifted when the raid window ends rather than after a set time. A second wave of the same pattern moves up a step instead of re-picking the mode that is already running.
@@ -375,7 +376,7 @@ Follow Wave Protection holds as well stays paused until its follow wave is over 
 paused are resumed, and test mode pauses nothing. Never name a queue TwitchSentry's own
 actions run in.
 
-**By hand**: `!antiraid` (alone it switches over, `on` and `off` say which) or a [deck key](#deck-buttons)
+**By hand**: `!antiraid` (on its own it toggles; `on` and `off` say which) or a [deck key](#deck-buttons)
 arms Raid Protection as an incoming raid does, without a raid: the raid window, plus the chat modes and
 Shield Mode where *As Soon As A Raid Arrives* and *Shield Mode On Raid* are on. Asked again while armed, it
 starts the window over without adding a chat mode; `off` lifts what arming put on.
@@ -437,7 +438,7 @@ lockdown again by itself. Three tabs: **Detection**, **Lockdown** and **Known Ha
   and unban list never count. How to ask for a name to come off a list is on isdsdataarchive's page, linked on About & Links.
 - Moderators, VIPs, the broadcaster, the bot account and the viewers exempted on General Settings are never
   acted on. Followers are not exempt: following first is how a raid gets past follower-only chat.
-- **By hand**: `!hateraid` (alone it switches over, `on` and `off` say which), a [deck key](#deck-buttons) or the
+- **By hand**: `!hateraid` (on its own it toggles; `on` and `off` say which), a [deck key](#deck-buttons) or the
   OBS dock's **Hate Raid Lockdown** start the same lockdown without waiting for a burst. Started that way it bans
   no raider, and it lifts only by hand or after *Longest Time*.
 - Test mode changes nothing on Twitch and says in chat what a lockdown would have done.
@@ -448,19 +449,21 @@ lockdown again by itself. Three tabs: **Detection**, **Lockdown** and **Known Ha
 |:---:|:---:|
 | ![Easy mode](docs/screenshots/follow-wave-protection.png) | ![Expert mode](docs/screenshots/follow-wave-protection-expert.png) |
 
-**Off by default**. It counts how many **different** accounts arrive inside **Window (Seconds)**, and
-only once **Accounts Needed** is crossed, it looks them up and compares their account data against your settings, if there's a match, the accounts get blocked, which removes their follow and blocks them from any further action on your channel.
+**Off by default.** It counts how many **different** accounts follow inside **Window (Seconds)**. Only once
+**Accounts Needed** is crossed does it look them up and compare their account data with your settings. An account
+that matches is blocked, which removes its follow and keeps it from doing anything further on your channel; while
+the action is *Report Only*, it is only reported.
 
 - Each account in the wave is judged on four things from that one lookup: **Young Account**, **Default
-Avatar**, **Empty Profile** and **Throwaway Name**. 
+Avatar**, **Empty Profile** and **Throwaway Name**.
 - **Age gates the two cosmetic checks.** An account three years old with no picture and no bio is not a bot, it
-is somebody who never filled the form in. 
-- **It blocks rather than bans** A ban leaves the follower on your list while a block removes the follow and stops that account following again.
-- **Report Only is default**, because a block is invisible from the viewer's side: they simply cannot follow,
+is somebody who never filled the form in.
+- **It blocks rather than bans.** A ban leaves the follower on your list, while a block removes the follow and stops that account from following again.
+- **Report Only is the default**, because a block is invisible from the viewer's side: they simply cannot follow,
 and nobody tells them why. Every account it blocks is written to `followbot-blocks.txt` in the Logs folder,
 with the evidence that convicted it, and [`!tsundo`](#chat-commands) lifts the last one. **Open Folder**
 under *Blocked Accounts* on the page shows the file in Explorer; a new one starts each month, like the other logs.
-- Off by Default: **Judge Single Follows Too** runs the checks on every follow rather than only inside a wave.
+- **Judge Single Follows Too** (off by default) runs the checks on every follow rather than only inside a wave.
 - **Chat Modes**: follower-only, sub-only, emote-only and slow mode, whichever you tick, go on when a wave
 crosses the threshold or it is armed by hand, and come off when the wave window ends. Follower-only is the one
 that suits a follow wave: its accounts have only just followed. A mode another TwitchSentry module still needs
@@ -469,7 +472,7 @@ stays on until that module is done too. Test mode switches none of them.
 going on, and lets them run again when the wave window ends, with what piled up meanwhile or without it when
 **Clear Queues On Resume** is ticked. A queue Raid Protection holds as well stays paused until both are done.
 Test mode pauses nothing, and like on Raid Protection, never name a queue TwitchSentry's own actions run in.
-- **By hand**: `!followwave` (alone it switches over, `on` and `off` say which), a [deck key](#deck-buttons) or
+- **By hand**: `!followwave` (on its own it toggles; `on` and `off` say which), a [deck key](#deck-buttons) or
 the OBS dock's **Follow Wave Protection** button arms it as a wave does, for **Stay Armed (Seconds)**: every follow
 meanwhile is judged, with Shield Mode and the paused queues where they are on. Asked again while armed, it starts
 the window over; `off` ends it.
@@ -552,7 +555,7 @@ what this page switched on, and nothing else.
 
 # Moderation
 
-These are off by default, except Permit. Each is genuinely optional — the chat filters and spam scoring are the core, and everything here is something you may or may not want.
+These are off by default, except Permit. Each one is optional: the chat filters and spam scoring are the core, and everything here is something you may or may not want.
 
 ## AutoMod
 
@@ -591,14 +594,14 @@ Viewers can also redeem a permit themselves through Channel Points, if **Allow S
 <img width="926" alt="Check Link" src="docs/screenshots/check-link.png" />
 
 
-Two jobs: Anyone can scan a URL on demand with `!checklink <url>`. The second feature adds a scan on top of the ordinary link rule and automatically scans any incoming link in chat.
-Uses VirusTotal (required, free key) and optionally IPQualityScore for a second opinion. IPQS rates a link from 0 to 100; the default threshold is 75, with a stricter one for domains it also reports as recently registered, since a brand-new throwaway domain is a phishing classic.
+Two jobs. Anyone can scan a URL on demand with `!checklink <url>`, and the second job scans every link posted in chat automatically, on top of the Link Filter's own rules.
+It uses VirusTotal (required, free key) and, for a second opinion, IPQualityScore if you like. IPQS rates a link from 0 to 100; the default threshold is 75, with a stricter one for domains it also reports as recently registered, because brand-new throwaway domains are a common phishing trick.
 
 ## Voting
 
 <img width="926" alt="Voting" src="docs/screenshots/voting.png" />
 
-Lets chat decide! `!vote @user` starts or joins a vote, and enough *unique* voters inside the time window time that person out — or ban them, if you allow it. The window running out resets the vote. Subscribers and VIPs can be exempted, there are separate exclusion lists for users and Streamer.bot groups, and **everyone above VIP is permanently unvotable!**
+Lets chat decide! `!vote @user` starts or joins a vote, and if enough *different* viewers vote within the time window, that person is timed out, or banned if you allow it. When the window runs out, the vote resets. Subscribers and VIPs can be exempted, there are separate exclusion lists for users and Streamer.bot groups, and **nobody above VIP can ever be voted out**.
 
 ---
 
@@ -638,7 +641,7 @@ word to change, so these viewers get the third form instead.
 | `{pronoun:his\|her\|their} clip` | his | her | their | xyr | its |
 | `{pronoun:er\|sie\|die Person} ist zurück` | er | sie | die Person | die Person | die Person |
 
-- It speaks of the viewer the message is about: `{user}`, or `{target}` on the Voting page. Every message
+- It refers to the viewer the message is about: `{user}`, or `{target}` on the Voting page. Every message
   with one of those offers the placeholder as a chip under its box. One message may use it several times.
 - Twitch keeps no pronouns, so only viewers who set theirs on pronouns.alejo.io are known. Streamer.bot
   looks them up (its own Pronouns integration) and TwitchSentry keeps the answer for an hour, so a raid
@@ -751,8 +754,8 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 | `tsLurkBot` | `ban` | What LurkBot Filter does with the bots it finds (*Action On A LurkBot*): `report`, `ban`, or `toggle` |
 | `tsTestMode` | `on` | Test mode `on` for the *Test Duration* on General Settings, `off`, or `toggle` |
 | `tsRaid` | `arm` | Arms Raid Protection now, without a raid, or `disarm` ends it |
-| `tsHateRaid` | `on` | Locks the chat down as Hate Raid Protection does in a hate raid, `off` lifts the lockdown, `toggle` switches over |
-| `tsFollowWave` | `on` | Arms Follow Wave Protection as a follow wave does, `off` disarms it, `toggle` switches over |
+| `tsHateRaid` | `on` | Locks the chat down as Hate Raid Protection does in a hate raid, `off` lifts the lockdown, `toggle` switches between the two |
+| `tsFollowWave` | `on` | Arms Follow Wave Protection as a follow wave does, `off` disarms it, `toggle` switches between the two |
 | `tsUndo` | `last` | Takes back the last timeout, ban, restriction, monitoring or block, as `!tsundo` does; `@name` takes back that viewer's last one |
 | `tsForget` | `@name` | Takes the last entry, or that viewer's last one, off the undo trail without asking Twitch: for something a moderator already lifted on Twitch itself |
 | `tsPermit` | `last` | Grants a link permit the way `!permit` does: `last` to the newest Channel Points request waiting for a button, else to the viewer whose link the Link Filter removed most recently, `@name` to anyone. A number after it sets the seconds (`@name 120`), within *Max Permit Duration Seconds* |
@@ -933,9 +936,9 @@ Moderator-only unless noted. TwitchSentry recognises each command by its Streame
 | `!bwadd <word> [2h] [twitch] [delete\|timeout\|ban]` / `!bwremove` / `!bwlist` | Blocked Words on the Word Filter page. `!bwlist` says only how many there are, unless whispered |
 | `!nuke <phrase> [seconds]` | Removes every message with that phrase from the last stretch of chat, by default with a timeout for each sender |
 | `!tsundo [@user]` | Takes back the last timeout, ban, restriction, monitoring, follow block or whole nuke (or that viewer's last one) |
-| `!hateraid [on\|off]` | Locks the chat down as [Hate Raid Protection](#hate-raid-protection) does in a hate raid, or lifts the lockdown; alone it switches over |
-| `!antiraid [on\|off]` | Arms [Raid Protection](#raid-protection) as an incoming raid does, or disarms it; alone it switches over |
-| `!followwave [on\|off]` | Arms [Follow Wave Protection](#follow-wave-protection) as a follow wave does, or disarms it; alone it switches over |
+| `!hateraid [on\|off]` | Locks the chat down as [Hate Raid Protection](#hate-raid-protection) does in a hate raid, or lifts the lockdown. Without on or off, it toggles |
+| `!antiraid [on\|off]` | Arms [Raid Protection](#raid-protection) as an incoming raid does, or disarms it. Without on or off, it toggles |
+| `!followwave [on\|off]` | Arms [Follow Wave Protection](#follow-wave-protection) as a follow wave does, or disarms it. Without on or off, it toggles |
 
 ---
 

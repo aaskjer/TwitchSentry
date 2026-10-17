@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **The settings window fills most of this in for you.** ☰ → *Report an issue or idea…*, with
+        **The settings window fills most of this in for you.** ☰ → *Report...*, with
         *An idea for TwitchSentry* in the first dropdown. Nothing is sent from the window - you still
         read it over here and press Submit yourself.
 
@@ -68,6 +68,6 @@ body:
     attributes:
       label: Your setup
       description: |
-        Only if it matters to the idea. The settings window writes this block for you (☰ → *Report an
-        issue or idea…*), and it never contains your channel name, your keys or your webhook URL.
+        Only if it matters to the idea. The settings window writes this block for you (☰ → *Report...*),
+        and it never contains your channel name, your keys or your webhook URL.
       render: text

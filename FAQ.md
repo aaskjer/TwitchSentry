@@ -8,7 +8,7 @@
 
 Since Streamer.bot 1.0.5, an import can leave broken .NET reference paths. Open every `NO TOUCHY!` sub-action, open `Execute Code`, click `Find Refs`, then `OK`.
 
-If one of TwitchSentry's own files (`configs.json`, `messages.json`, `spam.json`) can't be read, the window says which one before it opens and offers to restore it from a backup, let you fix it by hand, or start on the defaults (the damaged file is kept as `.bak`).
+If one of TwitchSentry's own files (`configs.json`, `messages.json`, `spam.json`) can't be read, the window names it before it opens and offers three ways on: restore it from a backup, fix it by hand, or start on the defaults (the damaged file is kept as `.bak`).
 
 If the window opens, the **Status Log** page under Results usually names the problem. Still stuck? [Open an issue](https://github.com/aaskjer/TwitchSentry/issues).
 
@@ -60,8 +60,8 @@ Commands are never scanned as ordinary chat. **Allow Chat Commands** and **Allow
 | `!tsundo @user` | Moderators | Takes back the last one for that viewer |
 | `!permit @user [seconds]` | Moderators | Grants a temporary link permit |
 | `!endpermit [@user]` | Moderators | Ends that viewer's permit, or all of them |
-| `!checklink <url>` / `!linkcheck <url>` | Anyone | Scans a link with Check Link *(anyone)* |
-| `!vote @user` | Anyone | Starts or joins a vote-kick *(anyone)* |
+| `!checklink <url>` / `!linkcheck <url>` | Anyone | Scans a link with Check Link |
+| `!vote @user` | Anyone | Starts or joins a vote-kick |
 | `!endvote` | Moderators | Ends the running vote early |
 | `!wladd` / `!wlremove` / `!wllist` | Moderators | Whitelisted Domains |
 | `!amadd` / `!amremove` / `!amlist` | Moderators | AutoMod Whitelist |
@@ -156,7 +156,7 @@ One signal is not enough, because people shout and spam emotes when something go
 
 **Q: Can it remove ASCII art?**
 
-Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of Braille dots (⣿⠄) or block and box characters (█▀═), whether a raid, a bot wave or an ordinary viewer pastes them. A message with at least **Min. Art Characters** of them (20, in Expert mode) is acted on the way **Action On Violation** says. It is a rule rather than a score, so **Require Two Signals** and the regular's discount do not apply and regulars are caught too. Exempted viewers and anyone with a permit are not.
+Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of Braille dots (⣿⠄) or block and box characters (█▀═), whether a raid, a bot wave or an ordinary viewer pastes them. A message with at least **Min. Art Characters** of them (20, in Expert mode) is acted on as **Action On Violation** on General Settings says. It is a rule rather than a score, so **Require Two Signals** and the regular's discount do not apply and regulars are caught too. Exempted viewers and anyone with a permit are not.
 
 ---
 
@@ -168,7 +168,7 @@ A moderator's or the broadcaster's never: they are exempt from every filter. A v
 
 **Q: What are chat modes?**
 
-A chat-wide safety net on the Message Filter's **Chat Modes** tab: when enough *different* viewers trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What Happens** table shows the order live from your ticks. Emote-only and sub-only are opt-in.
+A chat-wide safety net on the Message Filter's **Chat Modes** tab: when enough *different* viewers trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What Happens** table shows the order for the boxes you have ticked. Emote-only and sub-only are opt-in.
 
 ---
 
@@ -232,7 +232,7 @@ New suggestions start on probation and become trusted after **Probation Runs Req
 
 **Q: What is Decay?**
 
-Cleanup of rules and suggestions that stopped appearing in chat. Entries starting with `!` are protected.
+Cleanup of rules and suggestions that no longer turn up in recent violations. Entries starting with `!` are protected.
 
 ---
 
@@ -291,7 +291,7 @@ It gets your configured action. With **Check Every Posted Link** on, it is also 
 
 **Q: How is it different from the Message Filter?**
 
-It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once, which is decisive on its own. It has its own slider and its own **Chat Modes** tab, with *Step Up If The Wave Continues*. A deck button (`tsRaid`) arms it without a raid.
+It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once. By default a swarm only counts when that line matches your spam lists, and then it is enough to act. It has its own slider and its own **Chat Modes** tab, with *Step Up If The Wave Continues*. A deck button (`tsRaid`) arms it without a raid.
 
 ---
 
@@ -327,7 +327,7 @@ The switch in the AutoMod page header. It ships off.
 
 **Q: Which services does it use?**
 
-VirusTotal (required, free key) and optionally IPQualityScore. IPQS flags links at a fraud score of 75, or 40 for recently registered domains, a classic phishing sign.
+VirusTotal (required, free key) and optionally IPQualityScore. IPQS flags links from a fraud score of 75, or from 40 for recently registered domains, which are a common phishing sign.
 
 ---
 
@@ -377,7 +377,7 @@ Yes, with **Allow Self-Permit** and a Channel Points reward: point the reward's 
 
 **Q: How does vote-kick work?**
 
-`!vote @username`. Enough unique votes inside the time window time the viewer out, or ban them with **Allow Ban**. Otherwise the vote resets.
+`!vote @username`. If enough different viewers vote within the time window, the target is timed out, or banned with **Allow Ban**. Otherwise the vote resets.
 
 ---
 
@@ -391,7 +391,7 @@ Yes: subscribers and VIPs globally, plus users and Streamer.bot groups on the ex
 
 **Q: What can it post?**
 
-Twenty-one kinds of event, each with its own switch: deletions, timeouts, bans; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions and blocks; malicious and suspicious scans; permits granted, expired and revoked; follow waves and blocked followers; Shield Mode; Spam Learner auto-applies; and settings changed by chat command.
+Thirty-one kinds of event, each with its own switch: deletions, timeouts and bans; Word Filter catches, nukes and changes from the Twitch sync; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions, blocks and unban requests; malicious and suspicious scans; permits granted, expired and revoked; Spam Learner auto-applies; follow waves and blocked followers; LurkBots found; accounts banned from the Shared Bot List; hate raid lockdowns and listed accounts; Shield Mode; Offline Protection's chat modes; settings changed by chat command; and undos with `!tsundo`.
 
 ---
 
@@ -469,7 +469,7 @@ English, German, Spanish, French and Brazilian Portuguese ship, and Dutch comes 
 
 **Q: The bot still writes English in chat.**
 
-Intended. Translations cover the settings window only. What the bot says comes from each module's **Messages** tab, in your own words and language.
+That is intended. Translations cover the settings window only. What the bot says comes from each module's **Messages** tab, in your own words and language.
 
 ---
 
@@ -489,7 +489,7 @@ Yes. One text that reads badly: ☰ → **Report...** → *A translation*, pick 
 
 **Q: How do I know a new version is out?**
 
-The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notification banner has a button that allows you to ignore future beta notifications. ☰ → **Show hidden notices again** brings betas back.
+The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notice has a button to ignore future betas, and ☰ → **Show hidden notices again** brings them back.
 
 ---
 

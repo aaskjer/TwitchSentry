@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **The settings window fills most of this in for you.** ☰ → *Report an issue or idea…* opens
+        **The settings window fills most of this in for you.** ☰ → *Report...* opens
         GitHub with the summary, the description, the label and the setup block already typed in.
         Nothing is sent from the window - you still read it over here and press Submit yourself.
 
@@ -45,7 +45,7 @@ body:
       description: What you did, what you expected, and what happened instead.
       placeholder: |
         A viewer posted a clip of my own channel and the Link Filter deleted it. I expected
-        "Allow Twitch Clips" on the General Settings page to let it through.
+        "Your Twitch Clips" under Always Allowed on the Link Filter page to let it through.
     validations:
       required: true
 
