@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 0,
- "updated": "2026-10-08T20:22:32Z",
+ "version": 1,
+ "updated": "2026-10-17T09:50:38Z",
  "banFrom": 2,
  "lists": {
   "spam": {
@@ -13,7 +13,7 @@
   "lurkbot": {
    "file": "lurkbots.json",
    "text": "lurkbots.txt",
-   "count": 0,
+   "count": 1,
    "confirmed": 0
   },
   "botwave": {
@@ -30,5 +30,21 @@
  "removed": {
   "file": "removed.json",
   "count": 0
+ },
+ "witness": {
+  "repo": "isdsdataarchive/twitch_ban_lists",
+  "lists": {
+   "spam_bot_list.txt": "spam",
+   "porn_bot_acc_list.txt": "spam",
+   "seller_advertising_list.txt": "spam",
+   "viewer_bot_list.txt": "lurkbot",
+   "follower_bot_list.txt": "botwave",
+   "hate_troll_list_0_g.txt": "botwave",
+   "hate_troll_list_h_m.txt": "botwave",
+   "hate_troll_list_n_z.txt": "botwave",
+   "whitelisted_bots.txt": "exempt",
+   "greylisted_bots.txt": "exempt",
+   "unban_list": "exempt"
+  }
  }
 }

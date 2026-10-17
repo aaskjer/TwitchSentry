@@ -1,8 +1,19 @@
 {
  "schema": 1,
- "version": 0,
- "updated": "2026-10-08T20:22:32Z",
+ "version": 1,
+ "updated": "2026-10-17T09:50:38Z",
  "category": "lurkbot",
  "banFrom": 2,
- "accounts": []
+ "accounts": [
+  {
+   "id": "1076701184",
+   "login": "cqrgv60",
+   "reports": 1,
+   "first": "2026-10-17",
+   "last": "2026-10-17",
+   "reasons": [
+    "known_day"
+   ]
+  }
+ ]
 }

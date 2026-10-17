@@ -6,7 +6,7 @@ Twitch accounts that [TwitchSentry](https://github.com/aaskjer/TwitchSentry) ins
 |---|---|
 | `spam.json` / `spam.txt` | Spam Filter: a decisive hit (known spam domain, spam keyword, conversation scam, ...) |
 | `lurkbots.json` / `lurkbots.txt` | LurkBot Filter: a bot-shaped name created on a known bot day, or with others the same day |
-| `botwaves.json` / `botwaves.txt` | Follow Protection follow waves and Raid Protection spam swarms |
+| `botwaves.json` / `botwaves.txt` | Follow Wave Protection follow waves, Raid Protection spam swarms and Hate Raid Protection waves |
 
 This branch is written automatically every few minutes and holds nothing else. Use it freely: the data is
 dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
@@ -19,9 +19,9 @@ not counted for it again.
 
 ## Reading the lists
 
-- `*.txt`: one login per line, only accounts at least **2 independent channels** reported.
+- `*.txt`: one login per line, only accounts at least **2 independent sources (channels, or a channel and the second witness below)** reported.
   This is the list to import into a ban tool.
-- `*.json`: every listed account, with `reports` (independent channels), `first`/`last` report day
+- `*.json`: every listed account, with `reports` (independent sources (channels, or a channel and the second witness below)), `first`/`last` report day
   and `reasons`. One report is enough to appear here; TwitchSentry only bans from `banFrom` reports.
   Twitch ids are stable, logins are refreshed when an account renames.
 - `index.json`: the current `version` and counts. Poll this file; the others only change with it.
@@ -33,3 +33,17 @@ not counted for it again.
 
 Partners, affiliates, Twitch staff and well-known service bots are never listed. Neither the reporting
 channels nor any chat message are published.
+
+## The second witness
+
+An account TwitchSentry reported counts one more independent channel when it is also on the matching list of
+[isdsdataarchive/twitch_ban_lists](https://github.com/isdsdataarchive/twitch_ban_lists), and then carries the reason `external_list`. Those lists
+never put an account here by themselves: every account on this branch was found by TwitchSentry.
+
+| List here | Confirmed by |
+|---|---|
+| `spam` | `spam_bot_list.txt`, `porn_bot_acc_list.txt`, `seller_advertising_list.txt` |
+| `lurkbots` | `viewer_bot_list.txt` |
+| `botwaves` | `follower_bot_list.txt`, `hate_troll_list_0_g.txt`, `hate_troll_list_h_m.txt`, `hate_troll_list_n_z.txt` |
+
+An account on `whitelisted_bots.txt`, `greylisted_bots.txt`, `unban_list` is never confirmed that way, nor is one removed on request.
