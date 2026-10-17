@@ -34,7 +34,7 @@ Make sure Streamer.bot does **not** run as administrator, and not from inside a 
 
 **Q: What is Expert Mode?**
 
-Message Filter, Raid Protection, FollowBot Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
+Message Filter, Raid Protection, Follow Wave Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
 
 ---
 
@@ -134,7 +134,7 @@ Yes: **Save Current Settings** in the Profiles dialog writes them to `TwitchSent
 
 **Q: I imported someone's profile and my whitelist didn't change. Broken?**
 
-No. A profile carries how strict to be, never who is exempt. Your whitelist, excluded and trusted users, AutoMod allow list and FollowBot Protection block list stay yours.
+No. A profile carries how strict to be, never who is exempt. Your whitelist, excluded and trusted users, AutoMod allow list and Follow Wave Protection block list stay yours.
 
 ---
 
@@ -301,7 +301,7 @@ The dominant pattern decides: emote spam prefers slow mode, fresh accounts follo
 
 ---
 
-## 👣 FollowBot Protection
+## 👣 Follow Wave Protection
 
 **Q: What does it do?**
 

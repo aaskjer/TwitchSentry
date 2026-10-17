@@ -28,7 +28,7 @@ Then enable all the commands under **Commands**, as in the picture.
 
 Go to the `[TS] - Settings` action, right-click **Test** and choose **Test Trigger**. That opens the settings window. *(The first start takes a moment — it fetches the language files.)*
 
-The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, FollowBot Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and the Discord notifications stay off until you switch them on.
+The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, Hate Raid Protection, Follow Wave Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and the Discord notifications stay off until you switch them on.
 
 ---
 
@@ -104,7 +104,7 @@ of how strict this channel is, which is 261 of the 297 settings in `configs.json
 
 **What it deliberately does not:** your Discord webhook and your VirusTotal and IPQS keys; the people
 and addresses this channel knows, meaning your whitelist, your excluded and trusted users, the AutoMod
-allow list and the FollowBot Protection block list; and what belongs to this install rather than to a
+allow list and the Follow Wave Protection block list; and what belongs to this install rather than to a
 policy — bot account, language, theme, backup folder, and whether test mode is running.
 
 **Import Profile...** reads a file from anywhere, copies it into the Profiles folder so you can come
@@ -148,7 +148,7 @@ Behaviour shared by every module: whether to speak through your bot account, whe
 
 **Default Action** is what the Message Filter, the Link Filter and Spam Scoring do with a message that breaks a rule: delete it, time the viewer out for *Timeout Duration*, or ban them. It is one choice for all three; Raid Protection has its own, on its Detection tab.
 
-Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message (followers are read from Twitch when Streamer.bot starts and kept in `Cache/followers.txt`; a new follow counts the moment it arrives unless FollowBot Protection takes the account for a bot, and an unfollow drops out at the next start), and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
+Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message (followers are read from Twitch when Streamer.bot starts and kept in `Cache/followers.txt`; a new follow counts the moment it arrives unless Follow Wave Protection takes the account for a bot, and an unfollow drops out at the next start), and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
 
 ### Command Replies
 
@@ -368,18 +368,85 @@ Three tabs: **Detection** (sensitivity, the **Action** for a message it catches,
 **Pause Queues**, at the bottom of the Chat Modes tab, holds Streamer.bot action queues while a harmful raid is being stopped, so its spam never
 reaches text-to-speech or alerts. Tick **Pause Queues During A Raid** and enter the queue names, one per
 line, exactly as Streamer.bot lists them under *Action Queues*. They are paused the first time a raid
-message crosses the score threshold, or when Raid Protection is armed from a deck button or the panic
-button; a friendly raid that never crosses it leaves every queue running. When the raid window ends they
+message crosses the score threshold, or when Raid Protection is armed by hand (a deck button, `!antiraid`
+or the panic button); a friendly raid that never crosses it leaves every queue running. When the raid window ends they
 run again, with what piled up meanwhile, or without it when **Clear Queues On Resume** is ticked. A queue
-FollowBot Protection holds as well stays paused until its follow wave is over too. Only queues TwitchSentry
+Follow Wave Protection holds as well stays paused until its follow wave is over too. Only queues TwitchSentry
 paused are resumed, and test mode pauses nothing. Never name a queue TwitchSentry's own
 actions run in.
 
-## FollowBot Protection
+**By hand**: `!antiraid` (alone it switches over, `on` and `off` say which) or a [deck key](#deck-buttons)
+arms Raid Protection as an incoming raid does, without a raid: the raid window, plus the chat modes and
+Shield Mode where *As Soon As A Raid Arrives* and *Shield Mode On Raid* are on. Asked again while armed, it
+starts the window over without adding a chat mode; `off` lifts what arming put on.
+
+## Hate Raid Protection
+
+<img width="926" alt="Hate Raid Protection" src="docs/screenshots/hate-raid-protection.png" />
+
+**Off by default.** A hate raid is many accounts arriving at once to post harassment, through a Twitch raid or
+simply by typing into chat. Hate Raid Protection watches who writes in your chat for the first time, who follows,
+and which messages Twitch's AutoMod holds back, and when it is a hate raid it locks the chat down and lifts the
+lockdown again by itself. Three tabs: **Detection**, **Lockdown** and **Known Hate Accounts**.
+
+- **Which accounts it looks at**: hate raids are run with accounts aged on purpose to get past age checks, so
+  by default only accounts at least **Minimum Account Age (Days)** old (365) are looked at; younger ones are
+  left to the rest of TwitchSentry and to Twitch's Shield Mode. **New Accounts Too** looks at every account,
+  freshly made ones included. An account's age is only looked up once enough first-time arrivals come together.
+- **When it is a hate raid**: at least **First-Time Arrivals** (6) within a minute, more after a big Twitch
+  raid (**Share Of A Raid**, 10% of the viewers it brought), and **two signals, one of them about hate**:
+  several messages AutoMod held back, an account on one of the hate raid lists, **Hateful Words** (your own,
+  and the Word Filter's if *Use The Word Filter's Words* is ticked), several accounts whose names share a stem
+  (`hoss00312`, `h0ss_0312`), several accounts made within one day. The last two describe any bot wave, which
+  is why they never lock the chat down alone. In a big raid a share of the arrivals has to fit a signal, so a
+  few accounts that happen to share a creation day in a crowd of hundreds count for nothing. The same line
+  posted by many accounts is never a signal: that is what a friendly raid looks like.
+- **Viewers who have written here before** are never counted and never acted on, not even during a lockdown,
+  whatever they write: only an account writing in your chat for the first time, or following, is an arrival.
+  A message AutoMod holds back from a regular only counts towards the AutoMod signal.
+- **The lockdown**: every account of the wave goes into `Logs/hateraid-evidence.txt` first, with what it
+  wrote, for a report to Twitch. Then **Shield Mode** goes on (with the settings you gave it on Twitch), and
+  **During A Lockdown** decides what happens to the wave:
+  - *Ban* (the default) bans the wave's accounts, and the channel that raided you when a Twitch raid came
+    first. A ban takes their messages with it, so the chat is not cleared and everybody else's stays.
+  - *Clear Chat* clears the chat and deletes what the wave posts afterwards. Nobody is banned.
+  - *Clear Chat And Block* clears the chat, deletes what the wave posts afterwards, and blocks the wave's
+    accounts and the raiding channel: they can no longer follow, whisper or raid you.
+
+  A channel on Raid Protection → Raid Window: 'Trusted Raiders' is never banned or blocked. Accounts arriving
+  during the lockdown are judged the same way; one `!tsundo` lifts the bans or blocks of a whole wave. The
+  lockdown lifts itself once nothing new has arrived for **Quiet Time** (10 minutes), and at the latest after
+  **Longest Time** (60 minutes), and only lifts what it set: a Shield Mode that was on before stays on.
+- **Chat Modes**, on the Lockdown tab: follower-only, sub-only, emote-only and slow mode, whichever you tick, go
+  on with the lockdown and come off with it. A mode another TwitchSentry module still needs, Raid Protection's
+  follower-only during the same raid for example, stays on until that module is done too.
+- **Pause Queues**, on the Lockdown tab, holds the Streamer.bot action queues you name while the chat is locked
+  down, so a hate raid never reaches text-to-speech or alerts. They run again when the lockdown lifts, with what
+  piled up meanwhile, or without it when **Clear Queues On Resume** is ticked. A queue Raid Protection or Follow Wave
+  Protection holds as well stays paused until they are done too, and test mode pauses nothing. Never name a queue
+  TwitchSentry's own actions run in.
+- **Known Hate Accounts**: [isdsdataarchive's lists](https://github.com/isdsdataarchive/twitch_ban_lists) of
+  hate raid participants, fetched every six hours. An account on them is acted on when it writes, follows or
+  raids (and, with *Check Accounts Sitting In Chat*, while it lurks): **Action On A Listed Account** ships as
+  *Restrict*, so only moderators see what it writes; *Notify Only*, *Monitor* and *Ban* are the others. During
+  a lockdown a listed account is banned. **Harassment List** adds the accounts listed for harassment, threats
+  and racism; **Hijacked Accounts During A Lockdown** adds hijacked accounts, but only during a lockdown, since
+  their owners are victims too. The lists name real people as well, which is why a listed account is not banned
+  outside a lockdown. Twitch gives a name free again once its owner renamed or deleted the account, so an
+  account made after its name appeared on a list is somebody else and is left alone; the whitelist, greylist
+  and unban list never count. How to ask for a name to come off a list is on isdsdataarchive's page, linked on About & Links.
+- Moderators, VIPs, the broadcaster, the bot account and the viewers exempted on General Settings are never
+  acted on. Followers are not exempt: following first is how a raid gets past follower-only chat.
+- **By hand**: `!hateraid` (alone it switches over, `on` and `off` say which), a [deck key](#deck-buttons) or the
+  OBS dock's **Hate Raid Lockdown** start the same lockdown without waiting for a burst. Started that way it bans
+  no raider, and it lifts only by hand or after *Longest Time*.
+- Test mode changes nothing on Twitch and says in chat what a lockdown would have done.
+
+## Follow Wave Protection
 
 | Easy Mode | Expert Mode |
 |:---:|:---:|
-| ![Easy mode](docs/screenshots/followbot-protection.png) | ![Expert mode](docs/screenshots/followbot-protection-expert.png) |
+| ![Easy mode](docs/screenshots/follow-wave-protection.png) | ![Expert mode](docs/screenshots/follow-wave-protection-expert.png) |
 
 **Off by default**. It counts how many **different** accounts arrive inside **Window (Seconds)**, and
 only once **Accounts Needed** is crossed, it looks them up and compares their account data against your settings, if there's a match, the accounts get blocked, which removes their follow and blocks them from any further action on your channel.
@@ -394,10 +461,18 @@ and nobody tells them why. Every account it blocks is written to `followbot-bloc
 with the evidence that convicted it, and [`!tsundo`](#chat-commands) lifts the last one. **Open Folder**
 under *Blocked Accounts* on the page shows the file in Explorer; a new one starts each month, like the other logs.
 - Off by Default: **Judge Single Follows Too** runs the checks on every follow rather than only inside a wave.
+- **Chat Modes**: follower-only, sub-only, emote-only and slow mode, whichever you tick, go on when a wave
+crosses the threshold or it is armed by hand, and come off when the wave window ends. Follower-only is the one
+that suits a follow wave: its accounts have only just followed. A mode another TwitchSentry module still needs
+stays on until that module is done too. Test mode switches none of them.
 - **Pause Queues** holds the Streamer.bot queues you name, your follow alerts for example, while a wave is
 going on, and lets them run again when the wave window ends, with what piled up meanwhile or without it when
 **Clear Queues On Resume** is ticked. A queue Raid Protection holds as well stays paused until both are done.
 Test mode pauses nothing, and like on Raid Protection, never name a queue TwitchSentry's own actions run in.
+- **By hand**: `!followwave` (alone it switches over, `on` and `off` say which), a [deck key](#deck-buttons) or
+the OBS dock's **Follow Wave Protection** button arms it as a wave does, for **Stay Armed (Seconds)**: every follow
+meanwhile is judged, with Shield Mode and the paused queues where they are on. Asked again while armed, it starts
+the window over; `off` ends it.
 - Its one chat message, **Follower Blocked**, is on the page's Messages tab and empty by default: the account it blocked is not there to read it.
 
 ## LurkBot Filter
@@ -435,7 +510,7 @@ channels reported there.
 
 - **What is reported**, automatically and without a switch: a decisive hit in Spam Scoring (a known spam
   domain, a strong keyword, a conversation scam) from a viewer who is not a regular; a LurkBot Filter verdict
-  with the name shape, a bot day and a bare profile together; an account in one of FollowBot Protection's follow
+  with the name shape, a bot day and a bare profile together; an account in one of Follow Wave Protection's follow
   waves; and an account in a Raid Protection swarm whose wording is on a spam list. Only the account is sent,
   never a chat message or which channel reported it. Test mode reports nothing, and lifting a ban or a
   timeout on Twitch takes the report back.
@@ -540,8 +615,8 @@ Everything TwitchSentry says in chat is on the **Messages** tab of the module th
 | ![AutoMod → Messages](docs/screenshots/automod-messages.png) | ![Twitch Warn → Messages](docs/screenshots/twitch-warn-messages.png) | ![Permit → Messages](docs/screenshots/permit-messages.png) |
 | Check Link → Messages | Voting → Messages | Word Filter → Messages |
 | ![Check Link → Messages](docs/screenshots/check-link-messages.png) | ![Voting → Messages](docs/screenshots/voting-messages.png) | ![Word Filter → Messages](docs/screenshots/word-filter-messages.png) |
-| FollowBot Protection → Messages |  |  |
-| ![FollowBot Protection → Messages](docs/screenshots/followbot-protection-messages.png) |  |  |
+| Follow Wave Protection → Messages |  |  |
+| ![Follow Wave Protection → Messages](docs/screenshots/follow-wave-protection-messages.png) |  |  |
 
 ## Speaking of a viewer by their pronouns
 
@@ -669,13 +744,15 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 |---|---|---|
 | `tsPanic` | `toggle` | The panic button: switches to **Under Attack** and arms Raid Protection, and pressed again puts back every setting the way it was before. `on` and `off` work too |
 | `tsProfile` | `Under Attack` | Switches to that profile: `Relaxed`, `Balanced`, `Strict`, `Under Attack`, `Just Chatting`, or the name of one of your saved profiles |
-| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `FollowBot Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner`, `Discord` |
+| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `Hate Raid Protection`, `Follow Wave Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner`, `Discord` |
 | `tsExempt` | `VIPs on` | Whether `Followers`, `Subscribers` or `VIPs` are left alone by the filters — *Exclude Followers*, *Exclude Subscribers* and *Exclude VIPs* on General Settings |
 | `tsAllow` | `YouTube Videos on` | One of the twelve *Always Allowed* switches on General Settings: `Your Twitch Clips`, `Your Twitch Channel Page`, `Your YouTube Channel Page`, `Your Kick Clips`, `Your Kick VODs`, `Twitch Clips`, `Twitch VOD Links`, `YouTube Videos`, `YouTube Shorts`, `YouTube Live Streams`, `YouTube Clips`, `Kick VOD Links` |
 | `tsAutoMod` | `allow` | What AutoMod does with held messages (*AutoMod Action*): `deny`, `allow`, or `toggle` |
 | `tsLurkBot` | `ban` | What LurkBot Filter does with the bots it finds (*Action On A LurkBot*): `report`, `ban`, or `toggle` |
 | `tsTestMode` | `on` | Test mode `on` for the *Test Duration* on General Settings, `off`, or `toggle` |
 | `tsRaid` | `arm` | Arms Raid Protection now, without a raid, or `disarm` ends it |
+| `tsHateRaid` | `on` | Locks the chat down as Hate Raid Protection does in a hate raid, `off` lifts the lockdown, `toggle` switches over |
+| `tsFollowWave` | `on` | Arms Follow Wave Protection as a follow wave does, `off` disarms it, `toggle` switches over |
 | `tsUndo` | `last` | Takes back the last timeout, ban, restriction, monitoring or block, as `!tsundo` does; `@name` takes back that viewer's last one |
 | `tsForget` | `@name` | Takes the last entry, or that viewer's last one, off the undo trail without asking Twitch: for something a moderator already lifted on Twitch itself |
 | `tsPermit` | `last` | Grants a link permit the way `!permit` does: `last` to the newest Channel Points request waiting for a button, else to the viewer whose link the Link Filter removed most recently, `@name` to anyone. A number after it sets the seconds (`@name 120`), within *Max Permit Duration Seconds* |
@@ -685,7 +762,7 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 
 The state after a module or an exemption is `on` or `off` (`an` and `aus` work too). Left out, the key
 switches the setting over, which is what a plain key wants. Names ignore upper and lower case, spaces and
-dashes, so `followbot-protection on` is FollowBot Protection.
+dashes, so `follow-wave-protection on` is Follow Wave Protection.
 
 - **Stream Deck**, with the Streamer.bot plugin: an **Action** key on `[TS] - Deck`, with the argument
   under its arguments. For something that goes on and off, an **Action Switch** key with `[TS] - Deck`
@@ -765,11 +842,11 @@ runs, `[TS] - Deck` unless yours has another name.
   turns red and reads **End Panic**, with the profile it goes back to beneath.
 - **Six buttons of your own**: the four built-in profiles besides Under Attack, then **Test Mode** and
   **Raid Protection**, until you change them. ✎ at the top sets each one to a profile (built-in or saved),
-  a module, an exemption, an Always Allowed switch, **AutoMod Action**, **LurkBot Action**, **Test Mode**, **Raid Protection**,
-  **Undo** or **Grant Permit**, with a label and a colour of your own if you like. The profile running, and a switch that is on,
-  are lit; Test Mode and Raid Protection show the time they have left. The dock keeps them in OBS's own
+  a module, an exemption, an Always Allowed switch, **AutoMod Action**, **LurkBot Action**, **Hate Raid Lockdown**, **Test Mode**, **Raid Protection**,
+  **Follow Wave Protection**, **Undo** or **Grant Permit**, with a label and a colour of your own if you like. The profile running, and a switch that is on,
+  are lit; Test Mode, Raid Protection and Follow Wave Protection show the time they have left. The dock keeps them in OBS's own
   browser storage, so each dock has its own.
-- **Modules** (with **AutoMod Action**, Deny or Allow, and **LurkBot Action**, Report Only or Ban, each on a
+- **Modules** (with **AutoMod Action**, Deny or Allow, **LurkBot Action**, Report Only or Ban, and **Hate Raid Lockdown**, each on a
   rail under its module and faded while that module is off), **Exemptions**, **Always Allowed** and **Recent
   Actions** fold away with a click on their heading, and the dock remembers which are folded. Every switch
   shows its state, and a click flips it; Recent Actions are the newest five entries on the undo trail, each
@@ -812,6 +889,14 @@ web page, and opened in a browser on the same PC it works the same way.
   Raiders* and *Min. Raid Viewers* do not apply. Pressed again while armed, it starts the window over
   without adding a chat mode. `disarm` lifts what arming put on, as the window running out would. Raid
   Protection itself has to be switched on.
+- **Arming Follow Wave Protection** does what a follow wave does, for *Stay Armed (Seconds)*: every follow
+  meanwhile is judged, with Shield Mode and the paused queues where they are on. Until a real wave crosses the
+  threshold, the accounts it flags stay off the Shared Bot List. Pressed again while armed, it starts the window
+  over. Follow Wave Protection itself has to be switched on.
+- **Hate Raid Lockdown** locks the chat down as a detected hate raid does: Shield Mode, the chat modes and the
+  queues you named, and accounts arriving meanwhile judged as in any lockdown. Started by hand, it bans no raider and
+  does not lift itself after a quiet spell, only by hand (`off`, the key again, or `!hateraid off`) or after its
+  *Longest Time*. Hate Raid Protection itself has to be switched on.
 - **Undo** follows `!tsundo` step for step: the newest entry on the undo trail, whichever module wrote it.
   When Twitch refuses, the entry stays on the trail to be tried again. It is written to the Action Log,
   and said in chat only where TwitchSentry says what it does in chat (*Reply In Chat*).
@@ -848,6 +933,9 @@ Moderator-only unless noted. TwitchSentry recognises each command by its Streame
 | `!bwadd <word> [2h] [twitch] [delete\|timeout\|ban]` / `!bwremove` / `!bwlist` | Blocked Words on the Word Filter page. `!bwlist` says only how many there are, unless whispered |
 | `!nuke <phrase> [seconds]` | Removes every message with that phrase from the last stretch of chat, by default with a timeout for each sender |
 | `!tsundo [@user]` | Takes back the last timeout, ban, restriction, monitoring, follow block or whole nuke (or that viewer's last one) |
+| `!hateraid [on\|off]` | Locks the chat down as [Hate Raid Protection](#hate-raid-protection) does in a hate raid, or lifts the lockdown; alone it switches over |
+| `!antiraid [on\|off]` | Arms [Raid Protection](#raid-protection) as an incoming raid does, or disarms it; alone it switches over |
+| `!followwave [on\|off]` | Arms [Follow Wave Protection](#follow-wave-protection) as a follow wave does, or disarms it; alone it switches over |
 
 ---
 
