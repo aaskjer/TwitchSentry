@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 3,
- "updated": "2026-10-17T12:46:39Z",
+ "version": 4,
+ "updated": "2026-10-17T13:32:39Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -18,6 +18,16 @@
   {
    "id": "1076702674",
    "login": "mqkhx50",
+   "reports": 1,
+   "first": "2026-10-17",
+   "last": "2026-10-17",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076702689",
+   "login": "vspdm68",
    "reports": 1,
    "first": "2026-10-17",
    "last": "2026-10-17",

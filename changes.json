@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 3,
+ "version": 4,
  "since": 0,
  "changes": [
   {
@@ -28,6 +28,15 @@
    "category": "spam",
    "id": "1208229893",
    "login": "cggbot___",
+   "reports": 1
+  },
+  {
+   "v": 4,
+   "at": "2026-10-17T13:32:39Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076702689",
+   "login": "vspdm68",
    "reports": 1
   }
  ]
