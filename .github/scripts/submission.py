@@ -108,7 +108,7 @@ PROFILE_EXCLUDED = [
     "virusTotalApiKey", "ipqsApiKey",
     "excludedUsers", "excludedGroups", "trustedUsers", "trustedRaiders", "whitelistDomains",
     "autoModWhitelist", "voteExcludedUsers", "voteExcludedGroups", "fgBlockedList", "lbFoundList",
-    "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames",
+    "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames", "fgPauseQueueNames", "hrPauseQueueNames",
     "useBotAccount", "DarkMode", "guiLanguage", "uiExpertMode", "dismissedHints",
     "settingsSchema", "activeProfile", "updateChannel", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
@@ -121,7 +121,8 @@ PROFILE_EXCLUDED = [
     "toastNotifyAutoModRestricted", "toastNotifyAutoModBlocked", "toastNotifyUnbanRequests", "toastNotifyMalicious",
     "toastNotifySuspicious", "toastNotifyPermitGranted", "toastNotifyPermitExpired", "toastNotifyPermitRevoked",
     "toastNotifyLearner", "toastNotifyFollowArmed", "toastNotifyFollowBlocked", "toastNotifyOffline",
-    "toastNotifyShieldMode", "toastNotifyConfigChanges", "toastNotifyUndo",
+    "toastNotifyShieldMode", "toastNotifyConfigChanges", "toastNotifyUndo", "toastNotifyBotList",
+    "toastNotifyHateRaid", "toastNotifyHateListed", "hrTerms",
 ]
 SECRET_NAME_PARTS = ["apikey", "webhook", "token", "secret", "password"]
 RESERVED_PROFILE_NAMES = ["Relaxed", "Balanced", "Strict", "Under Attack", "Just Chatting"]

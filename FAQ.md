@@ -8,7 +8,7 @@
 
 Since Streamer.bot 1.0.5, an import can leave broken .NET reference paths. Open every `NO TOUCHY!` sub-action, open `Execute Code`, click `Find Refs`, then `OK`.
 
-If one of TwitchSentry's own files (`configs.json`, `messages.json`, `spam.json`) can't be read, the window says which one before it opens and offers to restore it from a backup, let you fix it by hand, or start on the defaults (the damaged file is kept as `.bak`).
+If one of TwitchSentry's own files (`configs.json`, `messages.json`, `spam.json`) can't be read, the window names it before it opens and offers three ways on: restore it from a backup, fix it by hand, or start on the defaults (the damaged file is kept as `.bak`).
 
 If the window opens, the **Status Log** page under Results usually names the problem. Still stuck? [Open an issue](https://github.com/aaskjer/TwitchSentry/issues).
 
@@ -34,7 +34,7 @@ Make sure Streamer.bot does **not** run as administrator, and not from inside a 
 
 **Q: What is Expert Mode?**
 
-Message Filter, Raid Protection, Follow Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
+Message Filter, Raid Protection, Follow Wave Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
 
 ---
 
@@ -60,8 +60,8 @@ Commands are never scanned as ordinary chat. **Allow Chat Commands** and **Allow
 | `!tsundo @user` | Moderators | Takes back the last one for that viewer |
 | `!permit @user [seconds]` | Moderators | Grants a temporary link permit |
 | `!endpermit [@user]` | Moderators | Ends that viewer's permit, or all of them |
-| `!checklink <url>` / `!linkcheck <url>` | Anyone | Scans a link with Check Link *(anyone)* |
-| `!vote @user` | Anyone | Starts or joins a vote-kick *(anyone)* |
+| `!checklink <url>` / `!linkcheck <url>` | Anyone | Scans a link with Check Link |
+| `!vote @user` | Anyone | Starts or joins a vote-kick |
 | `!endvote` | Moderators | Ends the running vote early |
 | `!wladd` / `!wlremove` / `!wllist` | Moderators | Whitelisted Domains |
 | `!amadd` / `!amremove` / `!amlist` | Moderators | AutoMod Whitelist |
@@ -102,12 +102,7 @@ Yes, it shows the name and **On** or **Off** after every press, or words of your
 
 **Q: Can I use the buttons inside OBS?**
 
-Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has four big buttons you set up yourself with ✎: a profile, a module, an exemption or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
-
-
-**Q: Can I use the buttons inside OBS?**
-
-Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has four big buttons you set up yourself with ✎: a profile, a module, an exemption or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
+Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has six big buttons you set up yourself with ✎: a profile, a module, an exemption, an Always Allowed link, AutoMod Action, Test Mode, Raid Protection or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
 
 ---
 
@@ -139,7 +134,7 @@ Yes: **Save Current Settings** in the Profiles dialog writes them to `TwitchSent
 
 **Q: I imported someone's profile and my whitelist didn't change. Broken?**
 
-No. A profile carries how strict to be, never who is exempt. Your whitelist, excluded and trusted users, AutoMod allow list and Follow Protection block list stay yours.
+No. A profile carries how strict to be, never who is exempt. Your whitelist, excluded and trusted users, AutoMod allow list and Follow Wave Protection block list stay yours.
 
 ---
 
@@ -153,9 +148,15 @@ Yes. No webhook URL or API key is ever written into one, and the same filter run
 
 **Q: What does it check?**
 
-*How* someone chats: account age, caps and repeated characters, emote spam, and flooding or repeated messages. Each check has its own switch (**Account Check**, **Caps Check**, **Emote Check**, **Flood Check**); untick all four to switch the filter off.
+*How* someone chats: account age, caps, repeated characters and words, emote spam, flooding or repeated messages, symbol spam, long messages, mass mentions, ASCII art and Zalgo text. Each check has its own switch; untick all of them to switch the filter off. A list of words you do not want in chat is the [Word Filter](Manual.md#word-filter)'s job.
 
 One signal is not enough, because people shout and spam emotes when something good happens: it takes two on the same message, or one that is hard to do by accident. A repeated message is enough on its own. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance.
+
+---
+
+**Q: Can it remove ASCII art?**
+
+Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of Braille dots (⣿⠄) or block and box characters (█▀═), whether a raid, a bot wave or an ordinary viewer pastes them. A message with at least **Min. Art Characters** of them (20, in Expert mode) is acted on as **Action On Violation** on General Settings says. It is a rule rather than a score, so **Require Two Signals** and the regular's discount do not apply and regulars are caught too. Exempted viewers and anyone with a permit are not.
 
 ---
 
@@ -165,9 +166,9 @@ A moderator's or the broadcaster's never: they are exempt from every filter. A v
 
 ---
 
-**Q: What is Escalation?**
+**Q: What are chat modes?**
 
-A chat-wide safety net: when enough *different* users trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What actually happens** table shows the order live from your ticks. Emote-only and sub-only are opt-in.
+A chat-wide safety net on the Message Filter's **Chat Modes** tab: when enough *different* viewers trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What Happens** table shows the order for the boxes you have ticked. Emote-only and sub-only are opt-in.
 
 ---
 
@@ -176,6 +177,12 @@ A chat-wide safety net: when enough *different* users trigger violations in a sh
 **Q: What does it catch?**
 
 Keywords, custom patterns, disguised links (`twitch. tv`), lookalike characters, @mentions of accounts that don't exist, and voucher codes. None of them is a verdict alone: a message has to look like an **advert**, with at least two parts out of somewhere to go (Destination), something for sale (Offer), a way to redeem it (Instrument), a bot's random `@handle` (Tag) and wording seen in spam before (Signature). The sensitivity slider shifts that balance; **Require Two Parts** is a separate decision and keeps its own switch.
+
+---
+
+**Q: Can spam hide behind fancy fonts?**
+
+No. Before any list is read, letters from other alphabets that only look Latin are read back as the letters they show: Cherokee (`ᏙᏆᎬᎳᎬᎡᏚ`), Lisu, Greek, Cyrillic, Canadian syllabics, small capitals, boxed and circled letters (`🅰`, `ⓐ`), letters with strokes or stacked accents, and invisible padding. That holds for the Spam Filter, the Spam Learner and Raid Protection. Disguised letters that reveal wording from your lists count as deliberate evasion; harmless words in such a font stay harmless. A Telegram bot named next to "tg" or "telegram" in a message selling viewers or followers counts as a hand-off, like "add me on Discord".
 
 ---
 
@@ -225,7 +232,7 @@ New suggestions start on probation and become trusted after **Probation Runs Req
 
 **Q: What is Decay?**
 
-Cleanup of rules and suggestions that stopped appearing in chat. Entries starting with `!` are protected.
+Cleanup of rules and suggestions that no longer turn up in recent violations. Entries starting with `!` are protected.
 
 ---
 
@@ -245,19 +252,19 @@ Each month starts a new `action-log.txt` and `violation-log.txt`. The previous m
 
 **Q: Can I switch the Link Filter or Spam Scoring off?**
 
-No, they are the core. Narrow them instead: whitelist domains, exempt roles or viewers on General Settings, or hand out a `!permit`.
+No, they are the core. Narrow them instead: whitelist domains on the Link Filter page, exempt roles or viewers on General Settings, or hand out a `!permit`.
 
 ---
 
-**Q: There is no Link Filter page. Where are its settings?**
+**Q: Where are the Link Filter's settings?**
 
-**Action On Violation** and **Timeout Duration (Seconds)** are at the top of the Message Filter page (shared with Spam Scoring and the Message Filter). **Whitelisted Domains** and **Always Allowed** are on General Settings. **Check Every Posted Link** is on the Check Link page.
+On the **Link Filter** page: **Whitelisted Domains** and **Always Allowed**, with its chat texts on the Messages tab. **Default Action** and **Timeout Duration (Seconds)** are on General Settings, shared with the Message Filter and Spam Scoring. **Check Every Posted Link** is on the Check Link page.
 
 ---
 
 **Q: Do I have to whitelist my own clips?**
 
-No. **Always Allowed** on General Settings covers them. **Only Your Channel** allows links with your channel's name in them (`twitch.tv/<you>/clip/<id>`, `youtube.com/@you`); **Any Channel** allows that kind of link from everybody, so tick those only if you are fine with that. Channel names come from the accounts Streamer.bot is signed in to.
+No. **Always Allowed** on the Link Filter page covers them. **Only Your Channel** allows links with your channel's name in them (`twitch.tv/<you>/clip/<id>`, `youtube.com/@you`); **Any Channel** allows that kind of link from everybody, so tick those only if you are fine with that. Channel names come from the accounts Streamer.bot is signed in to.
 
 ---
 
@@ -267,10 +274,10 @@ No. **Always Allowed** on General Settings covers them. **Only Your Channel** al
 |---|---|
 | `youtube.com` | Exactly that address, nothing after it |
 | `youtube.com/*` | Anything after `youtube.com/` |
-| `*.youtube.com/*` | Any subdomain (`music.youtube.com`) and anything after it, but not bare `youtube.com` |
-| `twitch.tv/aaskjer` | Exactly that channel link |
+| `*.youtube.com/*` | `youtube.com` and any subdomain (`music.youtube.com`), and anything after it |
+| `twitch.tv/aaskjer` | That channel link and everything below it, such as its clips |
 
-So `twitch.tv/yourname` does not cover your clips; add `twitch.tv/yourname/*` for that.
+So `twitch.tv/yourname` already covers your clips, but not a channel whose name only starts the same way (`twitch.tv/yournamefan`).
 
 ---
 
@@ -284,7 +291,7 @@ It gets your configured action. With **Check Every Posted Link** on, it is also 
 
 **Q: How is it different from the Message Filter?**
 
-It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once, which is decisive on its own. It has its own slider, escalation ladder and **Progressive Escalation**. A deck button (`tsRaid`) arms it without a raid.
+It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once. By default a swarm only counts when that line matches your spam lists, and then it is enough to act. It has its own slider and its own **Chat Modes** tab, with *Step Up If The Wave Continues*. A deck button (`tsRaid`) arms it without a raid.
 
 ---
 
@@ -294,11 +301,11 @@ The dominant pattern decides: emote spam prefers slow mode, fresh accounts follo
 
 ---
 
-## 👣 Follow Protection
+## 👣 Follow Wave Protection
 
 **Q: What does it do?**
 
-It watches follows. When enough different accounts follow within a short window (8 in 30 seconds by default), each is checked for a young account, default avatar, empty profile and throwaway name; age decides whether the cosmetic checks count. Off by default, and **Report Only** by default. On **Block**, the follow is removed and the account can't follow again. Blocked accounts are listed on the page, and `!tsundo` lifts the last block.
+It watches follows. When enough different accounts follow within a short window (8 in 30 seconds by default), each is checked for a young account, default avatar, empty profile and throwaway name; age decides whether the cosmetic checks count. Off by default, and **Report Only** by default. On **Block**, the follow is removed and the account can't follow again. Every blocked account is written to `followbot-blocks.txt` in the Logs folder (**Open Folder** under *Blocked Accounts* on the page shows it), and `!tsundo` lifts the last block. **Pause Queues** can hold your follow alerts while a wave is going on.
 
 ---
 
@@ -320,7 +327,7 @@ The switch in the AutoMod page header. It ships off.
 
 **Q: Which services does it use?**
 
-VirusTotal (required, free key) and optionally IPQualityScore. IPQS flags links at a fraud score of 75, or 40 for recently registered domains, a classic phishing sign.
+VirusTotal (required, free key) and optionally IPQualityScore. IPQS flags links from a fraud score of 75, or from 40 for recently registered domains, which are a common phishing sign.
 
 ---
 
@@ -340,7 +347,7 @@ On the **Warning Escalation** card: after **Warns Before Final Warning** warning
 
 ---
 
-## 🔓 Permits
+## 🔓 Permit
 
 **Q: What is a permit?**
 
@@ -370,7 +377,7 @@ Yes, with **Allow Self-Permit** and a Channel Points reward: point the reward's 
 
 **Q: How does vote-kick work?**
 
-`!vote @username`. Enough unique votes inside the time window time the viewer out, or ban them with **Allow Ban**. Otherwise the vote resets.
+`!vote @username`. If enough different viewers vote within the time window, the target is timed out, or banned with **Allow Ban**. Otherwise the vote resets.
 
 ---
 
@@ -380,11 +387,11 @@ Yes: subscribers and VIPs globally, plus users and Streamer.bot groups on the ex
 
 ---
 
-## 🦝 Discord Alerts
+## 🔔 Notifications
 
 **Q: What can it post?**
 
-Twenty-one kinds of event, each with its own switch: deletions, timeouts, bans; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions and blocks; malicious and suspicious scans; permits granted, expired and revoked; follow waves and blocked followers; Shield Mode; Spam Learner auto-applies; and settings changed by chat command.
+Thirty-one kinds of event, each with its own switch: deletions, timeouts and bans; Word Filter catches, nukes and changes from the Twitch sync; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions, blocks and unban requests; malicious and suspicious scans; permits granted, expired and revoked; Spam Learner auto-applies; follow waves and blocked followers; LurkBots found; accounts banned from the Shared Bot List; hate raid lockdowns and listed accounts; Shield Mode; Offline Protection's chat modes; settings changed by chat command; and undos with `!tsundo`.
 
 ---
 
@@ -402,15 +409,13 @@ No. Alerts are queued, and a burst is merged into messages of up to ten.
 
 **Q: Can I change the name alerts post under?**
 
-**Display Name** and **Avatar URL** on the Discord Alerts page. Clear them to use the webhook's own. Discord refuses names over 80 characters or containing *discord* or *clyde*, so TwitchSentry drops such a name instead of sending it.
+**Display Name** and **Avatar URL** on the Discord tab of the Notifications page. Clear them to use the webhook's own. Discord refuses names over 80 characters or containing *discord* or *clyde*, so TwitchSentry drops such a name instead of sending it.
 
 ---
 
-## 🔔 Windows Notifications
-
 **Q: Can TwitchSentry tell me things on the desktop?**
 
-Yes, on the **Windows Notifications** page (Setup): a new TwitchSentry release and a deck button that could not do what it was asked (both on by default), and what a deck button just did (off by default). They show while the settings window is closed too. A profile never carries these switches.
+Yes, on the **Windows** tab of the **Notifications** page (Setup): a new TwitchSentry release and a deck button that could not do what it was asked (both on by default), and what a deck button just did (off by default). They show while the settings window is closed too. A profile never carries these switches.
 
 ---
 
@@ -464,7 +469,7 @@ English, German, Spanish, French and Brazilian Portuguese ship, and Dutch comes 
 
 **Q: The bot still writes English in chat.**
 
-Intended. Translations cover the settings window only. What the bot says comes from the **Messages** pages, in your own words and language.
+That is intended. Translations cover the settings window only. What the bot says comes from each module's **Messages** tab, in your own words and language.
 
 ---
 
@@ -484,7 +489,7 @@ Yes. One text that reads badly: ☰ → **Report...** → *A translation*, pick 
 
 **Q: How do I know a new version is out?**
 
-The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notification banner has a button that allows you to ignore future beta notifications. ☰ → **Show hidden notices again** brings betas back.
+The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notice has a button to ignore future betas, and ☰ → **Show hidden notices again** brings them back.
 
 ---
 
