@@ -467,9 +467,9 @@ English, German, Spanish, French and Brazilian Portuguese ship, and Dutch comes 
 
 ---
 
-**Q: The bot still writes English in chat.**
+**Q: Can the bot write in my language in chat?**
 
-That is intended. Translations cover the settings window only. What the bot says comes from each module's **Messages** tab, in your own words and language.
+Yes. ☰ → **Change Language** → *Chat Messages*, pick one, **Use This Language**: English, German, Spanish, French and Brazilian Portuguese ship, chosen apart from the window's language. Messages you changed yourself keep your wording; if there are any, TwitchSentry lists them and replaces only the ones you tick. Each message can still be changed on its module's **Messages** tab.
 
 ---
 
@@ -481,7 +481,7 @@ Yes, for viewers who set theirs on [pronouns.alejo.io](https://pronouns.alejo.io
 
 **Q: Can I fix or write a translation?**
 
-Yes. One text that reads badly: ☰ → **Report...** → *A translation*, pick the text and write the better wording. A whole language: ☰ → **Share With Others...** → *A complete translation file*. The files live in `TwitchSentry/Settings/Language/` (📁 in the Change Language dialog); each key is the exact English text, each value its translation, and placeholders like `{user}` stay as they are. Shipped languages are refreshed from GitHub, so a file of your own belongs under an unused code.
+Yes. One text that reads badly: ☰ → **Report...** → *A translation*, pick the text and write the better wording. A whole language: ☰ → **Share With Others...** → *A complete translation file*. Both work for chat messages too (*A chat message*, *Chat messages*). The files live in `TwitchSentry/Settings/Language/`, the chat languages in its `Chat` folder (📁 on each tab of the Change Language dialog); each key is the exact English text, each value its translation, and placeholders like `{user}` stay as they are. Shipped languages are refreshed from GitHub, so a file of your own belongs under an unused code.
 
 ---
 

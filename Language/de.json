@@ -2108,5 +2108,22 @@
   "Only viewers who have followed for at least the age below can chat during the lockdown. The accounts of a hate raid have usually not followed, or only just.": "Nur Zuschauer, die mindestens so lange folgen wie unten angegeben, können während des Lockdowns schreiben. Die Konten eines Hate Raids folgen meist gar nicht oder erst seit Kurzem.",
   "Only subscribers, mods and VIPs can chat during the lockdown.": "Nur Abonnenten, Mods und VIPs können während des Lockdowns schreiben.",
   "Only emotes can be posted during the lockdown.": "Während des Lockdowns können nur Emotes gepostet werden.",
-  "Every viewer has to wait between their own messages during the lockdown.": "Jeder Zuschauer muss während des Lockdowns zwischen seinen eigenen Nachrichten warten."
+  "Every viewer has to wait between their own messages during the lockdown.": "Jeder Zuschauer muss während des Lockdowns zwischen seinen eigenen Nachrichten warten.",
+  "The language TwitchSentry writes in chat, fetched from the TwitchSentry repository. A message you changed yourself keeps your wording unless you choose otherwise.": "Die Sprache, in der TwitchSentry im Chat schreibt, geladen aus dem TwitchSentry-Repository. Eine Nachricht, die du selbst geändert hast, behält deinen Wortlaut, außer du entscheidest es anders.",
+  "The texts of '{name}' could not be read. Download it again.": "Die Texte von '{name}' konnten nicht gelesen werden. Lade die Sprache noch einmal herunter.",
+  "Window": "Fenster",
+  "Chat Messages": "Chat-Nachrichten",
+  "Messages You Changed": "Von dir geänderte Nachrichten",
+  "You changed 1 chat message yourself. It keeps your wording unless you tick it: then it says what {language} says.": "Du hast 1 Chat-Nachricht selbst geändert. Sie behält deinen Wortlaut, außer du hakst sie an: Dann sagt sie, was {language} sagt.",
+  "You changed {count} chat messages yourself. They keep your wording unless you tick them: a ticked one says what {language} says.": "Du hast {count} Chat-Nachrichten selbst geändert. Sie behalten deinen Wortlaut, außer du hakst sie an: Eine angehakte sagt, was {language} sagt.",
+  "Yours:": "Dein Text:",
+  "(empty)": "(leer)",
+  "Switch Language": "Sprache wechseln",
+  "A chat message": "Eine Chat-Nachricht",
+  "Where does the text show?": "Wo erscheint der Text?",
+  "Type a few words of the message as TwitchSentry writes it.": "Tippe ein paar Wörter der Nachricht so, wie TwitchSentry sie schreibt.",
+  "The chat messages of this language are not on this PC yet. Download it on the Chat Messages tab of ☰ → Change Language, then come back here.": "Die Chat-Nachrichten dieser Sprache sind noch nicht auf diesem PC. Lade sie im Tab Chat-Nachrichten unter ☰ → Change Language herunter und komm dann hierher zurück.",
+  "Pick a chat message from {language} as TwitchSentry writes it, and write what it should say instead. One text per ticket. To improve another language, switch the chat to it on the Chat Messages tab of ☰ → Change Language.": "Wähle eine Chat-Nachricht aus {language} so, wie TwitchSentry sie schreibt, und schreib, wie sie stattdessen lauten soll. Ein Text pro Ticket. Um eine andere Sprache zu verbessern, stell den Chat im Tab Chat-Nachrichten unter ☰ → Change Language auf diese Sprache um.",
+  "Chat messages": "Chat-Nachrichten",
+  "What does the file translate?": "Was übersetzt die Datei?"
 }

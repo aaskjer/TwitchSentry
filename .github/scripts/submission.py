@@ -64,13 +64,19 @@ FIELDS = {
              ("version", "TwitchSentry version"), ("privacy", "Before you submit")],
     "profile": [("name", "Profile name"), ("purpose", "What is it for?"),
                 ("profile", "Profile file"), ("privacy", "Before you submit")],
-    "translation": [("language", "Language"), ("english", "The English text"),
+    "translation": [("where", "Where does the text show?"), ("language", "Language"), ("english", "The English text"),
                     ("current", "What it says now"), ("suggestion", "What it should say"),
                     ("why", "Why is it better?")],
-    "language": [("language-name", "Language name"), ("language-code", "Language code"),
+    "language": [("translates", "What does the file translate?"), ("language-name", "Language name"), ("language-code", "Language code"),
                  ("credit", "Credit (optional)"), ("file", "Language file"),
                  ("privacy", "Before you submit")],
 }
+
+# Added after tickets were already open: a ticket without them is about the settings window, as every ticket was then.
+OPTIONAL_FIELDS = {"where", "translates"}
+# The answers that make a ticket about the chat messages, whose languages live in Language/Chat.
+CHAT_TEXT = "A chat message"
+CHAT_FILE = "Chat messages"
 
 # Where each kind that goes through a pull request keeps its files on the submissions branch.
 FOLDER = {"spam": "spam", "translation": "translations", "language": "languages"}
@@ -109,7 +115,7 @@ PROFILE_EXCLUDED = [
     "excludedUsers", "excludedGroups", "trustedUsers", "trustedRaiders", "whitelistDomains",
     "autoModWhitelist", "voteExcludedUsers", "voteExcludedGroups", "fgBlockedList", "lbFoundList",
     "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames", "fgPauseQueueNames", "hrPauseQueueNames",
-    "useBotAccount", "DarkMode", "guiLanguage", "uiExpertMode", "dismissedHints",
+    "useBotAccount", "DarkMode", "guiLanguage", "chatLanguage", "chatMessagesWritten", "uiExpertMode", "dismissedHints",
     "settingsSchema", "activeProfile", "updateChannel", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
     "dryRunEnabled", "dryRunMinutes", "easterEggs",
@@ -551,17 +557,26 @@ def _is_number_map(value):
     return True
 
 
+def language_folder(root, chat):
+    return os.path.join(root, "Language", "Chat") if chat else os.path.join(root, "Language")
+
+
 def build_translation(issue, values, root, elsewhere=None):
     elsewhere = elsewhere or Elsewhere()
     result = Result("translation")
-    index = read_json(os.path.join(root, "Language", "index.json"), [])
+    chat = (values.get("where") or "").strip() == CHAT_TEXT
+    target = "chat" if chat else "window"
+    folder = language_folder(root, chat)
+    published = "Language/Chat/en.json" if chat else "Language/en.json"
+    index = read_json(os.path.join(folder, "index.json"), [])
     # English is a language file like the others: en.json can word a text differently from the code.
     codes = [str(e.get("code")) for e in index if isinstance(e, dict) and e.get("code")]
 
     match = re.search(r"\(([A-Za-z]{2,3}(?:-[A-Za-z]{2,4})?)\)\s*$", values.get("language") or "")
     code = match.group(1) if match else None
     if code not in codes:
-        result.problems.append("Pick one of the languages TwitchSentry has.")
+        result.problems.append("Pick one of the languages TwitchSentry has for chat messages." if chat
+                               else "Pick one of the languages TwitchSentry has.")
 
     english = clip(values.get("english"), MAX_TEXT)
     current = clip(values.get("current"), MAX_TEXT)
@@ -582,14 +597,15 @@ def build_translation(issue, values, root, elsewhere=None):
     # The same text in the same language is one decision, so a second ticket saying the same thing adds nothing.
     # One saying something else does: both wordings belong in front of whoever picks.
     for other in elsewhere.translations:
-        if other.get("issue") == issue["number"] or other.get("language") != code or other.get("english") != english:
+        if (other.get("issue") == issue["number"] or other.get("language") != code or other.get("english") != english
+                or other.get("target", "window") != target):
             continue
         if other.get("suggestion") == suggestion:
             result.same_as = other.get("issue")
             return result
         result.answered_differently = other.get("issue")
 
-    english_file = read_json(os.path.join(root, "Language", "en.json"), {})
+    english_file = read_json(os.path.join(folder, "en.json"), {})
     known = isinstance(english_file, dict) and english in english_file
 
     number = issue["number"]
@@ -602,14 +618,17 @@ def build_translation(issue, values, root, elsewhere=None):
         "english": english,
         "suggestion": suggestion,
     }
+    if chat:
+        document["target"] = "chat"
     if current:
         document["current"] = current
     if why:
         document["why"] = why
     result.document = document
     result.path = "%s/%d.json" % (FOLDER["translation"], number)
-    result.title = "Translation (%s) from #%d" % (code, number)
-    lines = ["**A translation fix** for `%s`, shared in #%d by %s." % (code, number, issue["user"]["login"]), "",
+    result.title = ("Chat translation (%s) from #%d" if chat else "Translation (%s) from #%d") % (code, number)
+    lines = ["**A %s fix** for `%s`, shared in #%d by %s." % ("chat message translation" if chat else "translation",
+                                                             code, number, issue["user"]["login"]), "",
              "The English text:", fence(english)]
     if current:
         lines += ["What it says now:", fence(current)]
@@ -619,8 +638,8 @@ def build_translation(issue, values, root, elsewhere=None):
     if result.answered_differently:
         lines += ["**#%d wants something else for the same text.** Both are here to pick from; only one of them "
                   "can end up in the language file." % result.answered_differently, ""]
-    lines.append("The English text is %s the published `Language/en.json`%s." % (
-        "in" if known else "**not** in",
+    lines.append("The English text is %s the published `%s`%s." % (
+        "in" if known else "**not** in", published,
         "" if known else " - it may belong to a window newer than that file, or be copied inexactly"))
     result.summary = "\n".join(lines)
     return result
@@ -636,6 +655,9 @@ def fetch_attachment(url):
 
 def build_language(issue, values, root, elsewhere=None):
     result = Result("language")
+    chat = (values.get("translates") or "").strip() == CHAT_FILE
+    folder = language_folder(root, chat)
+    published = "Language/Chat/en.json" if chat else "Language/en.json"
     if not is_checked(values.get("privacy")):
         result.problems.append("The box saying this is your own translation of TwitchSentry's English text, "
                                "not unread machine output, is not ticked.")
@@ -681,8 +703,8 @@ def build_language(issue, values, root, elsewhere=None):
             except ValueError as ex:
                 result.problems.append("The file is not valid JSON (%s)." % printable(str(ex), 80))
 
-    english_file = read_json(os.path.join(root, "Language", "en.json"), {})
-    en_keys = set(english_file) if isinstance(english_file, dict) else set()
+    english_file = read_json(os.path.join(folder, "en.json"), {})
+    en_keys = set(k for k in english_file if not k.startswith("__")) if isinstance(english_file, dict) else set()
     covered = 0
     if isinstance(parsed, dict):
         real_keys = [k for k in parsed if not k.startswith("__")]
@@ -703,7 +725,7 @@ def build_language(issue, values, root, elsewhere=None):
     if not isinstance(parsed.get("__version"), int) or parsed["__version"] < 1:
         parsed["__version"] = 1
 
-    index = read_json(os.path.join(root, "Language", "index.json"), [])
+    index = read_json(os.path.join(folder, "index.json"), [])
     codes = [str(e.get("code")) for e in index if isinstance(e, dict) and e.get("code")]
     is_new = code not in codes
 
@@ -719,18 +741,20 @@ def build_language(issue, values, root, elsewhere=None):
         "isNewLanguage": is_new,
         "file": parsed,
     }
+    if chat:
+        document["target"] = "chat"
     result.document = document
     result.path = "%s/%d.json" % (FOLDER["language"], number)
-    result.title = "Language (%s) from #%d" % (code, number)
+    result.title = ("Chat language (%s) from #%d" if chat else "Language (%s) from #%d") % (code, number)
 
     coverage = ("%d of %d texts" % (covered, len(en_keys))) if en_keys else "an unknown number of texts"
     lines = [
         "**%s** for `%s` (%s), shared in #%d by %s, credited as %s." % (
-            "A new language" if is_new else "An update to an existing language",
+            ("A new %s" if is_new else "An update to an existing %s") % ("chat language" if chat else "language"),
             printable(name, 60), code, number, login, printable(by, 60)),
         "",
-        "Covers %s from the published `Language/en.json`. Anything short of that stays in English until "
-        "someone fills it in, the same as any string a translated language is still missing." % coverage,
+        "Covers %s from the published `%s`. Anything short of that stays in English until "
+        "someone fills it in, the same as any string a translated language is still missing." % (coverage, published),
     ]
     result.summary = "\n".join(lines)
     return result
@@ -771,7 +795,7 @@ def without_lone_surrogates(text):
 
 def build(kind, issue, root, elsewhere=None):
     values = parse_form(without_lone_surrogates(issue.get("body")), FIELDS[kind])
-    missing = [label for key, label in FIELDS[kind] if values[key] is None]
+    missing = [label for key, label in FIELDS[kind] if values[key] is None and key not in OPTIONAL_FIELDS]
     if missing:
         result = Result(kind)
         result.problems.append("The ticket no longer has the form's parts (missing: %s). "

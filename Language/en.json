@@ -2108,5 +2108,22 @@
   "Only viewers who have followed for at least the age below can chat during the lockdown. The accounts of a hate raid have usually not followed, or only just.": "Only viewers who have followed for at least the age below can chat during the lockdown. The accounts of a hate raid have usually not followed, or only just.",
   "Only subscribers, mods and VIPs can chat during the lockdown.": "Only subscribers, mods and VIPs can chat during the lockdown.",
   "Only emotes can be posted during the lockdown.": "Only emotes can be posted during the lockdown.",
-  "Every viewer has to wait between their own messages during the lockdown.": "Every viewer has to wait between their own messages during the lockdown."
+  "Every viewer has to wait between their own messages during the lockdown.": "Every viewer has to wait between their own messages during the lockdown.",
+  "The language TwitchSentry writes in chat, fetched from the TwitchSentry repository. A message you changed yourself keeps your wording unless you choose otherwise.": "The language TwitchSentry writes in chat, fetched from the TwitchSentry repository. A message you changed yourself keeps your wording unless you choose otherwise.",
+  "The texts of '{name}' could not be read. Download it again.": "The texts of '{name}' could not be read. Download it again.",
+  "Window": "Window",
+  "Chat Messages": "Chat Messages",
+  "Messages You Changed": "Messages You Changed",
+  "You changed 1 chat message yourself. It keeps your wording unless you tick it: then it says what {language} says.": "You changed 1 chat message yourself. It keeps your wording unless you tick it: then it says what {language} says.",
+  "You changed {count} chat messages yourself. They keep your wording unless you tick them: a ticked one says what {language} says.": "You changed {count} chat messages yourself. They keep your wording unless you tick them: a ticked one says what {language} says.",
+  "Yours:": "Yours:",
+  "(empty)": "(empty)",
+  "Switch Language": "Switch Language",
+  "A chat message": "A chat message",
+  "Where does the text show?": "Where does the text show?",
+  "Type a few words of the message as TwitchSentry writes it.": "Type a few words of the message as TwitchSentry writes it.",
+  "The chat messages of this language are not on this PC yet. Download it on the Chat Messages tab of ☰ → Change Language, then come back here.": "The chat messages of this language are not on this PC yet. Download it on the Chat Messages tab of ☰ → Change Language, then come back here.",
+  "Pick a chat message from {language} as TwitchSentry writes it, and write what it should say instead. One text per ticket. To improve another language, switch the chat to it on the Chat Messages tab of ☰ → Change Language.": "Pick a chat message from {language} as TwitchSentry writes it, and write what it should say instead. One text per ticket. To improve another language, switch the chat to it on the Chat Messages tab of ☰ → Change Language.",
+  "Chat messages": "Chat messages",
+  "What does the file translate?": "What does the file translate?"
 }
