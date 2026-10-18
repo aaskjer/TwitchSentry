@@ -381,6 +381,22 @@ test("a removal finds a renamed account through Twitch", async () => {
   assert.ok(!branch().spam.accounts.some(a => a.id === "1004"));
 });
 
+test("a removal of an account already off the list still reaches removed.json", async () => {
+  user("1010", "bot_ten");
+  await report("A", [{ category: "spam", id: "1010", login: "bot_ten", reason: "keyword" }], { now: T0 + 16 * DAY + 305 });
+  await publish(T0 + 16 * DAY + 310);
+  assert.ok(branch().spam.accounts.some(a => a.id === "1010"), "listed, so installs may have banned it");
+  await retract("A", [{ id: "1010", category: "spam" }], { now: T0 + 16 * DAY + 312 });
+  await publish(T0 + 16 * DAY + 315);
+  assert.ok(!branch().spam.accounts.some(a => a.id === "1010"), "off the list again, the bans stay");
+  const before = commitCount();
+  const r = await removal({ names: ["bot_ten"], issue: 78, by: "aaskjer" }, "removal-key", T0 + 16 * DAY + 320);
+  assert.deepEqual(r.body.cleared, [{ id: "1010", login: "bot_ten" }], r.text);
+  assert.equal(r.body.committed, true, r.text);
+  assert.equal(commitCount(), before + 1);
+  assert.ok(branch().removed.removed.some(x => x.id === "1010"), "the installs lift their bans from removed.json");
+});
+
 test("a failed Twitch check shows in health and the account waits for the next pass", async () => {
   user("1006", "bot_six");
   await report("A", [{ category: "spam", id: "1006", login: "bot_six", reason: "keyword" }], { now: T0 + 16 * DAY + 330 });

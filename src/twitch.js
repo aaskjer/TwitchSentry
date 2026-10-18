@@ -47,6 +47,11 @@ export async function getUsers(env, db, { ids = [], logins = [] }) {
       headers: { "Client-Id": env.TWITCH_CLIENT_ID, Authorization: "Bearer " + await token(env, db, attempt > 0) },
     });
     if (res.status === 401 && attempt === 0) continue;
+    if (res.status === 401) {
+      const err = new Error("Twitch kept refusing the app token");
+      err.status = 401;
+      throw err;
+    }
     if (!res.ok) {
       const err = new Error(`Twitch Get Users answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
       err.status = res.status;
@@ -57,5 +62,4 @@ export async function getUsers(env, db, { ids = [], logins = [] }) {
       found.set(String(u.id), { id: String(u.id), login: String(u.login).toLowerCase(), type: u.type || "", broadcaster_type: u.broadcaster_type || "" });
     return found;
   }
-  throw new Error("Twitch kept refusing the app token");
 }

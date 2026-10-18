@@ -20,6 +20,7 @@ async function lookUp(env, db, ids, budget) {
   try {
     return { users: await getUsers(env, db, { ids }), invalid: [], skipped: [] };
   } catch (err) {
+    // Twitch says "Bad Identifiers"; any other 400 is no reason to call an id bad, so it stops the pass instead.
     if (err.status !== 400 || !/identifier/i.test(err.message)) throw err;
     if (ids.length === 1) return { users: new Map(), invalid: ids, skipped: [] };
     const half = Math.ceil(ids.length / 2);
@@ -31,7 +32,7 @@ async function lookUp(env, db, ids, budget) {
 
 export async function verifyAccounts(env, db, now) {
   if (!twitchConfigured(env)) return { checked: 0, error: "Twitch is not configured" };
-  const candidates = await store.accountsToCheck(db, now, now - LIMITS.recheckDays * 86400, 100);
+  const candidates = await store.accountsToCheck(db, now - LIMITS.recheckDays * 86400, 100);
   if (candidates.length === 0) return { checked: 0 };
   let found;
   try {
@@ -146,4 +147,3 @@ export async function publish(env, { force = false, now = Math.floor(Date.now() 
   }
 }
 
-export { getUsers, twitchConfigured };

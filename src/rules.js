@@ -42,11 +42,12 @@ export const EXTERNAL_LISTS = {
 export const EXTERNAL_REASON = "external_list";
 
 export const REASONS = new Set([
-  "spam_domain", "keyword", "handoff", "service_offer", "custom_pattern", "conversation_scam", "invite_link", "offer",
-  "search_redirect", "offer_quantity", "offer_repeated", "offer_catalogue", "campaign_tag",
+  "spam_domain", "spam_domain_spaced", "spaced_url", "spelled_dot_url", "bracketed_dot_url", "invite_link",
+  "keyword", "strong_keyword", "keyword_phrase", "handoff", "service_offer", "custom_pattern", "conversation_scam",
+  "offer", "search_redirect", "offer_quantity", "offer_repeated", "offer_catalogue", "campaign_tag",
   "assembly_instruction", "redemption_code", "voucher_code", "voucher_pattern",
-  "lurkbot_name", "known_day", "same_day", "bare_profile",
-  "follow_wave", "raid_swarm", "raid_content", "hate_raid",
+  "known_day", "same_day",
+  "follow_wave", "raid_swarm", "hate_raid",
 ]);
 
 // Accounts channels rely on; a misreport must never put one of them on everybody's ban list.
