@@ -2108,5 +2108,22 @@
   "Only viewers who have followed for at least the age below can chat during the lockdown. The accounts of a hate raid have usually not followed, or only just.": "Só podem escrever durante o bloqueio os espectadores que seguem há pelo menos o tempo abaixo. As contas de um hate raid normalmente não seguem, ou acabaram de seguir.",
   "Only subscribers, mods and VIPs can chat during the lockdown.": "Só inscritos, mods e VIPs podem escrever durante o bloqueio.",
   "Only emotes can be posted during the lockdown.": "Durante o bloqueio só é possível publicar emotes.",
-  "Every viewer has to wait between their own messages during the lockdown.": "Cada espectador tem de esperar entre as suas próprias mensagens durante o bloqueio."
+  "Every viewer has to wait between their own messages during the lockdown.": "Cada espectador tem de esperar entre as suas próprias mensagens durante o bloqueio.",
+  "The language TwitchSentry writes in chat, fetched from the TwitchSentry repository. A message you changed yourself keeps your wording unless you choose otherwise.": "O idioma em que o TwitchSentry escreve no chat, baixado do repositório do TwitchSentry. Uma mensagem que você mudou por conta própria mantém o seu texto, a menos que você decida outra coisa.",
+  "The texts of '{name}' could not be read. Download it again.": "Não foi possível ler os textos de '{name}'. Baixe de novo.",
+  "Window": "Janela",
+  "Chat Messages": "Mensagens do chat",
+  "Messages You Changed": "Mensagens que você mudou",
+  "You changed 1 chat message yourself. It keeps your wording unless you tick it: then it says what {language} says.": "Você mudou 1 mensagem do chat por conta própria. Ela mantém o seu texto, a menos que você a marque: aí ela diz o que {language} diz.",
+  "You changed {count} chat messages yourself. They keep your wording unless you tick them: a ticked one says what {language} says.": "Você mudou {count} mensagens do chat por conta própria. Elas mantêm o seu texto, a menos que você as marque: uma marcada diz o que {language} diz.",
+  "Yours:": "Seu texto:",
+  "(empty)": "(vazio)",
+  "Switch Language": "Trocar idioma",
+  "A chat message": "Uma mensagem do chat",
+  "Where does the text show?": "Onde o texto aparece?",
+  "Type a few words of the message as TwitchSentry writes it.": "Digite algumas palavras da mensagem do jeito que o TwitchSentry a escreve.",
+  "The chat messages of this language are not on this PC yet. Download it on the Chat Messages tab of ☰ → Change Language, then come back here.": "As mensagens do chat deste idioma ainda não estão neste PC. Baixe-o na aba Mensagens do chat de ☰ → Change Language e depois volte aqui.",
+  "Pick a chat message from {language} as TwitchSentry writes it, and write what it should say instead. One text per ticket. To improve another language, switch the chat to it on the Chat Messages tab of ☰ → Change Language.": "Escolha uma mensagem do chat de {language} do jeito que o TwitchSentry a escreve e escreva o que ela deveria dizer. Um texto por ticket. Para melhorar outro idioma, mude o chat para ele na aba Mensagens do chat de ☰ → Change Language.",
+  "Chat messages": "Mensagens do chat",
+  "What does the file translate?": "O que o arquivo traduz?"
 }

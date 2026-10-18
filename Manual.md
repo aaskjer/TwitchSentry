@@ -607,7 +607,9 @@ Lets chat decide! `!vote @user` starts or joins a vote, and if enough *different
 
 # Messages
 
-Everything TwitchSentry says in chat is on the **Messages** tab of the module that says it, with the placeholders each message accepts listed under the box. Its answers to chat commands are on the [Command Replies](#command-replies) tab of General Settings. Nothing here is translated for you — this is your bot's voice, your wording and your language, so a German channel picks Deutsch for the window *and* writes these in German.
+Everything TwitchSentry says in chat is on the **Messages** tab of the module that says it, with the placeholders each message accepts listed under the box. Its answers to chat commands are on the [Command Replies](#command-replies) tab of General Settings.
+
+The messages come in English, German, Spanish, French and Brazilian Portuguese: pick the language on the *Chat Messages* tab of ☰ → **Change Language**, apart from the window's ([Languages](#languages)). A message you change is yours from then on. Another chat language, or an update of it from GitHub, leaves it as you wrote it; switching lists every message of your own and replaces only the ones you tick. **Reset Page** puts a page's messages back to the chosen chat language. Names TwitchSentry fills in by itself, such as a module's or a chat mode's, stay in English.
 
 | General Settings → Command Replies | Message Filter → Messages | Raid Protection → Messages |
 |:---:|:---:|:---:|
@@ -944,13 +946,18 @@ Moderator-only unless noted. TwitchSentry recognises each command by its Streame
 
 # Languages
 
-<img width="446" height="423" alt="grafik" src="https://github.com/user-attachments/assets/4a36658a-007e-414f-8641-d356d796d3ea" />
+| Window | Chat Messages |
+|:---:|:---:|
+| ![Languages → Window](docs/screenshots/languages.png) | ![Languages → Chat Messages](docs/screenshots/chat-languages.png) |
 
-The settings window ships in English, German, Spanish, French and Brazilian Portuguese, and Dutch comes from the community. Pick one from the ☰ menu; the window closes and reopens in it. Files are refreshed from GitHub in the background, and the window opens on the copy you already have if GitHub is unreachable.
+☰ → **Change Language** has two tabs, and each language is chosen on its own: a channel can run the window in English and talk to its chat in German.
 
-This covers the window only. What the bot says in chat comes from the **Messages** pages and stays exactly as you wrote it.
+- **Window** — the settings window ships in English, German, Spanish, French and Brazilian Portuguese, and Dutch comes from the community. Pick one; the window closes and reopens in it.
+- **Chat Messages** — what TwitchSentry writes in chat, in English, German, Spanish, French and Brazilian Portuguese. Picking one rewrites the [messages](#messages) on every Messages tab. A message you changed yourself keeps your wording: if there are any, a list shows each one beside the new text, and only the ones you tick are replaced. Everything starts out in English, so nothing in your chat changes until you pick a language here.
 
-Writing a translation is a matter of copying `Language/en.json` and replacing the values — each key is the exact English string from the window. Keep any `{user}`, `{count}` or `{duration}` placeholders spelled the same way. Save it under a code that is not published and it will never be overwritten. To bring it to everyone, **Share With Others...** in the ☰ menu → *A complete translation file*: for a language TwitchSentry does not have yet, or to bring an existing one up to date. One text that reads badly is quicker as **Report...** → *A translation*.
+Both are refreshed from GitHub in the background, and the window opens on the copy you already have if GitHub is unreachable. When a chat language is updated, the messages TwitchSentry wrote follow it; yours stay as they are.
+
+Writing a translation is a matter of copying `Language/en.json` and replacing the values — each key is the exact English string from the window. A chat language works the same way from `Language/Chat/en.json`, whose keys are the English messages. Keep any `{user}`, `{count}` or `{duration}` placeholders spelled the same way; a `{pronoun:he|she|they}` takes the words of your language. Save it under a code that is not published and it will never be overwritten. To bring it to everyone, **Share With Others...** in the ☰ menu → *A complete translation file*, with *The settings window* or *Chat messages*: for a language TwitchSentry does not have yet, or to bring an existing one up to date. One text that reads badly is quicker as **Report...** → *A translation*, where *Where does the text show?* picks a chat message instead of a window text.
 
 ---
 
@@ -962,6 +969,7 @@ Everything sits under your Streamer.bot base directory, in a `TwitchSentry` fold
 TwitchSentry/Settings/configs.json                   ← all module settings
 TwitchSentry/Settings/messages.json                  ← everything the bot says in chat
 TwitchSentry/Settings/Language/<code>.json           ← settings-window translations
+TwitchSentry/Settings/Language/Chat/<code>.json      ← chat message translations
 TwitchSentry/Settings/Profiles/<name>.json           ← exported policy profiles
 TwitchSentry/Machine Learning/spam.json              ← active keywords, phrases, patterns, TLDs
 TwitchSentry/Machine Learning/spam-suggestions.json  ← the Learner's pending suggestions

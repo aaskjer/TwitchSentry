@@ -2108,5 +2108,22 @@
   "Only viewers who have followed for at least the age below can chat during the lockdown. The accounts of a hate raid have usually not followed, or only just.": "Seuls les spectateurs qui te suivent depuis au moins la durée ci-dessous peuvent écrire pendant le verrouillage. Les comptes d'un hate raid ne te suivent en général pas, ou depuis peu.",
   "Only subscribers, mods and VIPs can chat during the lockdown.": "Seuls les abonnés, les mods et les VIP peuvent écrire pendant le verrouillage.",
   "Only emotes can be posted during the lockdown.": "Pendant le verrouillage, seules les émotes peuvent être publiées.",
-  "Every viewer has to wait between their own messages during the lockdown.": "Chaque spectateur doit attendre entre ses propres messages pendant le verrouillage."
+  "Every viewer has to wait between their own messages during the lockdown.": "Chaque spectateur doit attendre entre ses propres messages pendant le verrouillage.",
+  "The language TwitchSentry writes in chat, fetched from the TwitchSentry repository. A message you changed yourself keeps your wording unless you choose otherwise.": "La langue dans laquelle TwitchSentry écrit dans le chat, récupérée depuis le dépôt de TwitchSentry. Un message que tu as modifié toi-même garde ta formulation, sauf si tu en décides autrement.",
+  "The texts of '{name}' could not be read. Download it again.": "Les textes de '{name}' n'ont pas pu être lus. Télécharge-la à nouveau.",
+  "Window": "Fenêtre",
+  "Chat Messages": "Messages du chat",
+  "Messages You Changed": "Messages que tu as modifiés",
+  "You changed 1 chat message yourself. It keeps your wording unless you tick it: then it says what {language} says.": "Tu as modifié 1 message du chat toi-même. Il garde ta formulation, sauf si tu le coches : il dit alors ce que dit {language}.",
+  "You changed {count} chat messages yourself. They keep your wording unless you tick them: a ticked one says what {language} says.": "Tu as modifié {count} messages du chat toi-même. Ils gardent ta formulation, sauf si tu les coches : un message coché dit ce que dit {language}.",
+  "Yours:": "Ton texte :",
+  "(empty)": "(vide)",
+  "Switch Language": "Changer de langue",
+  "A chat message": "Un message du chat",
+  "Where does the text show?": "Où le texte apparaît-il ?",
+  "Type a few words of the message as TwitchSentry writes it.": "Tape quelques mots du message tel que TwitchSentry l'écrit.",
+  "The chat messages of this language are not on this PC yet. Download it on the Chat Messages tab of ☰ → Change Language, then come back here.": "Les messages du chat de cette langue ne sont pas encore sur ce PC. Télécharge-la dans l'onglet Messages du chat de ☰ → Change Language, puis reviens ici.",
+  "Pick a chat message from {language} as TwitchSentry writes it, and write what it should say instead. One text per ticket. To improve another language, switch the chat to it on the Chat Messages tab of ☰ → Change Language.": "Choisis un message du chat en {language} tel que TwitchSentry l'écrit, et écris ce qu'il devrait dire à la place. Un texte par ticket. Pour améliorer une autre langue, passe le chat dans cette langue dans l'onglet Messages du chat de ☰ → Change Language.",
+  "Chat messages": "Messages du chat",
+  "What does the file translate?": "Que traduit le fichier ?"
 }

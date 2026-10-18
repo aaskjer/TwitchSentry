@@ -42,10 +42,14 @@ def ticket(kind, pairs, number=42, state="open"):
             "user": {"login": "somestreamer"}, "created_at": "2026-09-14T12:00:00Z"}
 
 
-def workspace(feed=None, en=None):
+def workspace(feed=None, en=None, chat_en=None):
     root = tempfile.mkdtemp(prefix="ts-submission-")
     os.makedirs(os.path.join(root, "Feed"))
-    os.makedirs(os.path.join(root, "Language"))
+    os.makedirs(os.path.join(root, "Language", "Chat"))
+    with open(os.path.join(root, "Language", "Chat", "index.json"), "w", encoding="utf-8") as f:
+        json.dump([{"code": "en", "name": "English"}, {"code": "de", "name": "Deutsch"}], f)
+    with open(os.path.join(root, "Language", "Chat", "en.json"), "w", encoding="utf-8") as f:
+        json.dump(chat_en if chat_en is not None else {"__version": 1, "@{user}, please slow down": "@{user}, please slow down"}, f)
     with open(os.path.join(root, "Feed", "spam.json"), "w", encoding="utf-8") as f:
         json.dump(feed or {"schema": 1, "version": 1, "lists": {"spamDomains": ["smmgen"]}, "retracted": {}}, f)
     with open(os.path.join(root, "Language", "index.json"), "w", encoding="utf-8") as f:
@@ -72,9 +76,12 @@ def profile_pairs(name="Small chat, strict links", purpose="For small English ch
             ("Before you submit", privacy)]
 
 
-def translation_pairs(language="Deutsch (de)", english="Save", current="Speichern!", suggestion="Speichern", why=""):
-    return [("Language", language), ("The English text", english), ("What it says now", current),
-            ("What it should say", suggestion), ("Why is it better?", why)]
+def translation_pairs(language="Deutsch (de)", english="Save", current="Speichern!", suggestion="Speichern", why="",
+                      where="The settings window"):
+    # where=None: a ticket opened before the form asked where the text shows.
+    return ([("Where does the text show?", where)] if where is not None else []) + [
+        ("Language", language), ("The English text", english), ("What it says now", current),
+        ("What it should say", suggestion), ("Why is it better?", why)]
 
 
 def sample_language_file(count=25, prefix="Word"):
@@ -84,7 +91,7 @@ def sample_language_file(count=25, prefix="Word"):
 
 
 def language_pairs(name="Nederlands", code="nl", credit="", file_url="https://github.com/user-attachments/files/9999999/language.json",
-                   file_text=None,
+                   file_text=None, translates="The settings window",
                    privacy="- [X] This is my own translation of TwitchSentry's English text, or one I checked myself - "
                            "not unread machine output."):
     if file_text is not None:
@@ -93,8 +100,9 @@ def language_pairs(name="Nederlands", code="nl", credit="", file_url="https://gi
         file_field = "[language.json](%s)" % file_url
     else:
         file_field = ""
-    return [("Language name", name), ("Language code", code), ("Credit (optional)", credit),
-            ("Language file", file_field), ("Before you submit", privacy)]
+    return ([("What does the file translate?", translates)] if translates is not None else []) + [
+        ("Language name", name), ("Language code", code), ("Credit (optional)", credit),
+        ("Language file", file_field), ("Before you submit", privacy)]
 
 
 class TemplatesMatchTheScript(unittest.TestCase):
@@ -131,6 +139,26 @@ class TemplatesMatchTheScript(unittest.TestCase):
         with open(os.path.join(REPO_ROOT, "Language", "index.json"), encoding="utf-8-sig") as f:
             index = json.load(f)
         self.assertEqual(sorted(offered), sorted(e["code"] for e in index))
+
+    def test_every_chat_language_can_be_picked_in_the_dropdown(self):
+        with open(TEMPLATES["translation"], encoding="utf-8") as f:
+            offered = set(re.findall(r"^\s+- .*\(([A-Za-z-]+)\)\s*$", f.read(), re.M))
+        with open(os.path.join(REPO_ROOT, "Language", "Chat", "index.json"), encoding="utf-8-sig") as f:
+            chat = set(e["code"] for e in json.load(f))
+        self.assertTrue(chat <= offered, "chat languages missing from the dropdown: %s" % sorted(chat - offered))
+
+    def test_the_window_offers_the_answers_the_script_reads_as_chat(self):
+        with open(TEMPLATES["translation"], encoding="utf-8") as f:
+            self.assertRegex(f.read(), r"(?m)^\s+- %s\s*$" % re.escape(s.CHAT_TEXT))
+        with open(TEMPLATES["language"], encoding="utf-8") as f:
+            self.assertRegex(f.read(), r"(?m)^\s+- %s\s*$" % re.escape(s.CHAT_FILE))
+        gui_path = os.path.join(REPO_ROOT, "TwitchSentry-GUI.cs")
+        if not os.path.exists(gui_path):
+            self.skipTest("the window's source is not in this checkout")
+        with open(gui_path, encoding="utf-8-sig") as f:
+            gui = f.read()
+        self.assertIn('"%s"' % s.CHAT_TEXT, gui)
+        self.assertIn('"%s"' % s.CHAT_FILE, gui)
 
 
 class ReadingTheTicket(unittest.TestCase):
@@ -368,6 +396,31 @@ class Translations(unittest.TestCase):
         r = self.build(suggestion="Spei\u200bchern")
         self.assertTrue(any("invisible character" in p for p in r.problems))
 
+    def test_a_ticket_from_before_the_where_question_is_about_the_window(self):
+        r = self.build(where=None)
+        self.assertEqual(r.problems, [])
+        self.assertNotIn("target", r.document)
+        self.assertEqual(r.title, "Translation (de) from #42")
+
+    def test_a_chat_message_is_checked_against_the_chat_files(self):
+        r = self.build(where="A chat message", english="@{user}, please slow down", current="@{user}, langsam!",
+                       suggestion="@{user}, bitte etwas langsamer")
+        self.assertEqual(r.problems, [])
+        self.assertEqual(r.document["target"], "chat")
+        self.assertEqual(r.title, "Chat translation (de) from #42")
+        self.assertIn("is in the published `Language/Chat/en.json`", r.summary)
+
+    def test_a_chat_message_from_a_window_only_language(self):
+        r = self.build(where="A chat message", language="Portugu\u00eas (Brasil) (pt-BR)")
+        self.assertTrue(any("languages TwitchSentry has for chat messages" in p for p in r.problems))
+
+    def test_a_window_text_and_a_chat_message_are_two_decisions(self):
+        elsewhere = s.Elsewhere()
+        elsewhere.add({"type": "translation", "issue": 7, "language": "de", "english": "Save", "suggestion": "Speichern",
+                       "target": "chat"})
+        r = s.build("translation", ticket("translation", translation_pairs()), self.root, elsewhere)
+        self.assertIsNone(r.same_as)
+
 
 class Languages(unittest.TestCase):
     def setUp(self):
@@ -446,6 +499,26 @@ class Languages(unittest.TestCase):
     def test_the_privacy_box_must_be_ticked(self):
         r = self.build(privacy="")
         self.assertTrue(any("is not ticked" in p for p in r.problems))
+
+    def test_a_ticket_from_before_the_translates_question_is_a_window_language(self):
+        r = self.build(translates=None)
+        self.assertEqual(r.problems, [])
+        self.assertNotIn("target", r.document)
+        self.assertEqual(r.title, "Language (nl) from #42")
+
+    def test_a_chat_language_counts_against_the_chat_english(self):
+        root = workspace(chat_en=dict(sample_language_file(count=30, prefix="Word"), __version=1))
+        r = s.build("language", ticket("language", language_pairs(translates="Chat messages")), root)
+        self.assertEqual(r.problems, [])
+        self.assertEqual(r.document["target"], "chat")
+        self.assertTrue(r.document["isNewLanguage"])
+        self.assertEqual(r.title, "Chat language (nl) from #42")
+        self.assertIn("25 of 30 texts from the published `Language/Chat/en.json`", r.summary)
+
+    def test_a_chat_language_twitchsentry_has_is_an_update(self):
+        r = self.build(name="Deutsch", code="de", translates="Chat messages")
+        self.assertFalse(r.document["isNewLanguage"])
+        self.assertIn("existing chat language", r.summary)
 
 
 class AwkwardCharacters(unittest.TestCase):

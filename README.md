@@ -75,7 +75,7 @@ Found a bug or have an idea? **Report...** in the ☰ menu opens a pre-filled Gi
 
 ## Languages
 
-The settings window ships in English. German, Spanish, French and Brazilian Portuguese are one download away in the ☰ menu, along with languages contributed by the community. What the bot says in chat is yours to write, in whatever language your channel speaks, and it can refer to a viewer by the pronouns they set on [pronouns.alejo.io](https://pronouns.alejo.io). The translations are made with AI help and human review. If a text reads badly, **Report...** in the ☰ menu → *A translation* sends in a better wording. Want your own language in there? **Share With Others...** takes a complete translation file: [Adding a translation](Manual.md#languages).
+The settings window ships in English. German, Spanish, French and Brazilian Portuguese are one download away in the ☰ menu, along with languages contributed by the community. What the bot says in chat comes in the same five languages, chosen on its own tab, and every message stays yours to rewrite in whatever language your channel speaks; it can refer to a viewer by the pronouns they set on [pronouns.alejo.io](https://pronouns.alejo.io). The translations are made with AI help and human review. If a text reads badly, **Report...** in the ☰ menu → *A translation* sends in a better wording. Want your own language in there? **Share With Others...** takes a complete translation file, for the window or the chat messages: [Adding a translation](Manual.md#languages).
 
 ---
 
