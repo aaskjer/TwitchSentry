@@ -2,7 +2,8 @@
 
 import { LIMITS, parseReport, parseRetract, parseRemoval, networkOf, hashKey, constantTimeEqual } from "./rules.js";
 import * as store from "./store.js";
-import { publish, getUsers, twitchConfigured } from "./publish.js";
+import { publish } from "./publish.js";
+import { getUsers, twitchConfigured } from "./twitch.js";
 
 const HEADERS = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" };
 
@@ -16,7 +17,7 @@ function refuse(status, error, extra) {
 
 // Tests set the clock and the address with headers; only with TEST_MODE, which production never has.
 function clock(env, request) {
-  if (env.TEST_MODE === "1" && request) {
+  if (env.TEST_MODE === "1") {
     const t = request.headers.get("X-Test-Now");
     if (t && /^\d+$/.test(t)) return Number(t);
   }

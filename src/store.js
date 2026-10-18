@@ -34,7 +34,7 @@ export function ensureSchema(db) {
 }
 
 const META_DEFAULTS = {
-  version: 0, diff_at: 0, pending_commit: 0, changes_since: 0, prune_at: 0, commit: "", commit_at: 0, error: "", twitch_error: "",
+  version: 0, pending_commit: 0, changes_since: 0, prune_at: 0, commit: "", commit_at: 0, error: "", twitch_error: "",
   ext_checked_at: 0, ext_want: "{}", ext_have: "{}", ext_error: "",
 };
 
@@ -65,7 +65,7 @@ export function releaseLock(db) {
 export async function spend(db, key, now, amount) {
   const row = await db.prepare("INSERT INTO hits (k, at, n) VALUES (?1, ?2, ?3) ON CONFLICT(k) DO UPDATE SET n = hits.n + excluded.n RETURNING n")
     .bind(`${key}:${Math.floor(now / 3600)}`, now, amount).first();
-  return row ? Number(row.n) : amount;
+  return Number(row.n);
 }
 
 export async function recordReports(db, { install, net, now, items }) {
@@ -125,6 +125,7 @@ export async function listedIds(db, ids) {
 }
 
 // The reporters of a removed account are remembered so their next report of it is ignored.
+// login, issue and by are the audit trail of a removal, read by hand in D1.
 export async function removeAccounts(db, accounts, { now, issue, by }) {
   const ids = JSON.stringify(accounts.map(a => a.id));
   const rows = JSON.stringify(accounts.map(a => ({ id: a.id, login: a.login })));
@@ -135,10 +136,12 @@ export async function removeAccounts(db, accounts, { now, issue, by }) {
     db.prepare("INSERT INTO removals (account_id, login, at, issue, by) SELECT json_extract(value, '$.id'), json_extract(value, '$.login'), ?2, ?3, ?4 FROM json_each(?1)")
       .bind(rows, now, issue, by),
     touch(db, accounts.map(a => a.id)),
+    // removed.json changes even when no list does (an account already off the list still has bans to lift).
+    writeMeta(db, { pending_commit: 1 }),
   ]);
 }
 
-export async function accountsToCheck(db, now, staleBefore, limit) {
+export async function accountsToCheck(db, staleBefore, limit) {
   const { results } = await db.prepare("SELECT id, login, status FROM accounts WHERE status = 'pending' OR (status IN ('ok', 'gone') AND checked_at < ?1) ORDER BY status = 'pending' DESC, checked_at LIMIT ?2")
     .bind(staleBefore, limit).all();
   return results;
@@ -199,9 +202,7 @@ export function applyDiff(db, { desired, removedKeys, events, version, now, touc
     stmts.push(db.prepare("INSERT INTO events (version, at, op, category, account_id, login, reports, why) SELECT ?2, ?3, json_extract(value, '$.op'), json_extract(value, '$.category'), json_extract(value, '$.id'), json_extract(value, '$.login'), json_extract(value, '$.reports'), json_extract(value, '$.why') FROM json_each(?1)")
       .bind(JSON.stringify(events), version, now));
   stmts.push(db.prepare(`DELETE FROM touched WHERE account_id IN (${IDS}) AND at <= ?2`).bind(JSON.stringify(touchedIds), touchedUpTo));
-  const meta = { diff_at: now };
-  if (events.length) Object.assign(meta, { version, pending_commit: 1 });
-  stmts.push(writeMeta(db, meta));
+  if (events.length) stmts.push(writeMeta(db, { version, pending_commit: 1 }));
   return db.batch(stmts);
 }
 

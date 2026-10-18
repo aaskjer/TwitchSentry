@@ -31,14 +31,15 @@ function failure(step, r) {
 export async function commitFiles(env, files, message) {
   const branch = env.GITHUB_BRANCH;
   const tree = Object.entries(files).map(([path, content]) => ({ path, mode: "100644", type: "blob", content }));
+  // The tree names no parent, so a lost race only has to repeat the commit and the move.
+  const t = await call(env, "POST", "/git/trees", { tree });
+  if (t.status !== 201) throw failure("the tree", t);
 
   for (let attempt = 0; attempt < 3; attempt++) {
     const ref = await call(env, "GET", `/git/ref/heads/${branch}`);
     if (ref.status !== 200 && ref.status !== 404) throw failure("reading the branch", ref);
     const parent = ref.status === 200 ? ref.data.object.sha : null;
 
-    const t = await call(env, "POST", "/git/trees", { tree });
-    if (t.status !== 201) throw failure("the tree", t);
     const c = await call(env, "POST", "/git/commits", { message, tree: t.data.sha, parents: parent ? [parent] : [] });
     if (c.status !== 201) throw failure("the commit", c);
 
