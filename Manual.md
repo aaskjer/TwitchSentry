@@ -28,7 +28,7 @@ Then enable all the commands under **Commands**, as in the picture.
 
 Go to the `[TS] - Settings` action, right-click **Test** and choose **Test Trigger**. That opens the settings window. *(The first start takes a moment — it fetches the language files.)*
 
-The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, Hate Raid Protection, Follow Wave Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and the Discord notifications stay off until you switch them on.
+The defaults are meant to be a working configuration, not a starting point you have to tune. If you change nothing at all, TwitchSentry filters links and spam, watches how people chat, learns from what it removes, hands out permits and bans the accounts on the [Shared Bot List](#shared-bot-list); Raid Protection, Hate Raid Protection, Follow Wave Protection, LurkBot Filter, AutoMod, Twitch Warn, Check Link, Voting and the Discord, Stoat and GameVox notifications stay off until you switch them on.
 
 ---
 
@@ -102,7 +102,7 @@ from.
 **What a profile holds.** Every threshold, every switch, every action and every duration — the whole
 of how strict this channel is, which is 261 of the 297 settings in `configs.json`.
 
-**What it deliberately does not:** your Discord webhook and your VirusTotal and IPQS keys; the people
+**What it deliberately does not:** your Discord webhook, everything on the Stoat, GameVox, ntfy and Windows tabs of Notifications, and your VirusTotal and IPQS keys; the people
 and addresses this channel knows, meaning your whitelist, your excluded and trusted users, the AutoMod
 allow list and the Follow Wave Protection block list; and what belongs to this install rather than to a
 policy — bot account, language, theme, backup folder, and whether test mode is running.
@@ -151,6 +151,27 @@ Behaviour shared by every module: whether to speak through your bot account, whe
 
 Then the **exemptions** — followers, subscribers, VIPs, named viewers and Streamer.bot groups — which apply to the six modules that take action on a message (followers are read from Twitch when Streamer.bot starts and kept in `Cache/followers.txt`; a new follow counts the moment it arrives unless Follow Wave Protection takes the account for a bot, and an unfollow drops out at the next start), and **test mode**'s duration and wording. The whitelist and **Always Allowed** are on the [Link Filter](#link-filter) page.
 
+### Chat Bot badge (optional)
+
+Twitch gives its **Chat Bot** badge to messages a bot account posts through a Twitch application, never to the broadcaster's own account and never to a message posted the usual way. With an application of your own, every chat message a module writes goes out that way: the same bot account, the same words, with the badge beside the name. They all go through one action, **Chat**. If Twitch refuses, the message still goes out as before, only without the badge, and the Status Log says why; a setup Twitch keeps refusing is left alone for ten minutes, or until you save the settings, so it never slows the chat down. *Send As Action* does not come along: Twitch's API takes plain text, so a message with the badge is never in italics.
+
+You need a second Twitch account as your bot, signed in to Streamer.bot as its bot account, and that account has to be a moderator in your channel (`/mod <bot name>`).
+
+**Registering the application**, in the [Twitch Developer Console](https://dev.twitch.tv/console/apps):
+
+1. Sign in with any account of yours (Twitch wants two-factor authentication on it) and choose **Register Your Application**.
+2. **Name**: anything Twitch accepts, for example *YourChannel Sentry* (names are unique across Twitch). **OAuth Redirect URLs**: `http://localhost`, exactly so: no slash at the end, no port, not https. Twitch compares it letter for letter, and anything else ends in *redirect_mismatch* when you authorise the bot. **Category**: *Chat Bot*. **Client Type**: *Confidential*, the only kind that gets a secret. Then choose **Create**.
+3. Choose **Manage** beside the new application. Copy the **Client ID**, then choose **New Secret** and copy the secret. Twitch shows it only this once, and a new secret replaces the old one at once.
+
+**In TwitchSentry**, on General Settings under *Chat Bot Badge*:
+
+4. Paste both into **Client ID** and **Client Secret** (the secret is covered like the webhooks).
+5. In your browser, sign in to Twitch as the **bot account**, not as yourself, then choose **Authorise The Bot Account**. A reminder names the bot account first, because Twitch asks whichever account the browser is signed in with. Twitch then names the account about to grant the permissions *user:bot* and *user:write:chat*; choose **Authorize**. The page it lands on afterwards does not load, which is expected: close it. Authorised it as the wrong account? Authorise again as the bot account, which is all it takes. To take the wrong permission back, open [twitch.tv/settings/connections](https://www.twitch.tv/settings/connections) signed in as that account and choose **Disconnect** beside your application under *Other Connections*.
+6. Choose **Send A Test Message**. It posts one message through the application the way every module does, whether the badge is switched on or not and before anything is saved, and the line beside the button says what Twitch answered: that the message carries the badge, or what is missing (a valid secret, the permission, moderator status, a bot account).
+7. Switch on **Use The Chat Bot Badge** and save.
+
+The notice strip speaks up when the badge is on but *Client ID* or *Client Secret* is empty, when *Use Bot Account* is off (Twitch never badges your own account), and when *Send As Action* is on.
+
 ### Command Replies
 
 The second tab of General Settings.
@@ -161,7 +182,9 @@ What TwitchSentry answers when a moderator uses a [chat command](#chat-commands)
 
 ## Notifications
 
-Two tabs: **Discord** posts to a channel through a webhook, **Windows** shows a notification on this PC. Each tab has its own switch in its first card, and every alert has a switch on both, so they can be on screen instead of, or as well as, in a Discord channel.
+Five tabs: **Discord**, **Stoat** and **GameVox** post to channels through webhooks (Discord also through a bot of your own), **ntfy** sends a push notification to a phone or a browser, **Windows** shows a notification on this PC. Each tab has its own main switch, at the right of the band at the top while the tab is open; a tab switched off is dimmed and carries a ○ beside its name, as a switched-off module does in the sidebar. Every alert has a switch on each of them, so you decide per platform what it hears: only the bans on your phone, say, and everything in Discord.
+
+Every webhook and topic field takes more than one URL, one per line, and each of them gets every alert. All alerts, from every module and for every platform, go through one queue in the **Notifications** action, which keeps a raid from spending a platform's rate limit on thirty separate requests: what is queued for the same place goes out together, even while posts to other platforms wait between them.
 
 ### Discord
 
@@ -177,16 +200,24 @@ way the window does (*Spam Scoring — Action Taken*). The evidence is a bullete
 tokens stay in the action log and the Streamer.bot log, where they are the more useful form.
 
 Alerts are queued and sent on a background thread, so moderation never waits on Discord. A single
-alert goes out immediately; a burst arrives as one message carrying up to ten of them, which is what
-keeps a raid from spending Discord's rate limit on thirty separate requests.
+alert goes out immediately; a burst arrives as one message carrying up to ten of them, from whichever
+modules raised them.
 
 <img width="926" alt="Notifications → Discord" src="docs/screenshots/notifications.png" />
 
-Off by default: a Discord webhook and one switch per kind of alert. A pasted webhook is covered with dots straight away, so the window is safe to show on stream; the eye beside it uncovers it.
+Off by default: Discord, and under it one switch per kind of alert. The alerts go out through webhooks, through a bot of your own, or both: the *Discord Webhook* card has **Post Through Webhooks**, the *Discord Bot* card **Use The Bot**, so either way can be switched off without emptying its fields. A pasted webhook is covered with dots straight away, so the window is safe to show on stream; the eye beside it uncovers it.
 
 Example:
 <img width="403" height="344" alt="grafik" src="https://github.com/user-attachments/assets/7ecf5eda-d6f6-4325-abfd-dc9e5bbf27ce" />
 <img width="404" height="287" alt="grafik" src="https://github.com/user-attachments/assets/bf33fd04-f4af-4502-b836-24e67152a8be" />
+
+**Into a forum:** a webhook into a forum channel works too. Discord takes a post there only into a thread, so
+TwitchSentry starts one for each module with its first alert, named as the module's page in the window
+(*Spam Scoring*, *Raid Protection*, *Hate Raid Protection* …), and from then on that module's alerts go into
+its thread. A burst is only bundled within one module there. The threads are remembered in
+`Cache/webhook-threads.json`, under the webhook's id and never its token; delete a thread in Discord and the next
+alert starts a new one. Webhooks into ordinary channels and into forums can share the field, one per line.
+**Send A Test Message** starts a thread of its own there, *TwitchSentry Test*.
 
 **Creating a Discord webhook:**
 * Right-click the channel you want
@@ -195,15 +226,229 @@ Example:
 * Give it a name and a logo if you like
 * Copy Webhook URL
 
-**Send A Test Message**, under *Test Message* at the bottom of the page, posts one message to the webhook in
-the box, under the display name and avatar set there, whether Discord is switched on or not and without saving
-first. The line beside the button says whether Discord took it, and if not, what Discord answered: *404
-Unknown Webhook* is a webhook that was deleted in Discord, *401 Invalid Webhook Token* a URL that lost part of
-itself on the way in.
+**Send A Test Message**, under *Test Message* at the bottom of the page, posts one message to every webhook in
+the box, under the display name and avatar set there, and with **Use The Bot** on and a token set, through the
+bot to each of its channels, whether Discord is switched on or not and without saving first. The line beside the
+button says whether Discord took it, and if not, what Discord answered: *404 Unknown Webhook* is a webhook that
+was deleted in Discord, *401 Invalid Webhook Token* a URL that lost part of itself on the way in. An answer
+ending in *(bot)* came from the bot's side.
 
 **When Twitch says no:** an alert can read **TIMEOUT REFUSED** rather than **TIMEOUT**. Twitch answers every deletion, timeout, ban and warning with a yes or a no, and a no is reported rather than swallowed: the viewer was not touched, nothing went into the undo trail and nothing was said in chat, so the alert is the only record. The **Status Log** page carries the reason — usually a target Twitch will not let a bot touch, a message somebody else has already removed, or a missing scope on the Streamer.bot Twitch account.
 
 **How the alerts look in Discord:** under *Webhook Appearance* on the *Discord Webhook* card there are two more fields, **Display Name** and **Avatar URL**. Discord names a new webhook itself and that name says nothing about what is posting, so these ship as `TwitchSentry-Log` and the TwitchSentry logo and ride along with every alert. You only need to name the webhook or give it a logo yourself if you want to. Empty either box and that override is not sent at all, and whatever the webhook carries in Discord shows through instead; that is the way back. Discord refuses a display name over 80 characters, or one containing *discord* or *clyde*, and refuses the whole post along with it, so TwitchSentry drops such a name rather than lose the alert — and the window warns you when you save one.
+
+#### Discord bot (optional)
+
+A bot of your own does two things a webhook cannot. It **posts the alerts itself**, under its own name and
+picture, to the channels and forums listed under **Bot Channels & Forums**, with the webhooks or instead of them. And it **changes a
+forum thread's tags** at any time, where a webhook can name them only when it starts the thread. With a bot set
+up, each module's thread shows its latest action as a tag, in the bot's own forums and in those of the webhooks,
+so the forum list tells you at a glance what happened last where. The bot adds the tags a forum is missing
+itself, thirteen in all:
+
+| Tag | What it stands for |
+|---|---|
+| 🔨 BANNED | a ban |
+| ⏱️ TIMEOUT | a timeout |
+| 🗑️ DELETED | a deleted message, a nuke |
+| ⚠️ WARNED | a warning or final warning |
+| 🔒 RESTRICTED | an account put on Twitch's restricted list |
+| ⛔ BLOCKED | a blocked account or message, a denied AutoMod message |
+| ✅ ALLOWED | an allowed AutoMod message, a permit granted |
+| 🛡️ ACTIVE | armed, chat modes on, Shield Mode on, a lockdown |
+| 🔓 LIFTED | chat modes or Shield Mode lifted, a permit ended |
+| 📝 REPORTED | Report Only, a malicious or suspicious link, an unban request |
+| ↩️ UNDONE | taken back with `!tsundo`, an unban |
+| ❌ REFUSED | Twitch said no |
+| ⚙️ CHANGED | a list or setting changed from chat, learned patterns applied |
+
+Only these thirteen are swapped on a thread; tags your moderators set by hand stay. A forum takes at most 20
+tags, so if yours is full, the missing one is left out and the log says so. An alert undone with `!tsundo` is
+posted into the thread of the module that acted, with or without a bot.
+
+**Bot Channels & Forums** takes one text channel or forum per line: its link (right-click it → *Copy Link*, which
+gives `https://discord.com/channels/<server>/<channel>`) or its ID (with *Developer Mode* on under *User Settings →
+Advanced*, right-click it → *Copy Channel ID*). The bot tells the two apart by itself: in a text channel it posts
+the alerts as they come; in a forum it keeps one thread per module, as a webhook does, and starts each with its tag
+already set. A channel that gets the alerts from a webhook and from the bot gets every alert twice, so give each
+channel one or the other. Leave *Bot Channels & Forums* empty and the bot only tags the threads in the webhooks'
+forums.
+
+**Making the bot.** Nothing is installed and nothing costs money: a Discord bot is an *application* with a few
+settings in Discord's Developer Portal, and TwitchSentry only needs its token. You need a Discord account and
+the *Manage Server* permission on the server the alerts go to. It takes about five minutes:
+
+1. **Create the application.** Open the [Discord Developer Portal](https://discord.com/developers/applications)
+   and sign in with your Discord account. Choose **New Application** (top right), name it, for example
+   *TwitchSentry*, tick the box that accepts Discord's developer terms and choose **Create**. The application's
+   name is only for you; the name the alerts show comes in the next step.
+2. **Give the bot its name and picture.** Open **Bot** in the left sidebar. **Username** and **Icon** at the
+   top are what every alert the bot posts shows, so set them as you like and choose **Save Changes**. Leave the
+   *Privileged Gateway Intents* further down off: TwitchSentry never keeps a connection to Discord open and only
+   asks Discord's API when it posts or tags, which is also why the bot always shows as offline in your member
+   list.
+3. **Copy the token.** Still on **Bot**, under **Token**, choose **Reset Token** and confirm (Discord may ask
+   for your password or two-factor code), then **Copy**. Discord shows the token only this once; if you lose
+   it, reset it again. A reset ends the old token at once, so paste the new one into TwitchSentry. Treat
+   it like a password: whoever has it can post as your bot, so never show it on stream or paste it into a chat.
+4. **Choose what the bot may do.** Open **Installation** in the left sidebar. Under **Installation Contexts**,
+   keep only **Guild Install** and untick *User Install*. Under **Install Link**, choose **Discord Provided
+   Link**. Under **Default Install Settings**, add the scope **bot** to *Guild Install*; a *Permissions* list
+   appears below it. Pick **View Channels**, **Send Messages**, **Send Messages in Threads**, **Embed Links**,
+   **Manage Threads** and **Manage Channels**, and choose **Save Changes**.
+5. **Add it to your server.** Copy the link under **Install Link** and open it in your browser. Pick your server,
+   choose **Continue**, look over the permissions and choose **Authorize**. The bot joins your member list,
+   shown as offline.
+6. **Keep it to yourself** (recommended). As long as the install link exists and *Public Bot* is on, anybody who
+   gets hold of the link can add your bot to a server of theirs. It would post nothing there, because
+   TwitchSentry only posts to the channels you list, but there is no reason to allow it. Back on
+   **Installation**, set **Install Link** to **None** and save, then on **Bot** switch **Public Bot** off and
+   save. Discord refuses to make a bot private while it still has an install link, which is why the link goes
+   first. The bot stays on your server; to add it to another one later, choose *Discord Provided Link* again
+   for as long as you need it.
+7. **Limit it to its channels** (optional). The bot now holds those permissions on the whole server, through
+   the role Discord made for it. If you would rather it held them only where it posts, take them off that role
+   under *Server Settings → Roles* and grant them on each channel or forum alone: the channel's **Edit Channel →
+   Permissions**, add the bot or its role, and allow the same permissions there.
+8. **Collect the channels.** For each text channel or forum the bot should post to, right-click it and choose
+   **Copy Link**, as described under *Bot Channels & Forums* above.
+
+What each permission is for: **View Channels** lets the bot see a channel and its threads, **Send Messages**
+lets it post to a channel and start a thread in a forum, **Send Messages in Threads** lets it post into a forum
+thread, **Embed Links** lets its alerts show as embeds, **Manage Threads** lets it set a thread's tags, and
+**Manage Channels** lets it add the tags a forum is missing. If you create the thirteen tags in the forum
+yourself, with exactly these names, the bot does without *Manage Channels*; a bot that only tags the threads of
+the webhooks does without *Send Messages*, *Send Messages in Threads* and *Embed Links*.
+
+**In TwitchSentry**, on the Discord tab under *Discord Bot*: leave **Use The Bot** on, paste the token into
+**Bot Token** (it is covered like the webhooks), add the channels and forums to **Bot Channels & Forums**, leave **Tag Forum Threads
+With The Latest Action** on and choose **Check The Bot**. The line beside the button names the bot and says
+whether it can see its channels and those of the webhooks above, or what Discord answered instead. **Send A
+Test Message** at the bottom of the page then posts through the bot as well. Save, and the next alert goes out
+through the bot too. To post through the bot alone, switch **Post Through Webhooks** off on the *Discord
+Webhook* card; to keep the token but leave the bot unused, switch **Use The Bot** off.
+
+**When Check The Bot does not say all is well:**
+
+- *Discord did not accept the bot token*: the token is mistyped, cut short or has been reset since. Reset it on
+  **Bot** in the Developer Portal and paste the new one.
+- *It cannot see some of the channels above*: the bot is not on that channel's server, or the channel shuts it
+  out. Private channels, and channels in a category with permissions of its own, need the bot or its role added
+  under **Edit Channel → Permissions** with **View Channels** allowed.
+- *It has no channel of its own yet, and none of the webhooks above posts to a forum*: the bot is fine, but has
+  nothing to do. Add a channel or forum to **Bot Channels & Forums**, or point a webhook at a forum.
+- The check is happy but no alert arrives: the bot can see the channel but not post in it. Allow **Send
+  Messages**, **Send Messages in Threads** and **Embed Links** there; the Status Log shows what Discord answered,
+  usually *Missing Permissions*.
+
+### Stoat
+
+<img width="926" alt="Notifications → Stoat" src="docs/screenshots/notifications-stoat.png" />
+
+The same thirty-one alerts as on the Discord tab, each with a switch of its own for Stoat, starting as the
+Discord ones do. Stoat's messages have no fields, so an alert arrives as one block: the title, then
+**User**, **Action** and the details line by line, with the **Why** as a list, and last the footer with the
+date and time the alert came in on this PC, since Stoat shows no timestamp of an embed's own. A burst goes out as one
+message of up to five alerts, as long as their text stays within Stoat's 2000 characters.
+
+**Creating a Stoat webhook:** open the channel's settings, go to *Webhooks*, *Create Webhook*, give it a
+name and copy the webhook URL. **Display Name** and **Avatar URL** work as on the Discord tab; Stoat takes a
+name of up to 32 characters, and the window warns you when you save a longer one.
+
+### GameVox
+
+<img width="926" alt="Notifications → GameVox" src="docs/screenshots/notifications-gamevox.png" />
+
+The same thirty-one alerts again, with switches of their own for GameVox. An alert looks as it does in
+Discord, except that the date and time it came in on this PC are in its footer, since GameVox shows no timestamp of an
+embed's own. GameVox shows every post under the webhook's own name and picture, whatever a post asks for, so
+this tab has no name or picture to set. GameVox may only show a new post once the page is reloaded.
+
+**Creating a GameVox webhook:** open the channel's settings, go to *Webhooks*, enter a name and press
+*Create*. Copy the URL straight away: GameVox shows it only once.
+
+### ntfy
+
+<img width="926" alt="Notifications → ntfy" src="docs/screenshots/notifications-ntfy.png" />
+
+[ntfy](https://ntfy.sh) delivers a push notification to the ntfy app on a phone (Android or iOS) or to a
+browser tab, without an account. You send to a *topic*, and every device subscribed to it shows the alert. The
+same thirty-one alerts as on the Discord tab, each with a switch of its own for ntfy, starting as the Discord ones
+do. A push shows the alert's title, with the action's emoji in front of it (🔨 a ban, ⏱️ a timeout, 🚨 a raid,
+the same as the Discord forum tags), and below it **User**, **Action** and the details line by line. A tap on it
+opens your channel's mod view. Alerts that arrive together go out as one push, *TwitchSentry — 3 alerts*, as long
+as they fit into ntfy's 4096 bytes.
+
+Every alert has a priority, which the ntfy app uses to decide how loud it is:
+
+| Priority | Alerts |
+|---|---|
+| Max | Hate Raid Protection's lockdowns |
+| High | bans, Raid Protection or Follow Wave Protection armed, Shield Mode, malicious links |
+| Default | timeouts, nukes, escalated warnings, restricted users, unban requests, suspicious links, listed accounts of the hate raid lists |
+| Low | all the others: deletions, Word Filter hits, warnings, LurkBots, Shared Bot List bans and so on |
+| Min | Twitch sync changes, held messages allowed, permits granted and expired |
+
+The app plays a sound from Default up and shows Low and Min silently. **Priorities To Send** picks which of them
+reach the phone at all, whatever their switches say:
+
+| Priorities To Send | What arrives |
+|---|---|
+| All Alerts | every alert whose switch is on |
+| Low, Default, High And Max | all but the Min ones |
+| Default, High And Max (With Sound) | only the alerts the app makes a sound for |
+| High And Max | bans, raids, Shield Mode, malicious links and lockdowns |
+| Max Only (Lockdowns) | Hate Raid Protection's lockdowns |
+
+Each switch on the tab shows its priority on the right, and one whose priority is not picked is crossed out: it
+keeps its setting, but sends nothing until that priority is picked again. The line under **Priorities To Send**
+counts how many alerts go out, how many are switched off and how many are crossed out.
+
+**Setting up a topic:** install the ntfy app on your phone (Google Play, F-Droid or the App Store), choose **Make
+A New Topic** on this tab and save. The button adds a topic on ntfy.sh with a name nobody guesses and puts that
+name on the clipboard; in the app, tap **+**, paste the name and choose **Subscribe**. Then **Send A Test
+Message**. In a browser, open [ntfy.sh/app](https://ntfy.sh/app) and subscribe the same way. On ntfy.sh a topic
+is its own password: anyone who knows its name can read it, so the window warns you about a short one. A server
+of your own works too: put its address in **ntfy Topic URLs** (`https://ntfy.example.com/your-topic`).
+
+**Access Token** stays empty for such an open topic. You only need a token for a topic that is protected, so that
+only you can read and send to it: on ntfy.sh that is a *reserved* topic, which is part of ntfy's paid plans; on a
+server of your own, any topic the server does not open to everyone. The token goes to every topic URL in the
+box, so with a token, list topics of that one server only.
+
+**Getting an access token on ntfy.sh:**
+
+1. Sign up or sign in at [ntfy.sh/login](https://ntfy.sh/login).
+2. Reserve the topic: in the web app's **Settings**, under *Reserved topics*, choose **Add reserved topic**,
+   enter the topic's name (the part after `ntfy.sh/`) and set the access to *Only I can publish and subscribe*.
+3. Open **Account** in the side menu. Under *Access tokens*, choose **Create access token**, give it a label such
+   as *TwitchSentry*, set *Access token expires in* to *Token never expires* (or a date you will remember to
+   renew it by) and choose **Create token**.
+4. The new token, `tk_` and a string of letters and digits, appears in the list. Copy it, paste it into
+   **Access Token** on this tab, save and **Send A Test Message**. A token can be deleted on the same page at any
+   time, which locks TwitchSentry out until you paste a new one.
+5. The topic now needs your login to be read, so the app asks for your ntfy.sh username and password when you
+   subscribe to it. A phone that subscribed earlier gets them under the app's **Settings → Manage users**, with
+   `https://ntfy.sh` as the service URL.
+
+**On a server of your own**, an administrator makes a user for TwitchSentry, allows it the topic and gives it a
+token, on the server's command line:
+
+```
+ntfy user add twitchsentry
+ntfy access twitchsentry your-topic write-only
+ntfy token add --label=TwitchSentry twitchsentry
+```
+
+The last command prints the `tk_...` token to paste into **Access Token**; the server's web app makes one under
+**Account → Access tokens** as well, as above. `write-only` is all TwitchSentry needs, since it only sends; your
+phone reads with a user of its own that has `read-only` or `read-write` on the topic. Instead of a token, the
+user's name and password work too, written as `twitchsentry:the-password`.
+
+**ntfy.sh's limits:** for free, ntfy.sh delivers 250 messages a day. If it turns an alert away for its limits,
+TwitchSentry leaves that server alone for a while (ten minutes after the daily limit) and drops what comes in
+meanwhile, without holding up Discord or the other platforms; the Status Log says so. Fewer **Priorities To Send**,
+*High And Max* for instance, keep a busy chat from using the messages up.
 
 ### Windows
 
@@ -211,8 +456,8 @@ itself on the way in.
 
 A small Windows notification in the corner of the screen, kept afterwards in Windows' notification
 centre. It works while the settings window is closed, and carries TwitchSentry's icon once the window
-has been opened at least once. **Show Windows Notifications** at the top of the tab turns all of them on or
-off; below it is one switch per kind:
+has been opened at least once. The tab's switch in the band at the top turns all of them on or off; below
+it is one switch per kind:
 
 | Switch | Default | When |
 |---|---|---|
@@ -244,7 +489,7 @@ Notifications*, where Streamer.bot has to be allowed to send notifications.
 
 Three tabs: **Checks**, **Chat Modes** and **Messages**. The checks look at how someone is chatting rather than at particular words: account age, ALL CAPS, emote spam, posting too fast or repeating yourself, and, if you switch them on, repeated words, symbol spam, walls of text, mass mentions, ASCII art and Zalgo text.
 
-No single one of those is proof of anything on its own — people shout, people spam emotes when something good happens — so a message is only acted on when at least two of them show up together, or when one of them is the kind that is not an accident. A repeated message is decisive on its own; being new to Twitch is a risk factor that makes whatever else the message tripped count for more, never a finding by itself. Someone with a long history in your chat needs more evidence than a stranger does.
+No single one of those is proof of anything on its own — people shout, people spam emotes when something good happens — so with **Require Two Signals** on, a viewer who has chatted here before is only acted on when two of them show up together, while a newcomer to the channel can be acted on for any single one. Being new to Twitch is a risk factor that makes whatever else the message tripped count for more, never a finding by itself. Someone with a long history in your chat needs more evidence than a stranger does.
 
 Each check has its own switch and there is no module-wide one: unticking every check is what silences it.
 
@@ -258,10 +503,9 @@ Each check has its own switch and there is no module-wide one: unticking every c
 
 In expert mode every check's card also carries its **Score Hit**, the weight that check adds to a message's score. What they add up against is under *Expert Tuning — Scoring* at the bottom of the tab: *Require Two Signals*, how many messages make a viewer known or a regular, and the threshold.
 
-**Chat Modes**, the second tab, deals with the whole chat rather than one viewer. When enough *different* people trip the filters inside the same window, a Twitch chat mode is switched on for everyone and lifted again on its own. The tab reads top to bottom:
+**Chat Modes**, the second tab, deals with the whole chat rather than one viewer. When enough *different* people trip the filters inside the same window, a Twitch chat mode is switched on for everyone and lifted again on its own. Its main switch sits at the right of the band at the top while the tab is open; while it is off, the tab's name is dimmed with a ○. The tab reads top to bottom:
 
-- **Chat Modes**: the main switch, *Switch Chat Modes On Automatically*, and a sentence under it that says in plain words what the numbers below add up to.
-- **When It Starts**: how many *Violations*, from at least how many different *Viewers*, *Within* how many seconds.
+- **When It Starts**: a sentence that says in plain words what the numbers add up to, then how many *Violations*, from at least how many different *Viewers*, *Within* how many seconds.
 - **Modes It May Use**: *Slow Mode* with its *Seconds Between Messages* and *Always Add Slow Mode*, *Follower-Only* with how long someone must have followed, *Emote-Only* and *Sub-Only*. A mode switched off here is skipped.
 - **How Long It Stays On**: *Lift After*, counted from the last violation, so the mode lasts as long as the wave.
 - **What Happens**: a table with one row per kind of wave, showing which mode comes first and, with *Step Up If The Wave Continues* on, what is added if the wave keeps going. It redraws as you tick and names the modes it skips.
@@ -299,7 +543,7 @@ Your own list of words and phrases that are not welcome in your chat. It is its 
 - **Catch Disguised Words** (on by default) also reads every message with its disguises off: lookalike letters from other alphabets, digits and signs standing in for letters (`h4te`, `$pam`), letters spaced out (`h a t e`, `h.a.t.e`) and letters held down (`haaaate`). Digits stuck on to dodge the list (`hate123`) do not hide a word either.
 - **There is no score.** A match is acted on whoever sends it, except moderators, the broadcaster and the viewers exempted on General Settings. **Page Action** (Delete, Timeout or Ban) applies to every entry set to *Page Action*; **Timeout Duration** sets the length of every timeout, an entry's own *Timeout* too. With Twitch Warn on, a deletion is handed over like the other filters'.
 - **Each entry** can be marked **Block On Twitch**, have its own action, and run out on its own after an hour, a day or a week, which is what a spoiler or today's drama wants.
-- **Twitch's Blocked Terms**: Twitch's own list stops a message before anyone sees it, even while Streamer.bot is closed, but such a message never reaches TwitchSentry either. Entries marked *Block On Twitch* are put on Twitch's list and taken off again when you unmark, remove or let them run out. What a moderator adds on Twitch is taken in; what a moderator deletes there goes from here too if it came from Twitch, and only loses its mark if it was made here. The two lists are compared after every save, every quarter of an hour while chat runs, and at once through the two Blocked Terms triggers. A failed read of Twitch's list never empties either side.
+- **Twitch's Blocked Terms**: Twitch's own list stops a message before anyone sees it, even while Streamer.bot is closed, but such a message never reaches TwitchSentry either. Entries marked *Block On Twitch* are put on Twitch's list and taken off again when you unmark, remove or let them run out. What a moderator adds on Twitch is taken in; what a moderator deletes there goes from here too if it came from Twitch, and only loses its mark if it was made here. The two lists are compared after every save, every quarter of an hour while chat runs, and at once through the two Blocked Terms triggers. A failed read of Twitch's list never empties either side; an empty list is believed only when the next sync, minutes later, finds it empty too.
 - **`!nuke <word or phrase> [seconds]`** reaches back through the last stretch of chat (60 seconds unless the command says, 600 at most) and removes every matching message, by default with a timeout for each sender. The phrase then stays on the list for *Keep Blocking* minutes. One `!tsundo` takes the whole nuke back, `!tsundo @name` one viewer's part of it.
 - The list is never posted in chat: `!bwlist` only says how many entries there are, unless it is whispered.
 
@@ -427,7 +671,8 @@ lockdown again by itself. Three tabs: **Detection**, **Lockdown** and **Known Ha
   Protection holds as well stays paused until they are done too, and test mode pauses nothing. Never name a queue
   TwitchSentry's own actions run in.
 - **Known Hate Accounts**: [isdsdataarchive's lists](https://github.com/isdsdataarchive/twitch_ban_lists) of
-  hate raid participants, fetched every six hours. An account on them is acted on when it writes, follows or
+  hate raid participants, kept in `Cache/isds` and fetched every six hours, or at once with **Fetch Now**, which
+  also shows when they were last fetched and how many accounts they name. An account on them is acted on when it writes, follows or
   raids (and, with *Check Accounts Sitting In Chat*, while it lurks): **Action On A Listed Account** ships as
   *Restrict*, so only moderators see what it writes; *Notify Only*, *Monitor* and *Ban* are the others. During
   a lockdown a listed account is banned. **Harassment List** adds the accounts listed for harassment, threats
@@ -442,6 +687,8 @@ lockdown again by itself. Three tabs: **Detection**, **Lockdown** and **Known Ha
   OBS dock's **Hate Raid Lockdown** start the same lockdown without waiting for a burst. Started that way it bans
   no raider, and it lifts only by hand or after *Longest Time*.
 - Test mode changes nothing on Twitch and says in chat what a lockdown would have done.
+- The reasons Twitch records with its bans, one for a lockdown and one for a listed account, are on the page's
+  Messages tab; moderators see them in chat and on the account's card.
 
 ## Follow Wave Protection
 
@@ -452,7 +699,7 @@ lockdown again by itself. Three tabs: **Detection**, **Lockdown** and **Known Ha
 **Off by default.** It counts how many **different** accounts follow inside **Window (Seconds)**. Only once
 **Accounts Needed** is crossed does it look them up and compare their account data with your settings. An account
 that matches is blocked, which removes its follow and keeps it from doing anything further on your channel; while
-the action is *Report Only*, it is only reported.
+the action is *Report Only*, it is only reported, to the Shared Bot List as well.
 
 - Each account in the wave is judged on four things from that one lookup: **Young Account**, **Default
 Avatar**, **Empty Profile** and **Throwaway Name**.
@@ -493,15 +740,18 @@ same short name pattern, no picture, no bio.
   **Digits At The End** digits (5 and 2). Moderators, the broadcaster and the viewers exempted on General
   Settings are skipped. Each account is looked up on Twitch once, at most **Lookups Per Round** (20) per round.
 - **When An Account Counts As A Bot**: made on one of the **Known Bot Days** (`2024-05-05`), or on the same
-  day as at least **Same Day Accounts** (3) other accounts of that name shape. Accounts are remembered for
+  day as **Same Day Accounts** (3) accounts of that name shape, itself among them. Accounts are remembered for
   30 days, so a group does not have to sit in chat at the same time. **Bare Profiles Only** (on) judges
   only accounts with Twitch's default picture, no bio, and neither affiliate nor partner.
 - **Report Only** writes each account to the Action Log and `lurkbot-finds.txt` in the Logs folder (**Open Folder**
-  under *Found Accounts* shows it), and to Discord and a Windows notification if those are on. **Ban** bans each account once; one [`!tsundo`](#chat-commands) lifts the whole
+  under *Found Accounts* shows it), and to Discord and a Windows notification if those are on, and reports an account
+  with a bare profile to the Shared Bot List as Ban does; nothing changes in your chat. **Ban** bans each account once; one [`!tsundo`](#chat-commands) lifts the whole
   round, `!tsundo @name` one account, and an account let back in is never banned again by LurkBot Filter.
 - A real viewer can be caught: somebody whose name happens to fit, who never set a picture or a bio, and who
   made the account on such a day. Watch Report Only for a while before you switch to Ban.
 - Test mode bans nothing and says in chat who would have been banned.
+- The reason Twitch records with its bans is on the page's Messages tab; moderators see it in chat and on the
+  account's card.
 
 ## Shared Bot List
 
@@ -514,8 +764,8 @@ channels reported there.
 - **What is reported**, automatically and without a switch: a decisive hit in Spam Scoring (a known spam
   domain, a strong keyword, a conversation scam) from a viewer who is not a regular; a LurkBot Filter verdict
   with the name shape, a bot day and a bare profile together; an account in one of Follow Wave Protection's follow
-  waves; and an account in a Raid Protection swarm whose wording is on a spam list. Only the account is sent,
-  never a chat message or which channel reported it. Test mode reports nothing, and lifting a ban or a
+  waves; and an account in a Raid Protection swarm whose wording is on a spam list. The LurkBot Filter and Follow
+  Wave Protection report on Report Only as well. Only the account is sent, never a chat message or which channel reported it. Test mode reports nothing, and lifting a ban or a
   timeout on Twitch takes the report back.
 - **What is banned**: an account at least two channels reported, from the lists switched on: **Spam Bots**,
   **LurkBots** and **Bot Waves** (all on). Each account is looked up on Twitch first; moderators, VIPs,
@@ -530,6 +780,8 @@ channels reported there.
   how many were banned here, how many wait and how many bans were lifted after a removal, and how many
   accounts this install reported in the last 30 days.
 - Test mode bans and lifts nothing.
+- The reason Twitch records with its bans is on the page's Messages tab; moderators see it in chat and on the
+  account's card.
 
 ## Offline Protection
 
@@ -563,7 +815,7 @@ These are off by default, except Permit. Each one is optional: the chat filters 
 
 **Off by default**. Twitch's own AutoMod holds suspicious messages back and waits for a moderator to approve or deny each one. This answers them for you, by level and by category. Leave **AutoMod Categories** empty to act on everything Twitch holds, or list only the categories you care about.
 
-**Ban Evasion** (off by default, needs the trigger *Twitch > Moderation > Suspicious User Message*) acts on the rating Twitch gives an account it compares with the ones banned here before: *likely* only, or *possible* too. Twitch's own Suspicious User Controls can already monitor or restrict such accounts; this adds a ban if you want one, the Action Log, Discord and `!tsundo`. Each account is acted on once a day.
+**Ban Evasion** (off by default, needs the trigger *Twitch > Moderation > Suspicious User Message*) acts on the rating Twitch gives an account it compares with the ones banned here before: *likely* only, or *possible* too. Twitch's own Suspicious User Controls can already monitor or restrict such accounts; this adds a ban if you want one, the Action Log, Discord and `!tsundo`. Each account is acted on once a day. The reason Twitch records with such a ban is on the page's Messages tab.
 
 **Unban requests** are always written to the Action Log, and posted to Discord or shown as a Windows notification wherever **On Unban Requests** is switched on under [Notifications](#notifications), with what TwitchSentry's logs say about the account beside them: which module acted, when, why and on which message, archived months included. This works with the AutoMod module switched off too. The decision is still made in Twitch's moderator view.
 
@@ -764,6 +1016,7 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 | `tsPermitDeny` | `last` | Refuses the newest Channel Points request waiting for a button, or `@name`'s, and gives the points back |
 | `tsPermitForget` | `last` | Takes the newest entry, or that viewer's, off the list of removed links without granting anything |
 | `tsState` | `now` | Changes nothing. It only writes down again where everything stands, for the [OBS dock](#the-obs-dock) or for a key that [shows the profile](#a-key-that-shows-what-it-switched) |
+| `tsRefresh` | `now` | Changes nothing. It draws every key again that shows a title, a colour or a side, where that changed |
 
 The state after a module or an exemption is `on` or `off` (`an` and `aus` work too). Left out, the key
 switches the setting over, which is what a plain key wants. Names ignore upper and lower case, spaces and
@@ -825,8 +1078,9 @@ writes into.
 
 An **Action Switch** key needs neither argument to stay honest: after a press it is set to the side that is
 true. A press that failed flips it back, and a module switched in the settings window meanwhile is shown
-the right way round again. A key shows the new state when it is pressed; to have a pure status key, give it
-`tsState` and `tsTitle` only, and a press brings its title up to date without changing anything.
+the right way round again. A key that shows a title, a colour or a side is drawn again by itself once what it
+shows changes elsewhere: in the settings window, from chat, or when test mode or a raid window runs out. For a
+pure status key, give it `tsState` and `tsTitle` only.
 
 ## The OBS dock
 
@@ -918,7 +1172,7 @@ a key counts down in the strip, as it does from the menu.
 
 # Chat commands
 
-Moderator-only unless noted. TwitchSentry recognises each command by its Streamer.bot command id, so a command or trigger word renamed in the Commands tab keeps working; a command deleted and made again gets a new id and is no longer TwitchSentry's. A viewer's `!checklink` is left to Check Link while Check Link is on. Any other message that starts with a command is checked like every other message — moderators and the broadcaster are exempt from the filters anyway.
+Moderator-only unless noted. TwitchSentry recognises each command by its Streamer.bot command id, so a command or trigger word renamed in the Commands tab keeps working; a command deleted and made again gets a new id and is no longer TwitchSentry's. A viewer's `!checklink <link>` is left to Check Link while Check Link is on; with more words after it, the message is checked like any other. Any other message that starts with a command is checked like every other message — moderators and the broadcaster are exempt from the filters anyway.
 
 | Command | Manages |
 |---|---|
@@ -984,6 +1238,7 @@ TwitchSentry/Cache/tld_cache.txt                     ← downloaded valid domain
 TwitchSentry/Cache/spam-feed.json                    ← the last downloaded spam feed
 TwitchSentry/Cache/home-banner.png                   ← the banner on Home
 TwitchSentry/Cache/TwitchSentry-Toast.ico            ← the icon Windows notifications carry
+TwitchSentry/Cache/webhook-threads.json              ← each module's thread in a Discord forum
 TwitchSentry/Backups/                                ← backups, unless Backup Folder points elsewhere
 ```
 

@@ -199,11 +199,11 @@ class SpamWording(unittest.TestCase):
 
     def test_entries_are_stored_the_way_installs_store_them(self):
         r = self.build("spamDomains: NewSite\nhandoffPhrases:  !add me on discord \nhandoffphrases: add me on discord\n\n"
-                       "keywords: old offer | users=4 clean=0")
+                       "keywords: old offer")
         self.assertEqual(r.problems, [])
         self.assertEqual(r.document["entries"], {"keywords": ["old offer"], "spamDomains": ["newsite"],
                                                  "handoffPhrases": ["add me on discord"]})
-        self.assertEqual(r.document["counts"], {"keywords": {"old offer": {"users": 4, "clean": 0}}})
+        self.assertNotIn("counts", r.document)
         self.assertEqual(r.document["twitchSentry"], "v2.1.0")
         self.assertEqual(r.path, "spam/42.json")
         self.assertEqual(r.title, "Spam wording from #42 (3 entries)")
@@ -332,6 +332,26 @@ class Profiles(unittest.TestCase):
     def test_a_webhook_address_anywhere_is_turned_away(self):
         r = self.build(settings={"someMessage": "see discordapp.com/api/webhooks/1/abc"})
         self.assertTrue(any("does not belong in a shared profile" in p for p in r.problems))
+
+    def test_a_stoat_or_gamevox_webhook_anywhere_is_turned_away(self):
+        for address in ("see https://stoat.chat/api/webhooks/01ABC/token",
+                        "see https://app-api.gamevox.com/api/v10/webhooks/1/token"):
+            r = self.build(settings={"someMessage": address})
+            self.assertTrue(any("does not belong in a shared profile" in p for p in r.problems), address)
+
+    def test_a_discord_bot_token_anywhere_is_turned_away(self):
+        token = "MTA" + "x" * 21 + ".GaBcDe." + "y" * 38
+        r = self.build(settings={"someMessage": "token " + token})
+        self.assertTrue(any("does not belong in a shared profile" in p for p in r.problems))
+
+    def test_the_bot_settings_never_travel_in_a_profile(self):
+        r = self.build(settings={"discordBotTags": True})
+        self.assertTrue(any("`discordBotTags`" in p for p in r.problems))
+
+    def test_the_stoat_and_gamevox_tabs_never_travel_in_a_profile(self):
+        r = self.build(settings={"stoatNotifyBans": True, "gameVoxWebhookEnabled": True})
+        self.assertTrue(any("`stoatNotifyBans`" in p for p in r.problems))
+        self.assertTrue(any("`gameVoxWebhookEnabled`" in p for p in r.problems))
 
     def test_a_value_no_setting_has_is_turned_away(self):
         r = self.build(settings={"spamScoreThreshold": {"nested": 1}})

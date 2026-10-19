@@ -17,6 +17,7 @@ not have**. Create these, or the area survives only as the `**Area:**` line in t
 - `message-filter` - Message Filter
 - `spam` - Spam Scoring and Learner
 - `raid-protection` - Raid Protection
+- `hate-raid-protection` - Hate Raid Protection
 - `follow-wave-protection` - Follow Wave Protection
 - `lurkbot-filter` - LurkBot Filter
 - `word-filter` - Word Filter
@@ -33,7 +34,10 @@ not have**. Create these, or the area survives only as the `**Area:**` line in t
 - `settings-window` - The settings window
 - `translations` - A translation
 
-`Not sure` sends no area label. `bug` and `enhancement` are GitHub's own and already there.
+`Not sure` sends no area label. `bug` and `enhancement` are GitHub's own and already there. The
+workflows route on `share: spam list`, `share: profile`, `share: translation`, `share: language` and
+`botlist: removal`, which the forms apply themselves; without them a submission or a removal request is
+never picked up.
 
 ## Do not switch blank issues off
 

@@ -150,7 +150,7 @@ Yes. No webhook URL or API key is ever written into one, and the same filter run
 
 *How* someone chats: account age, caps, repeated characters and words, emote spam, flooding or repeated messages, symbol spam, long messages, mass mentions, ASCII art and Zalgo text. Each check has its own switch; untick all of them to switch the filter off. A list of words you do not want in chat is the [Word Filter](Manual.md#word-filter)'s job.
 
-One signal is not enough, because people shout and spam emotes when something good happens: it takes two on the same message, or one that is hard to do by accident. A repeated message is enough on its own. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance.
+People shout and spam emotes when something good happens, so someone who has chatted here before needs two signals on the same message; a newcomer to the channel can be acted on for one. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance.
 
 ---
 
@@ -162,7 +162,7 @@ Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of B
 
 **Q: Can a command be flagged as a violation?**
 
-A moderator's or the broadcaster's never: they are exempt from every filter. A viewer's `!checklink <link>` is left to Check Link while Check Link is on, and only a malicious result removes it. Any other message is checked whatever word it starts with, so a command in front of a link is not a way past the filters.
+A moderator's or the broadcaster's never: they are exempt from every filter. A viewer's `!checklink <link>` is left to Check Link while Check Link is on, and a malicious or suspicious result removes it. Any other message is checked whatever word it starts with, so a command in front of a link is not a way past the filters.
 
 ---
 

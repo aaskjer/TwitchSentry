@@ -2,8 +2,8 @@
 
 .github/workflows/community-submissions.yml runs this whenever an issue carrying one of the share
 labels is opened or edited, and when a pull request into the submissions branch is merged. The ticket
-comes from one of the three forms in .github/ISSUE_TEMPLATE (share-spam-list, share-profile,
-share-translation), typed in by hand or prefilled by the settings window.
+comes from one of the four forms in .github/ISSUE_TEMPLATE (share-spam-list, share-profile,
+share-translation, share-language), typed in by hand or prefilled by the settings window.
 
 Spam wording and translations become one file in a pull request into the submissions branch. Merging it
 accepts the submission, and this script closes the ticket then, because GitHub only acts on "Closes #N"
@@ -28,6 +28,7 @@ this repository. They are a first filter only - tools/check-feed.ps1 is still th
 anything is promoted - and tools/run-submission-tests.ps1 holds the two to the same verdicts.
 """
 
+import http.client
 import json
 import os
 import re
@@ -110,13 +111,13 @@ PROFILE_NUMBER_MAPS = ["fgCustomPreset", "mgCustomPreset", "rfCustomPreset", "sp
 # TSSettings.ProfileExcluded and SecretNameParts in TwitchSentry-GUI.cs. The window's export already
 # leaves all of these out; a pasted file that still carries one was edited by hand, or is not an export.
 PROFILE_EXCLUDED = [
-    "discordWebhookUrl", "discordWebhookName", "discordWebhookAvatarUrl",
+    "discordWebhookUrl", "discordWebhookName", "discordWebhookAvatarUrl", "discordUseWebhooks", "discordUseBot", "discordBotToken", "discordBotChannels", "discordBotTags",
     "virusTotalApiKey", "ipqsApiKey",
     "excludedUsers", "excludedGroups", "trustedUsers", "trustedRaiders", "whitelistDomains",
     "autoModWhitelist", "voteExcludedUsers", "voteExcludedGroups", "fgBlockedList", "lbFoundList",
     "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames", "fgPauseQueueNames", "hrPauseQueueNames",
-    "useBotAccount", "DarkMode", "guiLanguage", "chatLanguage", "chatMessagesWritten", "uiExpertMode", "dismissedHints",
-    "settingsSchema", "activeProfile", "updateChannel", "backupFolder", "backupSettings",
+    "useBotAccount", "useChatBotBadge", "chatBotClientId", "chatBotClientSecret", "DarkMode", "guiLanguage", "chatLanguage", "chatMessagesWritten", "uiExpertMode", "dismissedHints",
+    "settingsSchema", "activeProfile", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
     "dryRunEnabled", "dryRunMinutes", "easterEggs",
     "useToastNotifications", "toastNotifyUpdates", "toastNotifyDeckActions", "toastNotifyDeckProblems",
@@ -129,10 +130,40 @@ PROFILE_EXCLUDED = [
     "toastNotifyLearner", "toastNotifyFollowArmed", "toastNotifyFollowBlocked", "toastNotifyOffline",
     "toastNotifyShieldMode", "toastNotifyConfigChanges", "toastNotifyUndo", "toastNotifyBotList",
     "toastNotifyHateRaid", "toastNotifyHateListed", "hrTerms",
+    "stoatWebhookEnabled", "stoatWebhookUrl", "stoatWebhookName", "stoatWebhookAvatarUrl", "stoatNotifyDeletions",
+    "stoatNotifyTimeouts", "stoatNotifyBans", "stoatNotifyWordFilter", "stoatNotifyNuke", "stoatNotifyWordSync",
+    "stoatNotifyWarns", "stoatNotifyWarnActions", "stoatNotifyRaids", "stoatNotifyRaidActions",
+    "stoatNotifyAutoModDenied", "stoatNotifyAutoModAllowed", "stoatNotifyAutoModRestricted",
+    "stoatNotifyAutoModBlocked", "stoatNotifyUnbanRequests", "stoatNotifyMalicious", "stoatNotifySuspicious",
+    "stoatNotifyPermitGranted", "stoatNotifyPermitExpired", "stoatNotifyPermitRevoked", "stoatNotifyLearner",
+    "stoatNotifyFollowArmed", "stoatNotifyFollowBlocked", "stoatNotifyLurkBots", "stoatNotifyHateRaid",
+    "stoatNotifyHateListed", "stoatNotifyBotList", "stoatNotifyOffline", "stoatNotifyShieldMode",
+    "stoatNotifyConfigChanges", "stoatNotifyUndo", "gameVoxWebhookEnabled", "gameVoxWebhookUrl",
+    "gameVoxNotifyDeletions", "gameVoxNotifyTimeouts", "gameVoxNotifyBans", "gameVoxNotifyWordFilter",
+    "gameVoxNotifyNuke", "gameVoxNotifyWordSync", "gameVoxNotifyWarns", "gameVoxNotifyWarnActions",
+    "gameVoxNotifyRaids", "gameVoxNotifyRaidActions", "gameVoxNotifyAutoModDenied", "gameVoxNotifyAutoModAllowed",
+    "gameVoxNotifyAutoModRestricted", "gameVoxNotifyAutoModBlocked", "gameVoxNotifyUnbanRequests",
+    "gameVoxNotifyMalicious", "gameVoxNotifySuspicious", "gameVoxNotifyPermitGranted", "gameVoxNotifyPermitExpired",
+    "gameVoxNotifyPermitRevoked", "gameVoxNotifyLearner", "gameVoxNotifyFollowArmed", "gameVoxNotifyFollowBlocked",
+    "gameVoxNotifyLurkBots", "gameVoxNotifyHateRaid", "gameVoxNotifyHateListed", "gameVoxNotifyBotList",
+    "gameVoxNotifyOffline", "gameVoxNotifyShieldMode", "gameVoxNotifyConfigChanges", "gameVoxNotifyUndo",
+    "ntfyWebhookEnabled", "ntfyWebhookUrl", "ntfyToken", "ntfyMinPriority",
+    "ntfyNotifyDeletions", "ntfyNotifyTimeouts", "ntfyNotifyBans", "ntfyNotifyWordFilter",
+    "ntfyNotifyNuke", "ntfyNotifyWordSync", "ntfyNotifyWarns", "ntfyNotifyWarnActions",
+    "ntfyNotifyRaids", "ntfyNotifyRaidActions", "ntfyNotifyAutoModDenied", "ntfyNotifyAutoModAllowed",
+    "ntfyNotifyAutoModRestricted", "ntfyNotifyAutoModBlocked", "ntfyNotifyUnbanRequests",
+    "ntfyNotifyMalicious", "ntfyNotifySuspicious", "ntfyNotifyPermitGranted", "ntfyNotifyPermitExpired",
+    "ntfyNotifyPermitRevoked", "ntfyNotifyLearner", "ntfyNotifyFollowArmed", "ntfyNotifyFollowBlocked",
+    "ntfyNotifyLurkBots", "ntfyNotifyHateRaid", "ntfyNotifyHateListed", "ntfyNotifyBotList",
+    "ntfyNotifyOffline", "ntfyNotifyShieldMode", "ntfyNotifyConfigChanges", "ntfyNotifyUndo",
 ]
 SECRET_NAME_PARTS = ["apikey", "webhook", "token", "secret", "password"]
 RESERVED_PROFILE_NAMES = ["Relaxed", "Balanced", "Strict", "Under Attack", "Just Chatting"]
-WEBHOOK_PATTERN = re.compile(r"discord(?:app)?\.com/api/webhooks", re.I)
+# A webhook address on any of the three platforms, a topic on ntfy.sh or an ntfy access token,
+# or a Discord bot token (id.timestamp.signature).
+WEBHOOK_PATTERN = re.compile(r"discord(?:app)?\.com/api/webhooks|stoat\.chat/api/webhooks|gamevox\.com/api/(?:v\d+/)?webhooks"
+                             r"|ntfy\.sh/[\w-]+|\btk_[A-Za-z\d]{29}\b"
+                             r"|\b[MNO][A-Za-z\d_-]{23,27}\.[A-Za-z\d_-]{6}\.[A-Za-z\d_-]{27,}", re.I)
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -313,15 +344,10 @@ def build_spam(issue, values, root, elsewhere=None):
     if not text.strip():
         result.problems.append("There are no entries.")
 
-    entries, counts, seen = {}, {}, set()
+    entries, seen = {}, set()
     for number, line in enumerate(text.split("\n"), 1):
         if not line.strip():
             continue
-        stats = {}
-        if "|" in line:
-            line, _, tail = line.partition("|")
-            for key, val in re.findall(r"\b(users|clean)\s*=\s*(\d{1,9})\b", tail):
-                stats[key] = int(val)
         match = re.match(r"^\s*([A-Za-z]+)\s*:(.*)$", line)
         if not match:
             result.problems.append("Line %d is not written as `list: entry`." % number)
@@ -340,8 +366,6 @@ def build_spam(issue, values, root, elsewhere=None):
             continue
         seen.add((name, entry))
         entries.setdefault(name, []).append(entry)
-        if stats:
-            counts.setdefault(name, {})[entry] = stats
 
     if len(seen) > MAX_ENTRIES:
         result.problems.append("That is %d entries; one ticket takes up to %d." % (len(seen), MAX_ENTRIES))
@@ -395,10 +419,6 @@ def build_spam(issue, values, root, elsewhere=None):
         "submittedAt": issue.get("created_at"),
         "entries": fresh,
     }
-    kept_counts = {name: {e: c for e, c in counts.get(name, {}).items() if e in fresh.get(name, [])} for name in fresh}
-    kept_counts = {name: c for name, c in kept_counts.items() if c}
-    if kept_counts:
-        document["counts"] = kept_counts
     if repeated:
         document["seconds"] = {name: sorted(entries) for name, entries in repeated.items()}
     version = version_of(values.get("version"))
@@ -446,7 +466,7 @@ def build_spam(issue, values, root, elsewhere=None):
     return result
 
 
-def build_profile(issue, values, root):
+def build_profile(issue, values):
     result = Result("profile")
     if not is_checked(values.get("privacy")):
         result.problems.append("The box saying the profile holds no key, webhook or list of people is not ticked.")
@@ -653,7 +673,7 @@ def fetch_attachment(url):
         return response.read()
 
 
-def build_language(issue, values, root, elsewhere=None):
+def build_language(issue, values, root):
     result = Result("language")
     chat = (values.get("translates") or "").strip() == CHAT_FILE
     folder = language_folder(root, chat)
@@ -685,7 +705,8 @@ def build_language(issue, values, root, elsewhere=None):
     if attached:
         try:
             content = fetch_attachment(attached.group(0)).decode("utf-8-sig")
-        except (urllib.error.URLError, TimeoutError, UnicodeDecodeError) as ex:
+        # Any failure of the download is told to the submitter: a dropped connection is an http.client error.
+        except (OSError, ValueError, http.client.HTTPException) as ex:
             result.problems.append("The attached file could not be read back (%s)." % printable(str(ex), 80))
     elif raw.strip():
         content = raw
@@ -760,8 +781,7 @@ def build_language(issue, values, root, elsewhere=None):
     return result
 
 
-BUILDERS = {"spam": build_spam, "profile": build_profile, "translation": build_translation,
-            "language": build_language}
+BUILDERS = {"spam": build_spam, "translation": build_translation}
 
 
 class Elsewhere:
@@ -803,7 +823,9 @@ def build(kind, issue, root, elsewhere=None):
                                % ", ".join("*%s*" % m for m in missing))
         return result
     if kind == "profile":
-        return BUILDERS[kind](issue, values, root)
+        return build_profile(issue, values)
+    if kind == "language":
+        return build_language(issue, values, root)
     return BUILDERS[kind](issue, values, root, elsewhere)
 
 
@@ -925,8 +947,9 @@ def elsewhere_of(repo, mine):
     if fetch_branch(SUBMISSION_BRANCH):
         collect("origin/" + SUBMISSION_BRANCH)
 
+    # gh lists 30 unless told otherwise; a duplicate in the 31st would go unnoticed.
     listed = run(["gh", "pr", "list", "--repo", repo, "--state", "open", "--base", SUBMISSION_BRANCH,
-                  "--json", "headRefName"], check=False)
+                  "--limit", "1000", "--json", "headRefName"], check=False)
     try:
         open_branches = [pull.get("headRefName") for pull in json.loads(listed.stdout or "[]")]
     except ValueError:
@@ -1168,7 +1191,7 @@ def close_accepted(pull, repo):
     ticket = json.loads(viewed.stdout or "{}")
     kind = kind_of(ticket)
     if ticket.get("state") != "OPEN" or kind not in FOLDER:
-        print("#%d is not an open spam or translation ticket - left as it is." % number)
+        print("#%d is not an open spam, translation or language ticket - left as it is." % number)
         return 0
     comment(repo, number, accepted_comment(kind, number, pull, repo))
     run(["gh", "issue", "close", str(number), "--repo", repo, "--reason", "completed"])
@@ -1197,7 +1220,7 @@ def main():
     number = issue["number"]
 
     try:
-        elsewhere = None if kind == "profile" else elsewhere_of(repo, "submission/%d" % number)
+        elsewhere = elsewhere_of(repo, "submission/%d" % number) if kind in BUILDERS else None
         result = build(kind, issue, root, elsewhere)
 
         if result.same_as is not None:

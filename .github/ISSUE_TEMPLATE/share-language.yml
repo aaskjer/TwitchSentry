@@ -28,7 +28,7 @@ body:
     id: language-name
     attributes:
       label: Language name
-      description: As it should appear in the ☰ menu, in that language.
+      description: As it should appear in the Change Language window, in that language.
       placeholder: Italiano
     validations:
       required: true
