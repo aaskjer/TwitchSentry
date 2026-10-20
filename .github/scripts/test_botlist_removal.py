@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import unittest
 
@@ -125,6 +126,24 @@ class Handling(unittest.TestCase):
         for event in (ticket("bot_a", state="closed"), ticket("bot_a", labels=("bug",)), {"issue": {}}):
             code, gh, asked = self.run_ticket(event)
             self.assertEqual((code, gh.calls, asked), (0, [], []))
+
+
+class FormMatchesTheScript(unittest.TestCase):
+    ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    def read(self, *parts):
+        with open(os.path.join(self.ROOT, ".github", *parts), encoding="utf-8") as f:
+            return f.read()
+
+    def test_every_heading_the_script_reads_is_a_label_in_the_form(self):
+        labels = set(re.findall(r"^\s+(?:- )?label:\s*(.+?)\s*$", self.read("ISSUE_TEMPLATE", "botlist-removal.yml"), re.M))
+        for _, label in r.FIELDS:
+            self.assertIn(label, labels)
+
+    def test_the_form_and_the_workflow_carry_the_label_the_script_handles(self):
+        self.assertRegex(self.read("ISSUE_TEMPLATE", "botlist-removal.yml"),
+                         r'(?m)^labels:\s*\["%s"\]\s*$' % re.escape(r.LABEL))
+        self.assertIn("'%s'" % r.LABEL, self.read("workflows", "botlist-removal.yml"))
 
 
 if __name__ == "__main__":

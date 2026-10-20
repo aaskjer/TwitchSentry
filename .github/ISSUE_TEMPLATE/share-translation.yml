@@ -1,5 +1,5 @@
 name: Suggest a better translation
-description: A text in the settings window that reads badly in your language
+description: A text in the settings window, or a chat message, that reads badly in your language
 title: "Translation: "
 labels: ["share: translation"]
 body:
@@ -8,7 +8,17 @@ body:
       value: |
         **A pull request is opened for this automatically,** into the [`submissions` branch](https://github.com/aaskjer/TwitchSentry/tree/submissions), and once it is merged this ticket is closed and the fix goes into the next language update. One text per ticket.
 
-        To find the English original, switch the settings window to English in the ☰ menu and copy the text exactly, line breaks included.
+        To find the English original, switch the settings window to English with ☰ → *Change Language* and copy the text exactly, line breaks included. For a chat message, [`Language/Chat/en.json`](https://github.com/aaskjer/TwitchSentry/blob/main/Language/Chat/en.json) has every English original.
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does the text show?
+      options:
+        - The settings window
+        - A chat message
+    validations:
+      required: true
 
   - type: dropdown
     id: language

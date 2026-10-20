@@ -2,8 +2,8 @@
 
 .github/workflows/community-submissions.yml runs this whenever an issue carrying one of the share
 labels is opened or edited, and when a pull request into the submissions branch is merged. The ticket
-comes from one of the three forms in .github/ISSUE_TEMPLATE (share-spam-list, share-profile,
-share-translation), typed in by hand or prefilled by the settings window.
+comes from one of the four forms in .github/ISSUE_TEMPLATE (share-spam-list, share-profile,
+share-translation, share-language), typed in by hand or prefilled by the settings window.
 
 Spam wording and translations become one file in a pull request into the submissions branch. Merging it
 accepts the submission, and this script closes the ticket then, because GitHub only acts on "Closes #N"
@@ -28,6 +28,7 @@ this repository. They are a first filter only - tools/check-feed.ps1 is still th
 anything is promoted - and tools/run-submission-tests.ps1 holds the two to the same verdicts.
 """
 
+import http.client
 import json
 import os
 import re
@@ -64,13 +65,19 @@ FIELDS = {
              ("version", "TwitchSentry version"), ("privacy", "Before you submit")],
     "profile": [("name", "Profile name"), ("purpose", "What is it for?"),
                 ("profile", "Profile file"), ("privacy", "Before you submit")],
-    "translation": [("language", "Language"), ("english", "The English text"),
+    "translation": [("where", "Where does the text show?"), ("language", "Language"), ("english", "The English text"),
                     ("current", "What it says now"), ("suggestion", "What it should say"),
                     ("why", "Why is it better?")],
-    "language": [("language-name", "Language name"), ("language-code", "Language code"),
+    "language": [("translates", "What does the file translate?"), ("language-name", "Language name"), ("language-code", "Language code"),
                  ("credit", "Credit (optional)"), ("file", "Language file"),
                  ("privacy", "Before you submit")],
 }
+
+# Added after tickets were already open: a ticket without them is about the settings window, as every ticket was then.
+OPTIONAL_FIELDS = {"where", "translates"}
+# The answers that make a ticket about the chat messages, whose languages live in Language/Chat.
+CHAT_TEXT = "A chat message"
+CHAT_FILE = "Chat messages"
 
 # Where each kind that goes through a pull request keeps its files on the submissions branch.
 FOLDER = {"spam": "spam", "translation": "translations", "language": "languages"}
@@ -99,18 +106,18 @@ GITHUB_LOGIN = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
 # TSSettings' Dictionary<string, double> settings: the Custom stop of each sensitivity slider, a dial's
 # setting name to its number. The only settings whose value is an object. tools/profile_filter_parity.py
 # holds this list to the window's.
-PROFILE_NUMBER_MAPS = ["fgCustomPreset", "mgCustomPreset", "rfCustomPreset", "spamCustomPreset"]
+PROFILE_NUMBER_MAPS = ["fgCustomPreset", "learnerCustomPreset", "mgCustomPreset", "rfCustomPreset", "spamCustomPreset"]
 
 # TSSettings.ProfileExcluded and SecretNameParts in TwitchSentry-GUI.cs. The window's export already
 # leaves all of these out; a pasted file that still carries one was edited by hand, or is not an export.
 PROFILE_EXCLUDED = [
-    "discordWebhookUrl", "discordWebhookName", "discordWebhookAvatarUrl",
+    "discordWebhookUrl", "discordWebhookName", "discordWebhookAvatarUrl", "discordUseWebhooks", "discordUseBot", "discordBotToken", "discordBotChannels", "discordBotTags",
     "virusTotalApiKey", "ipqsApiKey",
     "excludedUsers", "excludedGroups", "trustedUsers", "trustedRaiders", "whitelistDomains",
     "autoModWhitelist", "voteExcludedUsers", "voteExcludedGroups", "fgBlockedList", "lbFoundList",
-    "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames",
-    "useBotAccount", "DarkMode", "guiLanguage", "uiExpertMode", "dismissedHints",
-    "settingsSchema", "activeProfile", "updateChannel", "backupFolder", "backupSettings",
+    "learnerIgnoreTerms", "selfPermitRewardId", "wfBlockedWords", "rfPauseQueueNames", "fgPauseQueueNames", "hrPauseQueueNames",
+    "useBotAccount", "useChatBotBadge", "chatBotClientId", "chatBotClientSecret", "DarkMode", "guiLanguage", "chatLanguage", "chatMessagesWritten", "uiExpertMode", "dismissedHints",
+    "settingsSchema", "activeProfile", "backupFolder", "backupSettings",
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
     "dryRunEnabled", "dryRunMinutes", "easterEggs",
     "useToastNotifications", "toastNotifyUpdates", "toastNotifyDeckActions", "toastNotifyDeckProblems",
@@ -121,11 +128,42 @@ PROFILE_EXCLUDED = [
     "toastNotifyAutoModRestricted", "toastNotifyAutoModBlocked", "toastNotifyUnbanRequests", "toastNotifyMalicious",
     "toastNotifySuspicious", "toastNotifyPermitGranted", "toastNotifyPermitExpired", "toastNotifyPermitRevoked",
     "toastNotifyLearner", "toastNotifyFollowArmed", "toastNotifyFollowBlocked", "toastNotifyOffline",
-    "toastNotifyShieldMode", "toastNotifyConfigChanges", "toastNotifyUndo",
+    "toastNotifyShieldMode", "toastNotifyConfigChanges", "toastNotifyUndo", "toastNotifyBotList",
+    "toastNotifyHateRaid", "toastNotifyHateListed", "hrTerms",
+    "stoatWebhookEnabled", "stoatWebhookUrl", "stoatWebhookName", "stoatWebhookAvatarUrl", "stoatNotifyDeletions",
+    "stoatNotifyTimeouts", "stoatNotifyBans", "stoatNotifyWordFilter", "stoatNotifyNuke", "stoatNotifyWordSync",
+    "stoatNotifyWarns", "stoatNotifyWarnActions", "stoatNotifyRaids", "stoatNotifyRaidActions",
+    "stoatNotifyAutoModDenied", "stoatNotifyAutoModAllowed", "stoatNotifyAutoModRestricted",
+    "stoatNotifyAutoModBlocked", "stoatNotifyUnbanRequests", "stoatNotifyMalicious", "stoatNotifySuspicious",
+    "stoatNotifyPermitGranted", "stoatNotifyPermitExpired", "stoatNotifyPermitRevoked", "stoatNotifyLearner",
+    "stoatNotifyFollowArmed", "stoatNotifyFollowBlocked", "stoatNotifyLurkBots", "stoatNotifyHateRaid",
+    "stoatNotifyHateListed", "stoatNotifyBotList", "stoatNotifyOffline", "stoatNotifyShieldMode",
+    "stoatNotifyConfigChanges", "stoatNotifyUndo", "gameVoxWebhookEnabled", "gameVoxWebhookUrl",
+    "gameVoxNotifyDeletions", "gameVoxNotifyTimeouts", "gameVoxNotifyBans", "gameVoxNotifyWordFilter",
+    "gameVoxNotifyNuke", "gameVoxNotifyWordSync", "gameVoxNotifyWarns", "gameVoxNotifyWarnActions",
+    "gameVoxNotifyRaids", "gameVoxNotifyRaidActions", "gameVoxNotifyAutoModDenied", "gameVoxNotifyAutoModAllowed",
+    "gameVoxNotifyAutoModRestricted", "gameVoxNotifyAutoModBlocked", "gameVoxNotifyUnbanRequests",
+    "gameVoxNotifyMalicious", "gameVoxNotifySuspicious", "gameVoxNotifyPermitGranted", "gameVoxNotifyPermitExpired",
+    "gameVoxNotifyPermitRevoked", "gameVoxNotifyLearner", "gameVoxNotifyFollowArmed", "gameVoxNotifyFollowBlocked",
+    "gameVoxNotifyLurkBots", "gameVoxNotifyHateRaid", "gameVoxNotifyHateListed", "gameVoxNotifyBotList",
+    "gameVoxNotifyOffline", "gameVoxNotifyShieldMode", "gameVoxNotifyConfigChanges", "gameVoxNotifyUndo",
+    "ntfyWebhookEnabled", "ntfyWebhookUrl", "ntfyToken", "ntfyMinPriority",
+    "ntfyNotifyDeletions", "ntfyNotifyTimeouts", "ntfyNotifyBans", "ntfyNotifyWordFilter",
+    "ntfyNotifyNuke", "ntfyNotifyWordSync", "ntfyNotifyWarns", "ntfyNotifyWarnActions",
+    "ntfyNotifyRaids", "ntfyNotifyRaidActions", "ntfyNotifyAutoModDenied", "ntfyNotifyAutoModAllowed",
+    "ntfyNotifyAutoModRestricted", "ntfyNotifyAutoModBlocked", "ntfyNotifyUnbanRequests",
+    "ntfyNotifyMalicious", "ntfyNotifySuspicious", "ntfyNotifyPermitGranted", "ntfyNotifyPermitExpired",
+    "ntfyNotifyPermitRevoked", "ntfyNotifyLearner", "ntfyNotifyFollowArmed", "ntfyNotifyFollowBlocked",
+    "ntfyNotifyLurkBots", "ntfyNotifyHateRaid", "ntfyNotifyHateListed", "ntfyNotifyBotList",
+    "ntfyNotifyOffline", "ntfyNotifyShieldMode", "ntfyNotifyConfigChanges", "ntfyNotifyUndo",
 ]
 SECRET_NAME_PARTS = ["apikey", "webhook", "token", "secret", "password"]
 RESERVED_PROFILE_NAMES = ["Relaxed", "Balanced", "Strict", "Under Attack", "Just Chatting"]
-WEBHOOK_PATTERN = re.compile(r"discord(?:app)?\.com/api/webhooks", re.I)
+# A webhook address on any of the three platforms, a topic on ntfy.sh or an ntfy access token,
+# or a Discord bot token (id.timestamp.signature).
+WEBHOOK_PATTERN = re.compile(r"discord(?:app)?\.com/api/webhooks|stoat\.chat/api/webhooks|gamevox\.com/api/(?:v\d+/)?webhooks"
+                             r"|ntfy\.sh/[\w-]+|\btk_[A-Za-z\d]{29}\b"
+                             r"|\b[MNO][A-Za-z\d_-]{23,27}\.[A-Za-z\d_-]{6}\.[A-Za-z\d_-]{27,}", re.I)
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -306,15 +344,10 @@ def build_spam(issue, values, root, elsewhere=None):
     if not text.strip():
         result.problems.append("There are no entries.")
 
-    entries, counts, seen = {}, {}, set()
+    entries, seen = {}, set()
     for number, line in enumerate(text.split("\n"), 1):
         if not line.strip():
             continue
-        stats = {}
-        if "|" in line:
-            line, _, tail = line.partition("|")
-            for key, val in re.findall(r"\b(users|clean)\s*=\s*(\d{1,9})\b", tail):
-                stats[key] = int(val)
         match = re.match(r"^\s*([A-Za-z]+)\s*:(.*)$", line)
         if not match:
             result.problems.append("Line %d is not written as `list: entry`." % number)
@@ -333,8 +366,6 @@ def build_spam(issue, values, root, elsewhere=None):
             continue
         seen.add((name, entry))
         entries.setdefault(name, []).append(entry)
-        if stats:
-            counts.setdefault(name, {})[entry] = stats
 
     if len(seen) > MAX_ENTRIES:
         result.problems.append("That is %d entries; one ticket takes up to %d." % (len(seen), MAX_ENTRIES))
@@ -388,10 +419,6 @@ def build_spam(issue, values, root, elsewhere=None):
         "submittedAt": issue.get("created_at"),
         "entries": fresh,
     }
-    kept_counts = {name: {e: c for e, c in counts.get(name, {}).items() if e in fresh.get(name, [])} for name in fresh}
-    kept_counts = {name: c for name, c in kept_counts.items() if c}
-    if kept_counts:
-        document["counts"] = kept_counts
     if repeated:
         document["seconds"] = {name: sorted(entries) for name, entries in repeated.items()}
     version = version_of(values.get("version"))
@@ -439,7 +466,7 @@ def build_spam(issue, values, root, elsewhere=None):
     return result
 
 
-def build_profile(issue, values, root):
+def build_profile(issue, values):
     result = Result("profile")
     if not is_checked(values.get("privacy")):
         result.problems.append("The box saying the profile holds no key, webhook or list of people is not ticked.")
@@ -550,17 +577,26 @@ def _is_number_map(value):
     return True
 
 
+def language_folder(root, chat):
+    return os.path.join(root, "Language", "Chat") if chat else os.path.join(root, "Language")
+
+
 def build_translation(issue, values, root, elsewhere=None):
     elsewhere = elsewhere or Elsewhere()
     result = Result("translation")
-    index = read_json(os.path.join(root, "Language", "index.json"), [])
+    chat = (values.get("where") or "").strip() == CHAT_TEXT
+    target = "chat" if chat else "window"
+    folder = language_folder(root, chat)
+    published = "Language/Chat/en.json" if chat else "Language/en.json"
+    index = read_json(os.path.join(folder, "index.json"), [])
     # English is a language file like the others: en.json can word a text differently from the code.
     codes = [str(e.get("code")) for e in index if isinstance(e, dict) and e.get("code")]
 
     match = re.search(r"\(([A-Za-z]{2,3}(?:-[A-Za-z]{2,4})?)\)\s*$", values.get("language") or "")
     code = match.group(1) if match else None
     if code not in codes:
-        result.problems.append("Pick one of the languages TwitchSentry has.")
+        result.problems.append("Pick one of the languages TwitchSentry has for chat messages." if chat
+                               else "Pick one of the languages TwitchSentry has.")
 
     english = clip(values.get("english"), MAX_TEXT)
     current = clip(values.get("current"), MAX_TEXT)
@@ -581,14 +617,15 @@ def build_translation(issue, values, root, elsewhere=None):
     # The same text in the same language is one decision, so a second ticket saying the same thing adds nothing.
     # One saying something else does: both wordings belong in front of whoever picks.
     for other in elsewhere.translations:
-        if other.get("issue") == issue["number"] or other.get("language") != code or other.get("english") != english:
+        if (other.get("issue") == issue["number"] or other.get("language") != code or other.get("english") != english
+                or other.get("target", "window") != target):
             continue
         if other.get("suggestion") == suggestion:
             result.same_as = other.get("issue")
             return result
         result.answered_differently = other.get("issue")
 
-    english_file = read_json(os.path.join(root, "Language", "en.json"), {})
+    english_file = read_json(os.path.join(folder, "en.json"), {})
     known = isinstance(english_file, dict) and english in english_file
 
     number = issue["number"]
@@ -601,14 +638,17 @@ def build_translation(issue, values, root, elsewhere=None):
         "english": english,
         "suggestion": suggestion,
     }
+    if chat:
+        document["target"] = "chat"
     if current:
         document["current"] = current
     if why:
         document["why"] = why
     result.document = document
     result.path = "%s/%d.json" % (FOLDER["translation"], number)
-    result.title = "Translation (%s) from #%d" % (code, number)
-    lines = ["**A translation fix** for `%s`, shared in #%d by %s." % (code, number, issue["user"]["login"]), "",
+    result.title = ("Chat translation (%s) from #%d" if chat else "Translation (%s) from #%d") % (code, number)
+    lines = ["**A %s fix** for `%s`, shared in #%d by %s." % ("chat message translation" if chat else "translation",
+                                                             code, number, issue["user"]["login"]), "",
              "The English text:", fence(english)]
     if current:
         lines += ["What it says now:", fence(current)]
@@ -618,8 +658,8 @@ def build_translation(issue, values, root, elsewhere=None):
     if result.answered_differently:
         lines += ["**#%d wants something else for the same text.** Both are here to pick from; only one of them "
                   "can end up in the language file." % result.answered_differently, ""]
-    lines.append("The English text is %s the published `Language/en.json`%s." % (
-        "in" if known else "**not** in",
+    lines.append("The English text is %s the published `%s`%s." % (
+        "in" if known else "**not** in", published,
         "" if known else " - it may belong to a window newer than that file, or be copied inexactly"))
     result.summary = "\n".join(lines)
     return result
@@ -633,8 +673,11 @@ def fetch_attachment(url):
         return response.read()
 
 
-def build_language(issue, values, root, elsewhere=None):
+def build_language(issue, values, root):
     result = Result("language")
+    chat = (values.get("translates") or "").strip() == CHAT_FILE
+    folder = language_folder(root, chat)
+    published = "Language/Chat/en.json" if chat else "Language/en.json"
     if not is_checked(values.get("privacy")):
         result.problems.append("The box saying this is your own translation of TwitchSentry's English text, "
                                "not unread machine output, is not ticked.")
@@ -662,7 +705,8 @@ def build_language(issue, values, root, elsewhere=None):
     if attached:
         try:
             content = fetch_attachment(attached.group(0)).decode("utf-8-sig")
-        except (urllib.error.URLError, TimeoutError, UnicodeDecodeError) as ex:
+        # Any failure of the download is told to the submitter: a dropped connection is an http.client error.
+        except (OSError, ValueError, http.client.HTTPException) as ex:
             result.problems.append("The attached file could not be read back (%s)." % printable(str(ex), 80))
     elif raw.strip():
         content = raw
@@ -680,8 +724,8 @@ def build_language(issue, values, root, elsewhere=None):
             except ValueError as ex:
                 result.problems.append("The file is not valid JSON (%s)." % printable(str(ex), 80))
 
-    english_file = read_json(os.path.join(root, "Language", "en.json"), {})
-    en_keys = set(english_file) if isinstance(english_file, dict) else set()
+    english_file = read_json(os.path.join(folder, "en.json"), {})
+    en_keys = set(k for k in english_file if not k.startswith("__")) if isinstance(english_file, dict) else set()
     covered = 0
     if isinstance(parsed, dict):
         real_keys = [k for k in parsed if not k.startswith("__")]
@@ -702,7 +746,7 @@ def build_language(issue, values, root, elsewhere=None):
     if not isinstance(parsed.get("__version"), int) or parsed["__version"] < 1:
         parsed["__version"] = 1
 
-    index = read_json(os.path.join(root, "Language", "index.json"), [])
+    index = read_json(os.path.join(folder, "index.json"), [])
     codes = [str(e.get("code")) for e in index if isinstance(e, dict) and e.get("code")]
     is_new = code not in codes
 
@@ -718,25 +762,26 @@ def build_language(issue, values, root, elsewhere=None):
         "isNewLanguage": is_new,
         "file": parsed,
     }
+    if chat:
+        document["target"] = "chat"
     result.document = document
     result.path = "%s/%d.json" % (FOLDER["language"], number)
-    result.title = "Language (%s) from #%d" % (code, number)
+    result.title = ("Chat language (%s) from #%d" if chat else "Language (%s) from #%d") % (code, number)
 
     coverage = ("%d of %d texts" % (covered, len(en_keys))) if en_keys else "an unknown number of texts"
     lines = [
         "**%s** for `%s` (%s), shared in #%d by %s, credited as %s." % (
-            "A new language" if is_new else "An update to an existing language",
+            ("A new %s" if is_new else "An update to an existing %s") % ("chat language" if chat else "language"),
             printable(name, 60), code, number, login, printable(by, 60)),
         "",
-        "Covers %s from the published `Language/en.json`. Anything short of that stays in English until "
-        "someone fills it in, the same as any string a translated language is still missing." % coverage,
+        "Covers %s from the published `%s`. Anything short of that stays in English until "
+        "someone fills it in, the same as any string a translated language is still missing." % (coverage, published),
     ]
     result.summary = "\n".join(lines)
     return result
 
 
-BUILDERS = {"spam": build_spam, "profile": build_profile, "translation": build_translation,
-            "language": build_language}
+BUILDERS = {"spam": build_spam, "translation": build_translation}
 
 
 class Elsewhere:
@@ -770,7 +815,7 @@ def without_lone_surrogates(text):
 
 def build(kind, issue, root, elsewhere=None):
     values = parse_form(without_lone_surrogates(issue.get("body")), FIELDS[kind])
-    missing = [label for key, label in FIELDS[kind] if values[key] is None]
+    missing = [label for key, label in FIELDS[kind] if values[key] is None and key not in OPTIONAL_FIELDS]
     if missing:
         result = Result(kind)
         result.problems.append("The ticket no longer has the form's parts (missing: %s). "
@@ -778,7 +823,9 @@ def build(kind, issue, root, elsewhere=None):
                                % ", ".join("*%s*" % m for m in missing))
         return result
     if kind == "profile":
-        return BUILDERS[kind](issue, values, root)
+        return build_profile(issue, values)
+    if kind == "language":
+        return build_language(issue, values, root)
     return BUILDERS[kind](issue, values, root, elsewhere)
 
 
@@ -900,8 +947,9 @@ def elsewhere_of(repo, mine):
     if fetch_branch(SUBMISSION_BRANCH):
         collect("origin/" + SUBMISSION_BRANCH)
 
+    # gh lists 30 unless told otherwise; a duplicate in the 31st would go unnoticed.
     listed = run(["gh", "pr", "list", "--repo", repo, "--state", "open", "--base", SUBMISSION_BRANCH,
-                  "--json", "headRefName"], check=False)
+                  "--limit", "1000", "--json", "headRefName"], check=False)
     try:
         open_branches = [pull.get("headRefName") for pull in json.loads(listed.stdout or "[]")]
     except ValueError:
@@ -1143,7 +1191,7 @@ def close_accepted(pull, repo):
     ticket = json.loads(viewed.stdout or "{}")
     kind = kind_of(ticket)
     if ticket.get("state") != "OPEN" or kind not in FOLDER:
-        print("#%d is not an open spam or translation ticket - left as it is." % number)
+        print("#%d is not an open spam, translation or language ticket - left as it is." % number)
         return 0
     comment(repo, number, accepted_comment(kind, number, pull, repo))
     run(["gh", "issue", "close", str(number), "--repo", repo, "--reason", "completed"])
@@ -1172,7 +1220,7 @@ def main():
     number = issue["number"]
 
     try:
-        elsewhere = None if kind == "profile" else elsewhere_of(repo, "submission/%d" % number)
+        elsewhere = elsewhere_of(repo, "submission/%d" % number) if kind in BUILDERS else None
         result = build(kind, issue, root, elsewhere)
 
         if result.same_as is not None:

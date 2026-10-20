@@ -10,13 +10,25 @@ body:
 
         **A pull request is opened for this automatically,** into the [`submissions` branch](https://github.com/aaskjer/TwitchSentry/tree/submissions), and once it is merged this ticket is closed and the file is brought into `Language/` with the next language update.
 
+        **The settings window and the chat messages are two separate files,** each language in both. A chat language is written against [`Language/Chat/en.json`](https://github.com/aaskjer/TwitchSentry/blob/main/Language/Chat/en.json) and keeps every placeholder such as `{user}` exactly as it is.
+
         **The file itself does not fit in a text box** - drag it into the *Language file* field below rather than pasting its text; GitHub turns the drop into a link, and that is what the check reads. It does not need to translate every text: whatever is left in English stays that way until somebody fills it in, the same as any other language.
+
+  - type: dropdown
+    id: translates
+    attributes:
+      label: What does the file translate?
+      options:
+        - The settings window
+        - Chat messages
+    validations:
+      required: true
 
   - type: input
     id: language-name
     attributes:
       label: Language name
-      description: As it should appear in the ☰ menu, in that language.
+      description: As it should appear in the Change Language window, in that language.
       placeholder: Italiano
     validations:
       required: true
@@ -40,7 +52,7 @@ body:
     id: file
     attributes:
       label: Language file
-      description: Drag the finished `.json` file in here (or use the paperclip below the box). Exported from a working install, or written by hand against `Language/en.json`.
+      description: Drag the finished `.json` file in here (or use the paperclip below the box). Exported from a working install, or written by hand against `Language/en.json` (the window) or `Language/Chat/en.json` (chat messages).
     validations:
       required: true
 
