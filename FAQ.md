@@ -28,25 +28,25 @@ Make sure Streamer.bot does **not** run as administrator, and not from inside a 
 
 **Q: How do I try my settings without punishing anyone?**
 
-☰ → **Test Mode**. Nothing is deleted, timed out or banned and no chat mode is switched on; every module posts what it *would* have done instead. It switches itself off after **Test Duration (Minutes)** on General Settings (5 by default), counted down in the notice strip.
+☰ → **Test Mode**. Nothing is deleted, timed out or banned and no chat mode is switched on; every module posts what it *would* have done instead. It switches itself off after **Test Duration (Minutes)** under ☰ → **Options...** → *Test Mode* (5 by default), counted down in the notice strip.
 
 ---
 
 **Q: What is Expert Mode?**
 
-Message Filter, Raid Protection, Follow Wave Protection and Spam Scoring each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values. Switching it on changes no setting.
+Message Filter, Raid Protection, Follow Wave Protection, Spam Scoring and the Spam Learner each start with a **sensitivity slider** that sets the numbers behind it. ☰ → **Expert Mode** shows those numbers for tuning by hand, plus a *Custom* step on the slider that keeps your own values, and the rarely needed rows of Known Patterns, Suggestions and Check Link. Switching it on changes no setting. Without it, the note under a page's last card says how many rows it hides and how many of them differ from the default.
 
 ---
 
 **Q: Can I get rid of a notice at the top of the window?**
 
-Its **✕** hides it for good. ☰ → **Show hidden notices again** brings them all back.
+Its **✕** hides it for good. ☰ → **Options...** → *Notices* lists every hidden notice: **Show Again** brings one back, **Show All Again** all of them.
 
 ---
 
 **Q: Where is the longer explanation of a setting?**
 
-The **?** in a card's corner opens the **Manual** page (under Help) at that card's section, and **← Back to …** takes you back. Installing, the deck buttons and where the files live are in the [online Manual](Manual.md).
+The **?** in a card's corner opens the **Manual** page (under Help) at that card's section, and **← Back to …** takes you back. The Manual's **Terms** tab explains the words the window uses, each with a link to where it is, and its **Deck Buttons** tab lists every deck argument with its values. Installing and where the files live are in the [online Manual](Manual.md).
 
 ---
 
@@ -84,7 +84,7 @@ The last 25 actions from the last 12 hours. If Twitch refuses the undo, the entr
 
 **Q: Can I switch things from a Stream Deck or a Streamer.bot Deck?**
 
-Yes. A key runs the **`[TS] - Deck`** action with an argument: `tsPanic` (the panic button: Under Attack and Raid Protection armed, and everything back as it was on the next press), `tsProfile` (switch profile), `tsModule` (module on/off), `tsExempt` (Followers/Subscribers/VIPs), `tsTestMode`, `tsRaid` (arm Raid Protection now) or `tsUndo`. One key can carry several. Setup and examples: [Manual → Deck buttons](Manual.md#deck-buttons).
+Yes. A key runs the **`[TS] - Deck`** action with an argument: `tsPanic` (the panic button: Under Attack and Raid Protection armed, and everything back as it was on the next press), `tsProfile` (switch profile), `tsModule` (module on/off), `tsExempt` (Followers/Subscribers/VIPs), `tsTestMode`, `tsRaid` (arm Raid Protection now) or `tsUndo`. One key can carry several. Every argument with the values it takes is on the **Deck Buttons** tab of the Manual page in the settings window; setup and examples: [Manual → Deck buttons](Manual.md#deck-buttons).
 
 ---
 
@@ -102,7 +102,7 @@ Yes, it shows the name and **On** or **Off** after every press, or words of your
 
 **Q: Can I use the buttons inside OBS?**
 
-Yes. **☰ → Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has six big buttons you set up yourself with ✎: a profile, a module, an exemption, an Always Allowed link, AutoMod Action, Test Mode, Raid Protection or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
+Yes. ☰ → **Options...** → *OBS Dock* → **Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**, with *TwitchSentry* as the name. OBS takes a dock only from that menu, so TwitchSentry cannot add it for you. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has six big buttons you set up yourself with ✎: a profile, a module, an exemption, an Always Allowed link, AutoMod Action, Test Mode, Raid Protection or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
 
 ---
 
@@ -122,7 +122,7 @@ A backup (**Backup & Restore**, under Help) is everything: settings, chat replie
 
 **Q: What does *(modified)* in the title bar mean?**
 
-The settings the current profile names no longer match it. A **built-in profile** names 34 settings (the four sensitivity sliders, the 23 dials behind them and seven switches), so only those count. A **saved profile** names all 261, so almost any change counts.
+The settings the current profile names no longer match it. A **built-in profile** names 34 settings (four of the five sensitivity sliders, all but the Spam Learner's, the 23 dials behind them and seven switches), so only those count. A **saved profile** names all 363, so almost any change counts.
 
 ---
 
@@ -238,13 +238,13 @@ Cleanup of rules and suggestions that no longer turn up in recent violations. En
 
 **Q: Where can I see what was removed?**
 
-Under Results: **Violation Log** lists every message TwitchSentry acted on this month; **Clean Chat Log** is the sample of normal chat the learner compares against. Both have search and a per-account filter.
+Under Results: the **Action Log** shows each action with the message it was taken on, and the **Spam Log** lists every message the Spam Filter and the Link Filter removed this month; **Clean Chat Log** is the sample of normal chat the learner compares against. The two message logs have search and a per-account filter.
 
 ---
 
 **Q: Where did last month's log go?**
 
-Each month starts a new `action-log.txt` and `violation-log.txt`. The previous month is moved aside in the same `Logs` folder as `action-log-2026-09.txt` / `violation-log-2026-09.txt` and so on. Nothing is deleted, so you can remove old months by hand whenever you like.
+Each month starts a new `action-log.txt` and `spam-log.txt`. The previous month is moved aside in the same `Logs` folder as `action-log-2026-09.txt` / `spam-log-2026-09.txt` and so on. Nothing is deleted, so you can remove old months by hand whenever you like.
 
 ---
 
@@ -363,7 +363,7 @@ Yes, each with its own countdown. A running permit is never extended: end it wit
 
 **Q: What stops a mistyped duration?**
 
-**Max Permit Duration Seconds** caps every permit, with a hard ceiling of 24 hours.
+**Max Permit Duration (Seconds)** caps every permit, with a hard ceiling of 24 hours.
 
 ---
 
@@ -429,7 +429,7 @@ Windows is holding it back. Check *Do Not Disturb* (*Focus Assist*) and *Setting
 
 **Q: Can I change anything on Home?**
 
-No, it only reports. Its shortcuts lead to the page that owns each setting.
+No setting lives there: it reports, and a click on a module's chip or a line opens the page that owns it. Its *Start Here* card opens the Profiles dialog and starts test mode for you, and *Hide* puts the card away until ☰ → *Options...* → *Notices* brings it back.
 
 ---
 
@@ -489,7 +489,7 @@ Yes. One text that reads badly: ☰ → **Report...** → *A translation*, pick 
 
 **Q: How do I know a new version is out?**
 
-The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notice has a button to ignore future betas, and ☰ → **Show hidden notices again** brings them back.
+The settings window checks GitHub whenever it opens and shows a notice at the top, stable releases and betas alike. A beta notice has a button to ignore future betas, and ☰ → **Options...** → *Notices* brings them back.
 
 ---
 

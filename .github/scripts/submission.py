@@ -106,7 +106,7 @@ GITHUB_LOGIN = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
 # TSSettings' Dictionary<string, double> settings: the Custom stop of each sensitivity slider, a dial's
 # setting name to its number. The only settings whose value is an object. tools/profile_filter_parity.py
 # holds this list to the window's.
-PROFILE_NUMBER_MAPS = ["fgCustomPreset", "mgCustomPreset", "rfCustomPreset", "spamCustomPreset"]
+PROFILE_NUMBER_MAPS = ["fgCustomPreset", "learnerCustomPreset", "mgCustomPreset", "rfCustomPreset", "spamCustomPreset"]
 
 # TSSettings.ProfileExcluded and SecretNameParts in TwitchSentry-GUI.cs. The window's export already
 # leaves all of these out; a pasted file that still carries one was edited by hand, or is not an export.

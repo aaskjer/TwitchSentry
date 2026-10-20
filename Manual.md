@@ -42,13 +42,21 @@ Pages are grouped down the left: **Setup**, **Chat**, **Spam Filter**, **Bots & 
 
 A module's page has **tabs** under its title: its settings first, then **Messages**, everything that module says in chat. The Message Filter and Raid Protection also have a **Chat Modes** tab. The switch that turns a module on or off sits in the title bar, so it is there on every tab.
 
-The window opens on **Home**: the version you are running, six shortcut tiles to the pages most people came for, a *Right Now* card summarising what TwitchSentry is currently set to do, and links to the [Manual page](#manual), the FAQ, the report form, the repository and the Streamer.bot thread. Nothing on Home is editable — every line on it lives on the page that owns it, and the tile takes you there.
+The window opens on **Home**, under a banner with the version you are running:
+
+- **Right Now** says in one line whether TwitchSentry is watching your chat or running in test mode, with the profile, the default action and test mode beneath. Every module is a chip under *Modules On* or *Modules Off*, the Message Filter, Link Filter and Spam Scoring stand under *Always On*, and *Notifications* shows where alerts go. A chip follows its switch at once, before you save, and a click on it opens its page.
+- **Start Here** lists the five first steps, each with a button: **Profiles...** opens the Profiles dialog, **Start Test Mode** starts test mode, the others open the page they are about. *Read Getting Started in the Manual* opens the [Manual](#manual) at its first tab. **Hide** puts the card away; ☰ → *Options...* → *Notices* brings it back.
+- **Activity** counts TwitchSentry's actions today, in the last seven days and in total, and says what it did, which module was busiest and what it did last. *Open Action Log* is in its corner.
+- **What It Knows** shows the suggestions waiting, the known patterns and the followers blocked this month; a click on a line opens its page.
+- **Help And Links** leads to Getting Started, the Manual, the FAQ, the report form, the repository and the Streamer.bot thread.
+
+Nothing on Home is a setting of its own: every line lives on the page that owns it.
 
 **A few things worth knowing before you start:**
-- **The search box** at the top left filters the page list by page name, setting label, or the internal setting key, and opens the tab that holds what it found. `Ctrl+F` focuses it, `Esc` clears it. If you know roughly what a setting is called, this is faster than hunting for the page.
-- **The ☰ menu**, in front of the search box, holds the things you reach for occasionally: profiles, the light/dark theme, expert mode, the language files, test mode, sharing with other streamers, opening a ticket, and both reset buttons.
+- **The search box** at the top left filters the page list by page name, setting label, or the internal setting key, and opens the tab that holds what it found. It also finds the Manual's terms, chat commands and deck arguments. `Ctrl+F` focuses it, `Esc` clears it. If you know roughly what a setting is called, this is faster than hunting for the page.
+- **The ☰ menu**, in front of the search box, holds the things you reach for occasionally: profiles, the [Options](#options) window, expert mode, test mode, the language files, the light/dark theme, sharing with other streamers, opening a ticket, and both reset buttons.
   - **Opening a ticket** fills in GitHub's new-issue page and opens it in your browser — nothing is sent from the window, and you submit it yourself under your own account. The first dropdown decides whether it is labelled `bug` or `enhancement`; the second says which part of TwitchSentry it is about, and becomes a second label so tickets about the same thing sit together. *Not sure* is one of the choices and a perfectly good answer. A block describing your setup always rides along, shown in full before it goes: TwitchSentry's version, settings schema, whether betas are announced and which profile you are on; the Streamer.bot version; your window language and which version of that language file, the theme, and whether expert and test mode are on; which modules are on and which are off; the shared action and the four sensitivity steps; whether the VirusTotal key, the IPQS key and the Discord webhook are **set or not set**; whether the two cache files are there; and your Windows build, CLR version and desktop size. No channel name, no API keys, no webhook URL and no file paths.
-- **The notice strip** across the top carries anything the window needs to tell you — an available update, a translation that is behind, a setting that will not do what it looks like it does. Notices stack, and the **✕** on one hides it for good. An update notice for a beta also carries **Ignore Betas**, which does the same for every beta to come: only stable releases are announced after it. If you want them back, *Show hidden notices again* in the ☰ menu clears the list.
+- **The notice strip** across the top carries anything the window needs to tell you — an available update, a translation that is behind, a setting that will not do what it looks like it does. Notices stack, and the **✕** on one hides it for good. An update notice for a beta also carries **Ignore Betas**, which does the same for every beta to come: only stable releases are announced after it. ☰ → *Options...* → *Notices* lists every hidden notice and brings each one back on its own, or all of them at once.
 - **The ? in a card's corner** opens the [Manual page](#manual) at that card's section, for the cards whose options need more than their tooltips. A **?** in a page's title bar, or beside the first sentence of a later tab, opens what the Manual says about the page or that tab as a whole.
 - **Nothing is saved until you press Save.** The bottom left says whether you have unsaved changes.
 
@@ -84,14 +92,14 @@ beside one **renames** it, and the **↺** beside that writes what you are runni
 once the settings that profile names no longer say what it said.
 
 **When *(modified)* appears depends on how many settings a profile covers, and the two kinds cover
-very different amounts.** A built-in profile claims exactly 34 settings: the four sensitivity sliders, all 23 dials
+very different amounts.** A built-in profile claims exactly 34 settings: four of the five sensitivity sliders (all but the Spam Learner's), all 23 dials
 behind them, and seven switches (*Require Two Signals* on the message and raid sides, *Require Two
 Parts*, *First Message Only*, *As Soon As A Raid Arrives*, and Shield Mode on a raid and on a follow
-wave). It has no opinion about the other 227, so changing an action, a timeout duration, a
+wave). It has no opinion about the other 329, so changing an action, a timeout duration, a
 message, a Discord switch or a whole module on or off leaves you *exactly* on Strict, with no
 marker. Otherwise the marker would be on all the time and tell you nothing.
 
-A saved profile claims all 261, so almost any change marks it modified. If you want the tight
+A saved profile claims all 363, so almost any change marks it modified. If you want the tight
 reading, save your settings as a profile: that is what makes every one of them something to drift
 from.
 
@@ -100,7 +108,7 @@ from.
 **The list is the folder, live.** It is re-read every time the window comes back to the front, so a file you drop in, rename or delete in Explorer shows up without closing and reopening the dialog — and the folder button in the corner is one click away. A search box appears above the list once there are six or more.
 
 **What a profile holds.** Every threshold, every switch, every action and every duration — the whole
-of how strict this channel is, which is 261 of the 297 settings in `configs.json`.
+of how strict this channel is, which is 363 of the 548 settings in `configs.json`.
 
 **What it deliberately does not:** your Discord webhook, everything on the Stoat, GameVox, ntfy and Windows tabs of Notifications, and your VirusTotal and IPQS keys; the people
 and addresses this channel knows, meaning your whitelist, your excluded and trusted users, the AutoMod
@@ -120,9 +128,21 @@ newer version than yours are counted and ignored instead of throwing.
 mid-stream without this window, see [Deck buttons](#deck-buttons). The Profiles dialog lists the names
 to put on a key under *Switch From A Deck*.
 
+### Options
+
+☰ → **Options...** opens a window of its own with three tabs. **Save** keeps what you typed into its boxes and **Cancel** puts them back; the buttons on the tabs act at once.
+
+- **Test Mode** starts or ends [test mode](#test-mode) and holds *Test Duration (Minutes)* and the *Test Notice*, the chat message posted instead of the real one while it runs.
+- **Notices** lists every notice closed with its ✕, in the words it last said. *Would be shown right now* marks the ones that apply at this moment, *Does not apply right now* the others. **Show Again** brings one back at once, **Show All Again** all of them. *Ignore Betas* and Home's *Start Here* are listed here too.
+- **OBS Dock** sets up the [OBS dock](#the-obs-dock): **Set Up OBS Dock** writes its page and puts the address on the clipboard, and the steps beside it say where it goes in OBS.
+
+| Test Mode | Notices | OBS Dock |
+|:---:|:---:|:---:|
+| ![Test Mode](docs/screenshots/options.png) | ![Notices](docs/screenshots/options-notices.png) | ![OBS Dock](docs/screenshots/options-dock.png) |
+
 ### Test mode
 
-Switched on from the ☰ menu. While it runs, nothing is deleted, timed out or banned — every module posts what it *would* have done instead, so you can point a real chat at your settings without anybody being punished for helping you test them. Not even the chat modes come on. It ends on its own after the time set on General Settings, five minutes by default, and the notice strip counts it down — so a chat can never be left unguarded because somebody forgot to switch it back.
+Switched on from the ☰ menu, from Home or under ☰ → *Options...* → *Test Mode*. While it runs, nothing is deleted, timed out or banned — every module posts what it *would* have done instead, so you can point a real chat at your settings without anybody being punished for helping you test them. Not even the chat modes come on. It ends on its own after the *Test Duration* set under ☰ → *Options...*, five minutes by default, and the notice strip counts it down — so a chat can never be left unguarded because somebody forgot to switch it back.
 
 ### Easy & Expert mode
 
@@ -131,11 +151,11 @@ Switched on from the ☰ menu. While it runs, nothing is deleted, timed out or b
 | ![Easy mode](docs/screenshots/spam-scoring.png) | ![Expert mode](docs/screenshots/spam-scoring-expert.png) |
 
 
-`Easy Mode` is active by default and meant for anyone new to TwitchSentry or to this kind of tool. It shows simplified settings with a **sensitivity slider**, from `Very relaxed` to `Very strict`, and a line under it that says what each step does.
+`Easy Mode` is active by default and meant for anyone new to TwitchSentry or to this kind of tool. It shows simplified settings with a **sensitivity slider**, from `Very relaxed` to `Very strict`, and a line under it that says what each step does. The Spam Learner's slider runs from `Very cautious` to `Very eager` instead.
 
-**Expert mode**, also in the ☰ menu, shows the individual numbers the slider moves for you; while it is off, a page that has such settings says so under its last card. In expert mode the slider gains a `Custom` step for your own numbers, and the window remembers them when you move away from it, as long as you have pressed **Save** once.
+**Expert mode**, also in the ☰ menu, shows the individual numbers the slider moves for you, and the rows most channels never touch: the Spam Learner's tuning, the pattern and conversation lists on Known Patterns, the statistics columns on Suggestions and the scanner limits on Check Link. While it is off, a page that hides rows says how many under its last card, and how many of them differ from the default. A row behind a slider counts as changed only when it differs from what the slider's step sets, and lists never count, because the feed and the Learner keep filling them. A switch's *controls N settings* counts only the rows the current mode shows. In expert mode the slider gains a `Custom` step for your own numbers, and the window remembers them when you move away from it, as long as you have pressed **Save** once.
 
-`Custom` only appears while expert mode is on: the rows it keeps *are* the expert rows, so there is nothing to tune without them, and with expert mode off the slider ends at `Very strict`. A slider that is *already* sitting on `Custom` keeps the stop either way — switching expert mode off never drops a preset column over numbers you tuned yourself.
+`Custom` only appears while expert mode is on: the rows it keeps *are* the expert rows, so there is nothing to tune without them, and with expert mode off the slider ends at its fifth step. A slider that is *already* sitting on `Custom` keeps the stop either way — switching expert mode off never drops a preset column over numbers you tuned yourself.
 
 ---
 
@@ -569,11 +589,11 @@ One part on its own is a coincidence — plenty of ordinary messages have one. T
 
 <img width="926" alt="Known Patterns" src="docs/screenshots/known-patterns.png" />
 
-The actual active rules every module checks against — `spam.json`, editable in place. Spam domains, keywords, strong keywords, domain endings, custom patterns and voucher-code patterns, plus the four **conversation beats** the scam detector matches on, and the **hand-off phrases** and **service offers** it acts on for accounts new to your chat. Add your own here, or approve what the Learner suggests. Don't forget **Save**.
+The actual active rules every module checks against — `spam.json`, editable in place. Spam domains, keywords, strong keywords, domain endings, custom patterns and voucher-code patterns, plus the four **conversation beats** the scam detector matches on, and the **hand-off phrases** and **service offers** it acts on for accounts new to your chat. Add your own here, or approve what the Learner suggests. Don't forget **Save**. Easy mode shows the spam domains, the keywords and the hand-off and service lists; strong keywords, domain endings, both pattern lists and the conversation beats are in expert mode.
 
 **New entries arrive on their own.** When a new viewer-selling site starts circulating, it is added once to the [spam feed](https://github.com/aaskjer/TwitchSentry/blob/main/Feed/README.md), and within a few hours it shows up in these lists — no new version to import. Each entry arrives exactly once: delete one here and it stays deleted. The feed only ever adds to the plain-text lists; custom patterns and voucher patterns are yours alone. **Receive New Entries** at the top of the page switches it off.
 
-**Share what you found.** *Share With Other Streamers...* on this page, or *Share With Others...* in the ☰ menu, offers the entries in your lists that TwitchSentry does not have yet: nothing the feed already carries, and nothing a version shipped as a default. Each list is headed with what an entry in it does, and *How this works* above the list explains the rest, including why a conversation stage can show up on its own. Tick the ones worth passing on and it opens a GitHub form with them filled in; you press Submit there yourself, and once an entry holds up it reaches everyone else through the feed. The same dialog shares your saved settings as a profile, or a complete translation file. Nothing is sent from the window, and only the entries go along — never a chat message or a name. A single translated text that reads badly is a ticket rather than a share: *Report...* in the ☰ menu, *A translation*.
+**Share what you found.** *Share With Other Streamers...* on this page, or *Share With Others...* in the ☰ menu, offers the entries in your lists that TwitchSentry does not have yet: nothing the feed already carries, and nothing a version shipped as a default. Each list is headed with what an entry in it does, and *How does this work?* above the list explains the rest, including why a conversation stage can show up on its own. Tick the ones worth passing on and it opens a GitHub form with them filled in; you press Submit there yourself, and once an entry holds up it reaches everyone else through the feed. The same dialog shares your saved settings as a profile, or a complete translation file. Nothing is sent from the window, and only the entries go along — never a chat message or a name. A single translated text that reads badly is a ticket rather than a share: *Report...* in the ☰ menu, *A translation*.
 
 A shared profile is too long for the link, so it goes onto your clipboard to paste into the form. If Windows will not hand the clipboard over (it happens in Remote Desktop sessions), the form opens anyway and the dialog shows the profile, with *Copy Again* beside it. Once you submit, the repository checks the profile the way the window checks an import, and if it holds up it is stored on the [`profiles` branch](https://github.com/aaskjer/TwitchSentry/tree/profiles) and the ticket is closed. There is no pull request and nobody has to accept it, so it doubles as a backup: download the file from there and put it into `Settings/Profiles`, on this PC or any other.
 
@@ -583,13 +603,15 @@ A shared profile is too long for the link, so it goes onto your clipboard to pas
 
 Watches what actually got removed and works out which words, phrases and domain endings keep showing up in it, scoring each candidate by how much more often it appears in spam than in ordinary chat. New finds start as suggestions for you to review; they are promoted into the real rule list only once they have built a track record — either because you approve them, or automatically if **Auto Promote Trusted Rules** is on.
 
+**Sensitivity** sets how much evidence that takes, from `Very cautious` (many different accounts, again and again) to `Very eager` (the first signs). `Normal` waits for at least two different accounts and three removed messages. Expert mode shows the seven numbers behind the slider and the rest of the tuning: download caches, caps per run, the clean-chat sample and decay.
+
 Only *content* violations feed it. The fact that somebody typed too fast tells you nothing about which of their words were spam, so behavioural violations contribute none. On top of that sit an **Ignore Terms** list, automatic protection for your own account names, a denylist for major brands, and the clean-chat sample described below.
 
 ## Suggestions
 
 <img width="926" alt="Suggestions" src="docs/screenshots/suggestions.png" />
 
-Everything the Learner has proposed but not applied. Read the **Would hit** column first: that is how many messages from your own clean chat log the rule would have matched. Zero is what you want, and anything above zero is never auto-promoted. **Users** counts how many different people posted it, so one spammer repeating themselves counts once; **Discrim.** is how much more often it shows up in spam than in ordinary chat.
+Everything the Learner has proposed but not applied. Read the **Would hit** column first: that is how many messages from your own clean chat log the rule would have matched. Zero is what you want, and anything above zero is never auto-promoted. **Users** counts how many different people posted it, so one spammer repeating themselves counts once. Expert mode adds the statistics columns, among them **Discrim.**: how much more often it shows up in spam than in ordinary chat.
 
 **Probation** means a candidate is still building a record; **trusted** means it is proven enough to be auto-promoted, if you have turned that on. **Clear File** wipes the pending list and leaves your active rules alone.
 
@@ -837,9 +859,9 @@ A restriction and a monitoring are both lifted with `!tsundo`, from a deck butto
 <img width="926" alt="Permit" src="docs/screenshots/permit.png" />
 
 A time-limited exception for a viewer, so they can post a link without it getting deleted. `!permit @user [seconds]` grants one, `!endpermit @user` ends it, `!endpermit` on its own ends every active permit. Several people can hold one at the same time, each with its own countdown; a permit that is already running is never extended. They are deliberately forgotten on restart.
-**Max Permit Duration Seconds** caps whatever a moderator types, with a hard ceiling of 24 hours.
-A permit can also come from a [deck button](#deck-buttons) or the [OBS dock](#the-obs-dock), which lists the links the Link Filter removed with a **Grant Permit** beside each.
-Viewers can also redeem a permit themselves through Channel Points, if **Allow Self-Permit** is on. **When A Self-Permit Is Redeemed** decides what happens next: **Grant It Right Away**, or **Wait For A Deck Button**, where the request waits in the [OBS dock](#the-obs-dock)'s Permit list (or for a `tsPermit` key) until you let it through or refuse it and the points go back. Chat hears *Self-Permit Waiting* meanwhile. Set that reward up with **Skip Reward Requests Queue** turned **off** — that is what lets TwitchSentry give the points back when a redemption cannot become a permit. A reward that skips the queue is spent the moment it is redeemed, and Twitch will not allow a refund.
+**Max Permit Duration (Seconds)** caps whatever a moderator types, with a hard ceiling of 24 hours.
+A permit can also come from a [deck button](#deck-buttons) or the [OBS dock](#the-obs-dock), whose Recent Actions list the links the Link Filter removed in this stream with a **Grant Permit** beside each; a deck button can end permits early as well.
+Viewers can also redeem a permit themselves through Channel Points, if **Allow Self-Permit** is on. **When A Self-Permit Is Redeemed** decides what happens next: **Grant It Right Away**, or **Wait For A Deck Button**, where the request waits in the [OBS dock](#the-obs-dock)'s Permit list (or for a `tsPermit` key) until you let it through or refuse it and the points go back. Chat hears *Self-Permit Waiting* meanwhile. A request nobody answered gives the points back by itself once the next stream goes live, after 12 hours, or a few minutes after its viewer left the chat. Set that reward up with **Skip Reward Requests Queue** turned **off** — that is what lets TwitchSentry give the points back when a redemption cannot become a permit. A reward that skips the queue is spent the moment it is redeemed, and Twitch will not allow a refund.
 
 ## Check Link
 
@@ -847,7 +869,7 @@ Viewers can also redeem a permit themselves through Channel Points, if **Allow S
 
 
 Two jobs. Anyone can scan a URL on demand with `!checklink <url>`, and the second job scans every link posted in chat automatically, on top of the Link Filter's own rules.
-It uses VirusTotal (required, free key) and, for a second opinion, IPQualityScore if you like. IPQS rates a link from 0 to 100; the default threshold is 75, with a stricter one for domains it also reports as recently registered, because brand-new throwaway domains are a common phishing trick.
+It uses VirusTotal (required, free key) and, for a second opinion, IPQualityScore if you like. IPQS rates a link from 0 to 100; the default threshold is 75, with a stricter one for domains it also reports as recently registered, because brand-new throwaway domains are a common phishing trick. Both thresholds, the scanner limits, the result cache, link defanging and whispered checks are in expert mode.
 
 ## Voting
 
@@ -913,9 +935,9 @@ word to change, so these viewers get the third form instead.
 
 <img width="926" alt="Action Log" src="docs/screenshots/action-log.png" />
 
-Every action involving a viewer this month, filterable by module and by result, with the raw line underneath. This is the page for *what happened*. Each module brings its own columns, and **Details** holds whatever a line says that has no column of its own, such as the changes of a Word Filter sync.
+Every action involving a viewer this month, filterable by module and by result, with the raw line underneath. This is the page for *what happened*. Each module brings its own columns, and **Details** holds whatever a line says that has no column of its own, such as the changes of a Word Filter sync. A removed message has a **Message** column, so you can judge the removal without opening another page.
 
-Each month starts a new `action-log.txt` (and a new `violation-log.txt`). The month before is moved aside in the same `Logs` folder as `action-log-2026-09.txt` and so on, and nothing is deleted. The Home counters still count the older months, and the Spam Learner's History Lines reach back into them, so a new month does not start its memory from nothing.
+Each month starts a new `action-log.txt` (and a new `spam-log.txt`). The month before is moved aside in the same `Logs` folder as `action-log-2026-09.txt` and so on, and nothing is deleted. The Home counters still count the older months, and the Spam Learner's History Lines reach back into them, so a new month does not start its memory from nothing.
 
 ## Status Log
 
@@ -923,17 +945,17 @@ Each month starts a new `action-log.txt` (and a new `violation-log.txt`). The mo
 
 What TwitchSentry has been saying about *itself*, pulled out of the Streamer.bot log: an API key still on its placeholder, a download that failed, an action Twitch refused. None of that is announced in chat, so this is the page to open when something quietly did not happen.
 
-## Violation Log
+## Spam Log
 
-<img width="926" alt="Violation Log" src="docs/screenshots/violation-log.png" />
+<img width="926" alt="Spam Log" src="docs/screenshots/spam-log.png" />
 
-The **Violation Log** is every message that was acted on this month, exactly as it was posted — the page to open when you disagree with a removal. Earlier months are in `violation-log-2026-09.txt` and so on, beside it in the `Logs` folder.
+The **Spam Log** is every message the Spam Filter and the Link Filter removed this month, exactly as it was posted. The Spam Learner learns from it, and it is the page to open when you disagree with one of those removals. Earlier months are in `spam-log-2026-09.txt` and so on, beside it in the `Logs` folder.
 
 ## Clean Chat Log
 
 <img width="926" alt="Clean Chat Log" src="docs/screenshots/clean-chat-log.png" />
 
-The **Clean Chat Log** is the opposite of the violation log: a sample of ordinary chat that was deliberately left alone, roughly one message in ten. The Spam Learner measures its candidates against it, which is what stops an everyday word from becoming a rule. Both pages have a search box and a per-account filter, and both show the full line under the list, because chat messages are usually wider than the row.
+The **Clean Chat Log** is the opposite of the Spam Log: a sample of ordinary chat that was deliberately left alone, roughly one message in ten. The Spam Learner measures its candidates against it, which is what stops an everyday word from becoming a rule. Both pages have a search box and a per-account filter, and both show the full line under the list, because chat messages are usually wider than the row.
 
 ---
 
@@ -943,9 +965,13 @@ The **Clean Chat Log** is the opposite of the violation log: a sample of ordinar
 
 <img width="926" alt="Manual" src="docs/screenshots/manual.png" />
 
-The longer explanation behind every card with a **?** in its corner, page by page in the order of the sidebar, and a list of every [chat command](#chat-commands) under *General Settings*. A **?** opens the Manual at its card's section and lights it up for a moment; **← Back to …** at the top takes you back to the page you came from, scrolled to where you left it. Opened from the sidebar or from Home, the Manual has no back button.
+Five tabs. **Getting Started** has five first steps, each with a link to its page, and what to do when something goes wrong. **Pages** holds the longer explanation behind every card with a **?** in its corner, page by page in the order of the sidebar. **Terms** explains the words the window uses, from *Score* to *Shield Mode*, A to Z with a filter, and links each one to the page and card it belongs to. **Commands** lists every [chat command](#chat-commands). **Deck Buttons** lists every argument a [deck key](#deck-buttons) or the OBS dock can send, each with the values it takes: the modules, the profiles (yours as well), the exemptions, the Always Allowed switches, where alerts go and the placeholders for a key's title.
 
-The cards themselves stay short: an explanation of a sentence or two lives only in the Manual, a longer one keeps a short version under the card's *How this works*. Installing TwitchSentry, the deck buttons and where the files live are covered only here, in the online manual, which the Manual page links to.
+<img width="926" alt="Manual, Terms tab" src="docs/screenshots/manual-terms.png" />
+
+A **?** opens the Manual at its card's section on the Pages tab and lights it up for a moment; **← Back to …** at the top takes you back to the page you came from, scrolled to where you left it. Opened from the sidebar or from Home, the Manual has no back button.
+
+The cards themselves stay short: an explanation of a sentence or two lives only in the Manual, a longer one keeps a short version under the card's *How does this work?*. Installing TwitchSentry and where the files live are covered only here, in the online manual, which the Manual page links to.
 
 ## Backup & Restore
 
@@ -989,9 +1015,14 @@ A file that is simply not there yet, as on a fresh install, is not damaged and n
 A Stream Deck key, a Streamer.bot Deck button or the [OBS dock](#the-obs-dock) can do what a streamer wants
 mid-stream without opening the settings window: switch profiles, switch a module, an exemption or an Always
 Allowed link, change what AutoMod does with held messages, start or end test mode, arm Raid Protection,
-take the last action back, or switch LurkBot Filter between reporting and banning. The action behind them is **`[TS] - Deck`**.
+take the last action back, grant or end link permits, or switch LurkBot Filter between reporting and banning. The action behind them is **`[TS] - Deck`**.
 It works on what the other actions share — `configs.json`, the Profiles folder and Streamer.bot's globals —
 so it does not matter whether the settings window is open.
+
+The settings window lists the same on the [Manual page](#manual), tab **Deck Buttons**: every argument with the
+values it takes, your saved profiles included.
+
+<img width="926" alt="Manual, Deck Buttons tab" src="docs/screenshots/manual-deck-buttons.png" />
 
 ## Setting up a key
 
@@ -1001,19 +1032,21 @@ A key runs `[TS] - Deck` and says in an argument what it wants:
 |---|---|---|
 | `tsPanic` | `toggle` | The panic button: switches to **Under Attack** and arms Raid Protection, and pressed again puts back every setting the way it was before. `on` and `off` work too |
 | `tsProfile` | `Under Attack` | Switches to that profile: `Relaxed`, `Balanced`, `Strict`, `Under Attack`, `Just Chatting`, or the name of one of your saved profiles |
-| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `Hate Raid Protection`, `Follow Wave Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner`, `Discord` |
+| `tsModule` | `Voting off` | Switches a module on or off: `Raid Protection`, `Hate Raid Protection`, `Follow Wave Protection`, `LurkBot Filter`, `Word Filter`, `Offline Protection`, `AutoMod`, `Twitch Warn`, `Permit`, `Check Link`, `Voting`, `Spam Learner` |
+| `tsNotify` | `Stoat on` | Switches a tab of the Notifications page on or off, by its main switch: `Discord`, `Stoat`, `GameVox`, `ntfy`, `Windows` |
 | `tsExempt` | `VIPs on` | Whether `Followers`, `Subscribers` or `VIPs` are left alone by the filters — *Exclude Followers*, *Exclude Subscribers* and *Exclude VIPs* on General Settings |
-| `tsAllow` | `YouTube Videos on` | One of the twelve *Always Allowed* switches on General Settings: `Your Twitch Clips`, `Your Twitch Channel Page`, `Your YouTube Channel Page`, `Your Kick Clips`, `Your Kick VODs`, `Twitch Clips`, `Twitch VOD Links`, `YouTube Videos`, `YouTube Shorts`, `YouTube Live Streams`, `YouTube Clips`, `Kick VOD Links` |
+| `tsAllow` | `All YouTube Videos on` | One of the twelve *Always Allowed* switches of the Link Filter: `Your Twitch Clips`, `Your Twitch Channel Page`, `Your YouTube Channel Page`, `Your Kick Clips`, `Your Kick VODs` (*Only Your Channel*), `All Twitch Clips`, `All Twitch VOD Links`, `All YouTube Videos`, `All YouTube Shorts`, `All YouTube Live Streams`, `All YouTube Clips`, `All Kick VOD Links` (*Any Channel*: every channel's links of that kind) |
 | `tsAutoMod` | `allow` | What AutoMod does with held messages (*AutoMod Action*): `deny`, `allow`, or `toggle` |
 | `tsLurkBot` | `ban` | What LurkBot Filter does with the bots it finds (*Action On A LurkBot*): `report`, `ban`, or `toggle` |
-| `tsTestMode` | `on` | Test mode `on` for the *Test Duration* on General Settings, `off`, or `toggle` |
+| `tsTestMode` | `on` | Test mode `on` for the *Test Duration* under ☰ → Options, `off`, or `toggle` |
 | `tsRaid` | `arm` | Arms Raid Protection now, without a raid, or `disarm` ends it |
 | `tsHateRaid` | `on` | Locks the chat down as Hate Raid Protection does in a hate raid, `off` lifts the lockdown, `toggle` switches between the two |
 | `tsFollowWave` | `on` | Arms Follow Wave Protection as a follow wave does, `off` disarms it, `toggle` switches between the two |
 | `tsUndo` | `last` | Takes back the last timeout, ban, restriction, monitoring or block, as `!tsundo` does; `@name` takes back that viewer's last one |
 | `tsForget` | `@name` | Takes the last entry, or that viewer's last one, off the undo trail without asking Twitch: for something a moderator already lifted on Twitch itself |
-| `tsPermit` | `last` | Grants a link permit the way `!permit` does: `last` to the newest Channel Points request waiting for a button, else to the viewer whose link the Link Filter removed most recently, `@name` to anyone. A number after it sets the seconds (`@name 120`), within *Max Permit Duration Seconds* |
+| `tsPermit` | `last` | Grants a link permit the way `!permit` does: `last` to the newest Channel Points request waiting for a button, else to the viewer whose link the Link Filter removed most recently in this stream, `@name` to anyone. A number after it sets the seconds (`@name 120`), within *Max Permit Duration (Seconds)* |
 | `tsPermitDeny` | `last` | Refuses the newest Channel Points request waiting for a button, or `@name`'s, and gives the points back |
+| `tsPermitRevoke` | `all` | Ends link permits early, as `!endpermit` does: `all` every running one, `last` the newest, `@name` that viewer's |
 | `tsPermitForget` | `last` | Takes the newest entry, or that viewer's, off the list of removed links without granting anything |
 | `tsState` | `now` | Changes nothing. It only writes down again where everything stands, for the [OBS dock](#the-obs-dock) or for a key that [shows the profile](#a-key-that-shows-what-it-switched) |
 | `tsRefresh` | `now` | Changes nothing. It draws every key again that shows a title, a colour or a side, where that changed |
@@ -1067,7 +1100,8 @@ A Stream Deck key can show the state its press left behind instead of a fixed la
   or the raid window ends) and `{last}` (the viewer the next undo sets free). `\n` starts a new line, as in
   `{name}\n{state:ON|OFF}`.
 
-**`tsColor`** paints the key as well: `auto` is green for on, red for an armed Raid Protection, amber for
+**`tsColor`** paints the key as well: `auto` is green for on (a `tsPermit` or `tsPermitDeny` key while a
+viewer asks for a permit, a `tsPermitRevoke` key while a permit runs), red for an armed Raid Protection, amber for
 test mode and dark grey for off; `#1E7B34|#2B2B2B` gives colours of your own for on and off, and one colour
 paints it the same either way. It replaces the key's background, so leave it out on a key with an icon of
 its own.
@@ -1084,11 +1118,12 @@ pure status key, give it `tsState` and `tsTitle` only.
 
 ## The OBS dock
 
-<img width="462" height="658" alt="grafik" src="https://github.com/user-attachments/assets/ab1f7797-d43f-4758-8fde-02c4a8cd15aa" />
+<img width="462" alt="The OBS dock" src="docs/screenshots/obs-dock.png" />
 
-The same buttons inside OBS. **☰ → Set Up OBS Dock** in the settings window writes the dock's page into
-the TwitchSentry folder (`Dock\TwitchSentry-Dock.html`) and puts its address on the clipboard. In OBS, open
-**Docks → Custom Browser Docks**, give the dock a name and paste the address as its URL.
+The same buttons inside OBS. **Set Up OBS Dock**, under ☰ → *Options...* → *OBS Dock* in the settings window,
+writes the dock's page into the TwitchSentry folder (`Dock\TwitchSentry-Dock.html`) and puts its address on the
+clipboard. In OBS, open **Docks → Custom Browser Docks**, enter *TwitchSentry* as the dock name, paste the address
+as its URL and press Apply. OBS takes a dock only from that menu, so this last step is always done by hand.
 
 The dock talks to Streamer.bot through its **WebSocket Server** (*Servers/Clients → WebSocket Server*),
 which has to be running: switch on *Auto Start* there. The dock connects to `ws://127.0.0.1:8080/`,
@@ -1099,23 +1134,36 @@ runs, `[TS] - Deck` unless yours has another name.
 - **Profile** at the top: the one running, marked when a setting was changed since.
 - **Under Attack + Arm Raid Protection**: the [panic button](#setting-up-a-key). While a panic is on it
   turns red and reads **End Panic**, with the profile it goes back to beneath.
-- **Six buttons of your own**: the four built-in profiles besides Under Attack, then **Test Mode** and
-  **Raid Protection**, until you change them. ✎ at the top sets each one to a profile (built-in or saved),
-  a module, an exemption, an Always Allowed switch, **AutoMod Action**, **LurkBot Action**, **Hate Raid Lockdown**, **Test Mode**, **Raid Protection**,
-  **Follow Wave Protection**, **Undo** or **Grant Permit**, with a label and a colour of your own if you like. The profile running, and a switch that is on,
-  are lit; Test Mode, Raid Protection and Follow Wave Protection show the time they have left. The dock keeps them in OBS's own
+- **Up to 24 buttons of your own**: six until you change the number under ✎ → **Buttons Shown**, at first the
+  four built-in profiles besides Under Attack, then **Test Mode** and **Raid Protection**. ✎ at the top sets each
+  one to **Test Mode**, the **Panic Button**, **Undo**, a profile (built-in or saved), a module's switch or one of
+  its functions, a Notifications tab, an exemption or an Always Allowed switch, with a label and a colour of your
+  own if you like. In the list each module's main switch is a bold heading marked ⏻, in the colour of its page in
+  the settings window, with its functions indented beneath it: **Arm** (Raid Protection, Follow Wave Protection),
+  **Lockdown** (Hate Raid Protection), **Action** (LurkBot Filter, AutoMod), and under Permit **Grant**, **Refuse
+  Request** and **Revoke All**; the button itself takes the full name. Each entry says on the right what a press
+  does, and the search field at the top narrows the list as you type. The profile running, and a switch that is
+  on, are lit; Test Mode, Raid Protection and Follow Wave Protection show the time they have left; **Grant
+  Permit** turns green while a viewer asks for a permit through Channel Points. The dock keeps them in OBS's own
   browser storage, so each dock has its own.
+
+  <img width="462" alt="The OBS dock's button list" src="docs/screenshots/obs-dock-buttons.png" />
 - **Modules** (with **AutoMod Action**, Deny or Allow, **LurkBot Action**, Report Only or Ban, and **Hate Raid Lockdown**, each on a
-  rail under its module and faded while that module is off), **Exemptions**, **Always Allowed** and **Recent
-  Actions** fold away with a click on their heading, and the dock remembers which are folded. Every switch
-  shows its state, and a click flips it; Recent Actions are the newest five entries on the undo trail, each
-  with an **Undo** of its own and a **✕** that takes it off the list without asking Twitch. An entry
-  drops off by itself when a moderator unbans that viewer or lifts the timeout on Twitch.
-- **Permit**: the link permits running now, with the time they have left, then the Channel Points requests
-  waiting for a button (**Grant Permit** lets one through, **✕** refuses it and gives the points back), then the newest five
-  links the Link Filter removed from viewers without one, each with **Grant Permit** and a **✕** that takes it
-  off the list. Grant Permit runs the Permit action, so chat, Discord and the Action Log hear of it as they do of
-  `!permit`, for the duration set on the Permit page; the viewer's removed links leave the list with it.
+  rail in its page's colour under its module and faded while that module is off), **Notifications** (the main
+  switch of each tab: Discord, Stoat, GameVox, ntfy and Windows), **Exemptions**, **Always Allowed**, **Recent
+  Actions** and **Permit** fold away with a click on their heading, and the dock remembers which are folded.
+  Every switch shows its state, and a click flips it. Always Allowed names its switches *Your …* for links of
+  your own channel and *All …* for that kind of link from every channel.
+- **Recent Actions**: the newest eight things TwitchSentry took from a viewer. A timeout, ban, restriction,
+  monitoring or block comes with an **Undo** of its own; a link the Link Filter removed in this stream comes
+  with **Grant Permit**, which lets that viewer post it again. Each has a **✕** that takes it off the list
+  without asking Twitch. An entry drops off by itself when a moderator unbans that viewer or lifts the timeout
+  on Twitch, and a removed link when its viewer gets a permit or leaves the chat.
+- **Permit**: the link permits running now, with the time they have left and a **✕** that revokes one, then
+  this stream's Channel Points requests waiting for a button (**Grant Permit** lets one through, **✕** refuses
+  it and gives the points back). Grant Permit runs the Permit action, so chat, Discord and the Action Log hear
+  of it as they do of `!permit`, for the duration set on the Permit page; the viewer's removed links leave the
+  list with it. What came in before the stream went live belongs to an earlier stream and is no longer shown.
 - What a press did, for a moment at the bottom edge, from a Stream Deck key or a Streamer.bot Deck button
   as well.
 
@@ -1124,7 +1172,7 @@ nothing more, and the log and the notifications say the same. It shows what the 
 every press; a Save in the settings window, a raid that arms Raid Protection and test mode started from the
 ☰ menu reach it by themselves.
 
-The settings window writes the page again whenever it opens, so it keeps up with TwitchSentry's version and
+Once it is set up, the settings window writes the page again whenever it opens, so it keeps up with TwitchSentry's version and
 with the window's language; OBS shows the new one the next time it loads the dock. The page is an ordinary
 web page, and opened in a browser on the same PC it works the same way.
 
@@ -1135,13 +1183,13 @@ web page, and opened in a browser on the same PC it works the same way.
   either. The English name always works. The name the window shows in your language works too, but only
   while the window stays in that language, so the English one is the safer label for a key: the Profiles
   dialog lists them under *Switch From A Deck*, with your language's name beside each.
-- **Modules and exemptions** are the master switch at the top of a module's page and the three exemptions
-  on General Settings, written the same way the window writes them. The Link Filter, Spam Scoring and the
+- **Modules, Notifications and exemptions** are the master switch at the top of a module's page or of a tab on
+  the Notifications page, and the three exemptions on General Settings, written the same way the window writes them. The Link Filter, Spam Scoring and the
   Message Filter have no switch, by design, so a key cannot switch them off either.
 - **Always Allowed** and **AutoMod Action** are the same switches as on General Settings and the AutoMod
   page. AutoMod's answer can be changed while the AutoMod module is off; it applies once it is on.
 - **LurkBot Action** is *Action On A LurkBot* on the LurkBot Filter page, and works the same way.
-- **Test mode** is the same as the one in the ☰ menu: it ends by itself when its time is up.
+- **Test mode** is the same as the one in the ☰ menu: it runs for the *Test Duration* under ☰ → Options and ends by itself when its time is up.
 - **Arming Raid Protection** does what an incoming raid does: the raid window, plus the chat modes and
   Shield Mode where *As Soon As A Raid Arrives* and *Shield Mode On Raid* are on. It is for a wave of accounts
   that never came as a raid, so there is no raider to trust and no raid size to measure, and *Trusted
@@ -1211,7 +1259,7 @@ Moderator-only unless noted. TwitchSentry recognises each command by its Streame
 
 Both are refreshed from GitHub in the background, and the window opens on the copy you already have if GitHub is unreachable. When a chat language is updated, the messages TwitchSentry wrote follow it; yours stay as they are.
 
-Writing a translation is a matter of copying `Language/en.json` and replacing the values — each key is the exact English string from the window. A chat language works the same way from `Language/Chat/en.json`, whose keys are the English messages. Keep any `{user}`, `{count}` or `{duration}` placeholders spelled the same way; a `{pronoun:he|she|they}` takes the words of your language. Save it under a code that is not published and it will never be overwritten. To bring it to everyone, **Share With Others...** in the ☰ menu → *A complete translation file*, with *The settings window* or *Chat messages*: for a language TwitchSentry does not have yet, or to bring an existing one up to date. One text that reads badly is quicker as **Report...** → *A translation*, where *Where does the text show?* picks a chat message instead of a window text.
+Writing a translation is a matter of copying `Language/en.json` and replacing the values — each key is the exact English string from the window. The line `"__dateFormat"` at the top sets how the window writes dates in that language, `dd.MM.yyyy` in German for example: `/` and `:` stay as written, month names (`MMMM`) come in the language, and times keep their 24-hour form. Without it the window uses the language's usual date. A chat language works the same way from `Language/Chat/en.json`, whose keys are the English messages. Keep any `{user}`, `{count}` or `{duration}` placeholders spelled the same way; a `{pronoun:he|she|they}` takes the words of your language. Save it under a code that is not published and it will never be overwritten. To bring it to everyone, **Share With Others...** in the ☰ menu → *A complete translation file*, with *The settings window* or *Chat messages*: for a language TwitchSentry does not have yet, or to bring an existing one up to date. One text that reads badly is quicker as **Report...** → *A translation*, where *Where does the text show?* picks a chat message instead of a window text.
 
 ---
 
@@ -1230,8 +1278,8 @@ TwitchSentry/Machine Learning/spam-suggestions.json  ← the Learner's pending s
 TwitchSentry/Machine Learning/spam-feed-state.json   ← which spam feed entries were already handed over
 TwitchSentry/Logs/action-log.txt                     ← this month's moderation action history
 TwitchSentry/Logs/action-log-<yyyy-MM>.txt           ← earlier months, one file each
-TwitchSentry/Logs/violation-log.txt                  ← this month's raw text the Learner mines from
-TwitchSentry/Logs/violation-log-<yyyy-MM>.txt        ← earlier months, one file each
+TwitchSentry/Logs/spam-log.txt                       ← this month's raw text the Learner mines from
+TwitchSentry/Logs/spam-log-<yyyy-MM>.txt             ← earlier months, one file each
 TwitchSentry/Logs/clean-log.txt                      ← sampled normal chat
 TwitchSentry/Cache/stopwords.txt                     ← downloaded common-word list
 TwitchSentry/Cache/tld_cache.txt                     ← downloaded valid domain-ending list

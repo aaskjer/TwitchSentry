@@ -69,7 +69,7 @@ TwitchSentry covers all of these, and it works through AutoMod's queue for you, 
 
 ## When something goes wrong
 
-*Ooops, the bot banned my best friend?!?* — `!tsundo` takes back the last action, whichever module took it, and `!tsundo @name` reaches that viewer's most recent one. Every decision is also written down and readable in the window itself. The **Action Log** is what happened, the **Violation Log** is the message exactly as it was posted, the **Clean Chat Log** is the ordinary chat that was deliberately left alone, and the **Status Log** is where TwitchSentry reports on itself: errors, a download that failed, an action Twitch refused. [More on the log pages →](Manual.md#results)
+*Ooops, the bot banned my best friend?!?* — `!tsundo` takes back the last action, whichever module took it, and `!tsundo @name` reaches that viewer's most recent one. Every decision is also written down and readable in the window itself. The **Action Log** is what happened and to which message, the **Spam Log** is what the Spam Filter and the Link Filter removed, exactly as it was posted, the **Clean Chat Log** is the ordinary chat that was deliberately left alone, and the **Status Log** is where TwitchSentry reports on itself: errors, a download that failed, an action Twitch refused. [More on the log pages →](Manual.md#results)
 
 Found a bug or have an idea? **Report...** in the ☰ menu opens a pre-filled GitHub issue, your setup included.
 
