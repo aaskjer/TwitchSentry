@@ -31,8 +31,8 @@ not counted for it again.
   retracted or expired). A reader at `since` or later can catch up from this file alone.
 - `removed.json`: ids removed on request in the last 365 days.
 
-Partners, affiliates, Twitch staff and well-known service bots are never listed. Neither the reporting
-channels nor any chat message are published.
+Partners, affiliates, Twitch staff, well-known service bots and the maintainer's test account are never
+listed. Neither the reporting channels nor any chat message are published.
 
 ## The second witness
 

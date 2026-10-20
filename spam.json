@@ -1,19 +1,8 @@
 {
  "schema": 1,
- "version": 6,
- "updated": "2026-10-19T16:14:39Z",
+ "version": 7,
+ "updated": "2026-10-20T22:38:39Z",
  "category": "spam",
  "banFrom": 2,
- "accounts": [
-  {
-   "id": "1208229893",
-   "login": "cggbot___",
-   "reports": 1,
-   "first": "2026-10-17",
-   "last": "2026-10-17",
-   "reasons": [
-    "other"
-   ]
-  }
- ]
+ "accounts": []
 }

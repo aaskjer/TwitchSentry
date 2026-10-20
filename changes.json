@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 6,
+ "version": 7,
  "since": 0,
  "changes": [
   {
@@ -56,6 +56,14 @@
    "id": "1076699867",
    "login": "ctyhu56",
    "reports": 1
+  },
+  {
+   "v": 7,
+   "at": "2026-10-20T22:38:39Z",
+   "op": "remove",
+   "category": "spam",
+   "id": "1208229893",
+   "why": "protected"
   }
  ]
 }
