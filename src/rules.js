@@ -58,6 +58,9 @@ export const SERVICE_BOTS = new Set([
   "songlistbot", "deepbot", "phantombot", "coebot", "vivbot", "botisimo", "stream_elements",
 ]);
 
+// Never listed whatever is reported, by id so a rename cannot slip past: the maintainer's test account (cggbot___).
+export const EXEMPT_IDS = new Set(["1208229893"]);
+
 const INSTALL_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const VERSION_RE = /^v\d{1,3}\.\d{1,3}\.\d{1,3}(-[a-z]{1,10}\.\d{1,3})?$/;
 const ID_RE = /^[1-9][0-9]{0,19}$/;
@@ -98,6 +101,7 @@ export function parseReport(body) {
     if (!CATEGORIES.includes(r.category)) return ignored.push({ i, why: "category" });
     const id = typeof r.id === "string" ? r.id.trim() : "";
     if (!ID_RE.test(id)) return ignored.push({ i, why: "id" });
+    if (EXEMPT_IDS.has(id)) return ignored.push({ i, why: "protected" });
     const login = normaliseLogin(r.login);
     if (!login) return ignored.push({ i, why: "login" });
     if (SERVICE_BOTS.has(login)) return ignored.push({ i, why: "service_bot" });
@@ -206,6 +210,7 @@ export function constantTimeEqual(a, b) {
 // What Twitch says about an account decides whether it may be listed at all.
 export function verdictOf(user) {
   if (!user) return "gone";
+  if (EXEMPT_IDS.has(String(user.id))) return "protected";
   if (user.type || user.broadcaster_type) return "protected";
   if (SERVICE_BOTS.has(String(user.login).toLowerCase())) return "protected";
   return "ok";
@@ -276,7 +281,7 @@ export function diff(previous, desired, whyGone) {
   return events;
 }
 
-// removed: by request; gone: Twitch no longer has it; protected: partner, affiliate, staff or a service bot;
+// removed: by request; gone: Twitch no longer has it; protected: partner, affiliate, staff, a service bot or exempt;
 // dropped: its reports were retracted or expired. A removal concerns the row when the row's reports predate it,
 // since a returning account only counts reports made after its removal.
 export function whyGoneOf(account, row) {
@@ -402,7 +407,7 @@ not counted for it again.
   retracted or expired). A reader at \`since\` or later can catch up from this file alone.
 - \`removed.json\`: ids removed on request in the last ${LIMITS.keepDays} days.
 
-Partners, affiliates, Twitch staff and well-known service bots are never listed. Neither the reporting
-channels nor any chat message are published.
+Partners, affiliates, Twitch staff, well-known service bots and the maintainer's test account are never
+listed. Neither the reporting channels nor any chat message are published.
 ${witnessSection(external)}`;
 }

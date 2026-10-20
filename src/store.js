@@ -141,9 +141,10 @@ export async function removeAccounts(db, accounts, { now, issue, by }) {
   ]);
 }
 
-export async function accountsToCheck(db, staleBefore, limit) {
-  const { results } = await db.prepare("SELECT id, login, status FROM accounts WHERE status = 'pending' OR (status IN ('ok', 'gone') AND checked_at < ?1) ORDER BY status = 'pending' DESC, checked_at LIMIT ?2")
-    .bind(staleBefore, limit).all();
+// An exempt account still marked ok is due at once, so it leaves the lists on the next pass.
+export async function accountsToCheck(db, staleBefore, limit, exempt = []) {
+  const { results } = await db.prepare(`SELECT id, login, status FROM accounts WHERE status = 'pending' OR (status IN ('ok', 'gone') AND checked_at < ?1) OR (status = 'ok' AND id IN (SELECT value FROM json_each(?3))) ORDER BY status = 'pending' DESC, checked_at LIMIT ?2`)
+    .bind(staleBefore, limit, JSON.stringify(exempt)).all();
   return results;
 }
 

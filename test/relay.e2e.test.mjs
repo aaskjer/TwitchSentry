@@ -277,6 +277,16 @@ test("partners, affiliates and service bots never get on", async () => {
   assert.deepEqual(again.body.ignored, [{ i: 0, why: "protected" }]);
 });
 
+test("the maintainer's test account is refused by its id, under any login", async () => {
+  const r = await report("A", [
+    { category: "spam", id: "1208229893", login: "cggbot___", reason: "keyword" },
+    { category: "lurkbot", id: "1208229893", login: "a_new_name", reason: "known_day" },
+  ], { now: T0 + 950 });
+  assert.equal(r.body.accepted, 0, r.text);
+  assert.deepEqual(r.body.ignored, [{ i: 0, why: "protected" }, { i: 1, why: "protected" }]);
+  assert.equal((await call("GET", "/v1/health")).body.pendingChecks, 0);
+});
+
 test("bad requests are refused", async () => {
   assert.equal((await call("POST", "/v1/report", "{}", { headers: { "Content-Type": "text/plain" } })).status, 415);
   assert.equal((await call("POST", "/v1/report", "{nope")).status, 400);

@@ -1,6 +1,6 @@
 // One publish pass: check accounts with Twitch, turn touched accounts into events, write the branch.
 
-import { LIMITS, CATEGORIES, diff, isPublishable, keyOf, whyGoneOf, verdictOf, buildFiles } from "./rules.js";
+import { LIMITS, CATEGORIES, EXEMPT_IDS, diff, isPublishable, keyOf, whyGoneOf, verdictOf, buildFiles } from "./rules.js";
 import * as store from "./store.js";
 import { getUsers, twitchConfigured } from "./twitch.js";
 import { commitFiles } from "./github.js";
@@ -32,7 +32,7 @@ async function lookUp(env, db, ids, budget) {
 
 export async function verifyAccounts(env, db, now) {
   if (!twitchConfigured(env)) return { checked: 0, error: "Twitch is not configured" };
-  const candidates = await store.accountsToCheck(db, now - LIMITS.recheckDays * 86400, 100);
+  const candidates = await store.accountsToCheck(db, now - LIMITS.recheckDays * 86400, 100, [...EXEMPT_IDS]);
   if (candidates.length === 0) return { checked: 0 };
   let found;
   try {

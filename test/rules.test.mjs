@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   parseReport, parseRetract, parseRemoval, networkOf, hashKey, constantTimeEqual, verdictOf,
   isPublishable, diff, whyGoneOf, buildFiles, compareIds, normaliseLogin, LIMITS,
-  parseExternalList, nextExternal, withWitness, EXTERNAL_LISTS, EXTERNAL_REASON,
+  parseExternalList, nextExternal, withWitness, EXTERNAL_LISTS, EXTERNAL_REASON, EXEMPT_IDS,
 } from "../src/rules.js";
 
 const INSTALL = "3f2b8c1e-9d4a-4b7e-8a1c-2e5f6a7b8c9d";
@@ -107,6 +107,19 @@ test("Twitch decides who may be listed", () => {
   assert.equal(verdictOf({ login: "a", type: "", broadcaster_type: "partner" }), "protected");
   assert.equal(verdictOf({ login: "a", type: "staff", broadcaster_type: "" }), "protected");
   assert.equal(verdictOf({ login: "StreamElements", type: "", broadcaster_type: "" }), "protected");
+  assert.equal(verdictOf({ id: "1208229893", login: "renamed_later", type: "", broadcaster_type: "" }), "protected");
+  assert.equal(verdictOf({ id: "1001", login: "cggbot___", type: "", broadcaster_type: "" }), "ok", "by id: whoever takes the login later is not exempt");
+});
+
+test("the maintainer's test account never gets in through a report", () => {
+  assert.deepEqual([...EXEMPT_IDS], ["1208229893"]);
+  const r = parseReport({ ...base, reports: [
+    { category: "spam", id: "1208229893", login: "cggbot___", reason: "keyword" },
+    { category: "botwave", id: "1208229893", login: "renamed_later", reason: "follow_wave" },
+    { category: "spam", id: "1001", login: "cggbot___", reason: "keyword" },
+  ] });
+  assert.deepEqual(r.items.map(i => i.id), ["1001"]);
+  assert.deepEqual(r.ignored.map(x => [x.i, x.why]), [[0, "protected"], [1, "protected"]]);
 });
 
 test("one reporter lists an account, a removed one needs three fresh ones", () => {
