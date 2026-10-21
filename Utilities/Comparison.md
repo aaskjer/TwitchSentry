@@ -26,7 +26,7 @@ Here it stands next to eleven other moderation tools that streamers commonly use
 | **Mix It Up** | all-round bot as a desktop app | locally (Windows) | the Mix It Up app | Twitch, YouTube, Kick and more | free |
 | **PhantomBot** | open-source bot with a web panel | self-hosted | a PC or server that keeps it running; Java comes bundled on most systems, Docker images exist | Twitch | free |
 
-> ¹ **Streamer.bot is built for Windows.** It may also run on Linux or Mac, but neither is officially supported.
+> ¹ **Streamer.bot is built for Windows.** It may also run with Linux or Mac, but neither are officially supported.
 
 ---
 
