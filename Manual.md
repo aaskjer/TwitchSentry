@@ -752,7 +752,7 @@ the window over; `off` ends it.
 <img width="926" alt="LurkBot Filter" src="docs/screenshots/lurkbot-filter.png" />
 
 **Off by default, and on Report Only when switched on.** Bot networks keep accounts sitting in thousands
-of channels without ever writing, most likely to log the chat. They are made in batches: the same day, the
+of channels without ever writing, most likely to log the chat for keys or to build up history and aging. They are made in batches: the same day, the
 same short name pattern, no picture, no bio.
 
 - It runs as its own action, **`LurkBotFilter`**, on the trigger *Twitch → General → Present Viewers*.
