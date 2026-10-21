@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 7,
- "updated": "2026-10-20T22:38:39Z",
+ "version": 8,
+ "updated": "2026-10-21T16:24:39Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -21,6 +21,16 @@
    "reports": 1,
    "first": "2026-10-19",
    "last": "2026-10-19",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076702688",
+   "login": "fdado75",
+   "reports": 1,
+   "first": "2026-10-21",
+   "last": "2026-10-21",
    "reasons": [
     "known_day"
    ]

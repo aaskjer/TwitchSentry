@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 7,
+ "version": 8,
  "since": 0,
  "changes": [
   {
@@ -64,6 +64,15 @@
    "category": "spam",
    "id": "1208229893",
    "why": "protected"
+  },
+  {
+   "v": 8,
+   "at": "2026-10-21T16:24:39Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076702688",
+   "login": "fdado75",
+   "reports": 1
   }
  ]
 }
