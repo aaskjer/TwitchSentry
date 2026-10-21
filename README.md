@@ -47,7 +47,7 @@ Spam ruins the vibe. One minute you are reacting to a hilarious donation, the ne
 | **[Permit](Manual.md#permit)** | A time-limited link exception for one viewer, granted by you, a moderator, or a Channel Points redeem. |
 | **[Check Link](Manual.md#check-link)** | Scans a URL with VirusTotal and IPQualityScore, either automatically or on `!checklink`. |
 | **[Voting](Manual.md#voting)** | Lets chat vote someone out. Roles above VIP can never be voted out. |
-| **[Notifications](Manual.md#notifications)** | Posts what happened to a Discord webhook and, if you like, shows it as a Windows notification too, along with new TwitchSentry releases and what your deck buttons did. |
+| **[Notifications](Manual.md#notifications)** | Posts what happened to a Discord, Stoat or GameVox webhook and, if you like, shows it with ntfy on your phone or as a Windows notification too, along with new TwitchSentry releases and what your deck buttons did. |
 | **[Offline Protection](Manual.md#offline-protection)** | Puts chat into the modes you pick when the stream ends and lifts them when you go live. |
 | **[Deck Buttons](Manual.md#deck-buttons)** | Switches profiles, modules, exemptions, Always Allowed links, AutoMod's answer and test mode, arms Raid Protection or takes the last action back, from a Stream Deck key, a Streamer.bot Deck button or the [OBS dock](Manual.md#the-obs-dock). A key can show what it switched. |
 
