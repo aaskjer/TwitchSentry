@@ -104,4 +104,4 @@ The settings window ships in English. German, Spanish, French and Brazilian Port
 - [Reward checker](https://ayrtonalexis.com/reward_checker/reward_check.html) by ayrtonalexis: finds a Channel Points reward's ID for Permit.
 
 ## Socials
-[aaskjer on Twitch](https://twitch.tv/aaskjer) · [TwitchSentry on the Streamer.bot Discord](https://discord.com/channels/834650675224248362/1512133095246270616)
+[aaskjer on Twitch](https://twitch.tv/aaskjer) · [aaskjer.github.io](https://aaskjer.github.io/) · [TwitchSentry on the Streamer.bot Discord](https://discord.com/channels/834650675224248362/1512133095246270616)
