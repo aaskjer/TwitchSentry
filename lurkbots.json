@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 10,
- "updated": "2026-10-23T16:02:40Z",
+ "version": 11,
+ "updated": "2026-10-23T17:12:38Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -81,6 +81,16 @@
    "reports": 1,
    "first": "2026-10-17",
    "last": "2026-10-17",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076701169",
+   "login": "yfekr43",
+   "reports": 1,
+   "first": "2026-10-23",
+   "last": "2026-10-23",
    "reasons": [
     "known_day"
    ]
