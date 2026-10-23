@@ -690,11 +690,14 @@ def fetch_attachment(url):
         return response.read()
 
 
+def english_keys(folder):
+    english_file = read_json(os.path.join(folder, "en.json"), {})
+    return set(k for k in english_file if not k.startswith("__")) if isinstance(english_file, dict) else set()
+
+
 def build_language(issue, values, root):
     result = Result("language")
-    chat = (values.get("translates") or "").strip() == CHAT_FILE
-    folder = language_folder(root, chat)
-    published = "Language/Chat/en.json" if chat else "Language/en.json"
+    said_chat = (values.get("translates") or "").strip() == CHAT_FILE
     if not is_checked(values.get("privacy")):
         result.problems.append("The box saying this is your own translation of TwitchSentry's English text, "
                                "not unread machine output, is not ticked.")
@@ -741,20 +744,27 @@ def build_language(issue, values, root):
             except ValueError as ex:
                 result.problems.append("The file is not valid JSON (%s)." % printable(str(ex), 80))
 
-    english_file = read_json(os.path.join(folder, "en.json"), {})
-    en_keys = set(k for k in english_file if not k.startswith("__")) if isinstance(english_file, dict) else set()
+    english = {False: english_keys(language_folder(root, False)), True: english_keys(language_folder(root, True))}
+    chat = said_chat
     covered = 0
     if isinstance(parsed, dict):
         real_keys = [k for k in parsed if not k.startswith("__")]
         if len(real_keys) < MIN_LANGUAGE_KEYS:
             result.problems.append("The file carries only %d text(s) - that is not a language file." % len(real_keys))
-        covered = sum(1 for k in real_keys if k in en_keys)
+        # The texts say what the file translates; the form's pick decides only a file that matches neither more.
+        hits = {target: sum(1 for k in real_keys if k in keys) for target, keys in english.items()}
+        if hits[not said_chat] > hits[said_chat]:
+            chat = not said_chat
+        covered = hits[chat]
     elif parsed is not None:
         result.problems.append("That is not a language file - it should be one object mapping text to text.")
 
     if result.problems:
         return result
 
+    folder = language_folder(root, chat)
+    published = "Language/Chat/en.json" if chat else "Language/en.json"
+    en_keys = english[chat]
     login = issue["user"]["login"]
     by = credit or login
     parsed["__languageName"] = name
@@ -797,6 +807,11 @@ def build_language(issue, values, root):
         "Covers %s from the published `%s`. Anything short of that stays in English until "
         "someone fills it in, the same as any string a translated language is still missing." % (coverage, published),
     ]
+    if chat != said_chat:
+        lines += ["", "The form said *%s*, but the file's texts are %s, so it is filed as %s." % (
+            CHAT_FILE if said_chat else "The settings window",
+            "the chat messages" if chat else "the settings window's",
+            "a chat language" if chat else "a language for the settings window")]
     result.summary = "\n".join(lines)
     return result
 

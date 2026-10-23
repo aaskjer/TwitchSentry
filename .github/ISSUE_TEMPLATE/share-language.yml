@@ -18,9 +18,11 @@ body:
     id: translates
     attributes:
       label: What does the file translate?
+      description: The check also tells the two apart by the texts in the file, so a wrong pick here is put right.
       options:
         - The settings window
         - Chat messages
+      default: 0
     validations:
       required: true
 

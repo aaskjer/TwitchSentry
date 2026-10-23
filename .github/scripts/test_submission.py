@@ -536,7 +536,9 @@ class Languages(unittest.TestCase):
         self.assertIn("25 of 30 texts from the published `Language/Chat/en.json`", r.summary)
 
     def test_a_chat_language_twitchsentry_has_is_an_update(self):
-        r = self.build(name="Deutsch", code="de", translates="Chat messages")
+        # The file's texts have to be chat messages too, or it is filed for the window whatever the form says.
+        root = workspace(chat_en=dict(sample_language_file(count=25, prefix="Word"), __version=1))
+        r = s.build("language", ticket("language", language_pairs(name="Deutsch", code="de", translates="Chat messages")), root)
         self.assertFalse(r.document["isNewLanguage"])
         self.assertIn("existing chat language", r.summary)
 
@@ -1028,6 +1030,36 @@ class TheLanguageCode(WorkflowHarness):
             r = s.build("language", ticket("language", language_pairs(translates="Chat messages")), root)
         self.assertEqual(r.path, "languages/chat/nl.json")
         self.assertEqual(r.ticket_title, "Chat language (nl): Nederlands")
+
+    def build_language_file(self, translates, en=None, chat_en=None):
+        root = workspace(en=en, chat_en=chat_en)
+        with mock.patch.object(s, "fetch_attachment", return_value=json.dumps(sample_language_file()).encode("utf-8")):
+            return s.build("language", ticket("language", language_pairs(translates=translates)), root)
+
+    def test_a_chat_file_picked_as_the_window_is_filed_as_chat(self):
+        chat_en = dict({"__version": 1}, **{k: k for k in sample_language_file()})
+        r = self.build_language_file("The settings window", chat_en=chat_en)
+        self.assertEqual(r.problems, [])
+        self.assertEqual((r.path, r.document.get("target")), ("languages/chat/nl.json", "chat"))
+        self.assertIn("Covers 25 of 25 texts from the published `Language/Chat/en.json`", r.summary)
+        self.assertIn("The form said *The settings window*, but the file's texts are the chat messages", r.summary)
+
+    def test_a_window_file_picked_as_chat_is_filed_for_the_window(self):
+        r = self.build_language_file("Chat messages", en={k: k for k in sample_language_file()})
+        self.assertEqual((r.path, r.document.get("target")), ("languages/nl.json", None))
+        self.assertIn("The form said *Chat messages*", r.summary)
+
+    def test_a_file_matching_the_form_says_nothing_about_it(self):
+        r = self.build_language_file("The settings window", en={k: k for k in sample_language_file()})
+        self.assertEqual(r.path, "languages/nl.json")
+        self.assertNotIn("The form said", r.summary)
+
+    def test_the_form_preselects_the_settings_window(self):
+        with open(TEMPLATES["language"], encoding="utf-8") as f:
+            form = f.read()
+        block = form[form.index("id: translates"):form.index("id: language-name")]
+        self.assertRegex(block, r"options:\s*\n\s*- The settings window\s*\n\s*- Chat messages")
+        self.assertRegex(block, r"(?m)^\s+default: 0\s*$")
 
     def test_the_ticket_is_retitled_after_its_pull_request(self):
         issue = ticket("translation", translation_pairs())
