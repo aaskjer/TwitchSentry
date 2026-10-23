@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 9,
+ "version": 10,
  "since": 0,
  "changes": [
   {
@@ -81,6 +81,15 @@
    "category": "lurkbot",
    "id": "1076704573",
    "login": "oxapk60",
+   "reports": 1
+  },
+  {
+   "v": 10,
+   "at": "2026-10-23T16:02:40Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076701175",
+   "login": "hmxlp20",
    "reports": 1
   }
  ]
