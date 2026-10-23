@@ -61,6 +61,11 @@ forms that ask it (`id: area`) to the window's list.
   collaborators.
 - **The field labels are what the script reads.** Rename one and `.github/scripts/test_submission.py`
   fails until `FIELDS` in `submission.py` says the same.
+- **A translation or language ticket names its language by code.** The window prefills the title
+  (`Language (nl): Nederlands`), and `submission.py` adds the code to a title typed without it. On the
+  `submissions` branch a complete file is `languages/<code>.json` (chat messages: `languages/chat/<code>.json`),
+  a single fix `translations/<code>/<ticket>.json`. Publishing an accepted one into `Language/` on `main` is a
+  pull request of its own, which mentions the tickets it carries.
 - **`share-language.yml`'s file field expects a dropped file, not pasted text.** A full language file is
   well past the ~64KB an issue body can hold; `submission.py` reads the attachment link GitHub leaves
   behind instead of the field's text. Pasting the JSON directly still works for a small test file, but

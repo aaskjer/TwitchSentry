@@ -280,6 +280,19 @@ def clip(text, limit):
     return text if len(text) <= limit else text[:limit]
 
 
+TITLE_PREFIX = re.compile(r"^\s*(?:chat\s+)?(?:translation|language)\s*(?:\([^)]*\))?\s*:?\s*", re.I)
+
+
+def title_with_code(title, kind_label, code, fallback):
+    """The ticket's title naming its language by code, so the list of tickets shows which language each is
+    about. One that names the code already stays as it is."""
+    title = (title or "").strip()
+    if "(%s)" % code in title:
+        return title
+    rest = TITLE_PREFIX.sub("", title, count=1).strip() or fallback
+    return "%s (%s): %s" % (kind_label, code, printable(" ".join(rest.split()), 80))
+
+
 def printable(text, limit=60):
     """For quoting a piece of the ticket back in a list: no control characters, no backticks."""
     out = []
@@ -314,6 +327,8 @@ class Result:
         self.already_in = {}
         self.same_as = None
         self.answered_differently = None
+        # The ticket's title with its language code in it, for a translation or a language.
+        self.ticket_title = None
 
 
 def read_json(path, default):
@@ -645,8 +660,10 @@ def build_translation(issue, values, root, elsewhere=None):
     if why:
         document["why"] = why
     result.document = document
-    result.path = "%s/%d.json" % (FOLDER["translation"], number)
+    # A folder per language: a language collects many fixes, each ticket its own file.
+    result.path = "%s/%s/%d.json" % (FOLDER["translation"], code, number)
     result.title = ("Chat translation (%s) from #%d" if chat else "Translation (%s) from #%d") % (code, number)
+    result.ticket_title = title_with_code(issue.get("title"), "Chat translation" if chat else "Translation", code, english)
     lines = ["**A %s fix** for `%s`, shared in #%d by %s." % ("chat message translation" if chat else "translation",
                                                              code, number, issue["user"]["login"]), "",
              "The English text:", fence(english)]
@@ -673,11 +690,14 @@ def fetch_attachment(url):
         return response.read()
 
 
+def english_keys(folder):
+    english_file = read_json(os.path.join(folder, "en.json"), {})
+    return set(k for k in english_file if not k.startswith("__")) if isinstance(english_file, dict) else set()
+
+
 def build_language(issue, values, root):
     result = Result("language")
-    chat = (values.get("translates") or "").strip() == CHAT_FILE
-    folder = language_folder(root, chat)
-    published = "Language/Chat/en.json" if chat else "Language/en.json"
+    said_chat = (values.get("translates") or "").strip() == CHAT_FILE
     if not is_checked(values.get("privacy")):
         result.problems.append("The box saying this is your own translation of TwitchSentry's English text, "
                                "not unread machine output, is not ticked.")
@@ -724,20 +744,27 @@ def build_language(issue, values, root):
             except ValueError as ex:
                 result.problems.append("The file is not valid JSON (%s)." % printable(str(ex), 80))
 
-    english_file = read_json(os.path.join(folder, "en.json"), {})
-    en_keys = set(k for k in english_file if not k.startswith("__")) if isinstance(english_file, dict) else set()
+    english = {False: english_keys(language_folder(root, False)), True: english_keys(language_folder(root, True))}
+    chat = said_chat
     covered = 0
     if isinstance(parsed, dict):
         real_keys = [k for k in parsed if not k.startswith("__")]
         if len(real_keys) < MIN_LANGUAGE_KEYS:
             result.problems.append("The file carries only %d text(s) - that is not a language file." % len(real_keys))
-        covered = sum(1 for k in real_keys if k in en_keys)
+        # The texts say what the file translates; the form's pick decides only a file that matches neither more.
+        hits = {target: sum(1 for k in real_keys if k in keys) for target, keys in english.items()}
+        if hits[not said_chat] > hits[said_chat]:
+            chat = not said_chat
+        covered = hits[chat]
     elif parsed is not None:
         result.problems.append("That is not a language file - it should be one object mapping text to text.")
 
     if result.problems:
         return result
 
+    folder = language_folder(root, chat)
+    published = "Language/Chat/en.json" if chat else "Language/en.json"
+    en_keys = english[chat]
     login = issue["user"]["login"]
     by = credit or login
     parsed["__languageName"] = name
@@ -765,8 +792,11 @@ def build_language(issue, values, root):
     if chat:
         document["target"] = "chat"
     result.document = document
-    result.path = "%s/%d.json" % (FOLDER["language"], number)
+    # One file per language, the newest accepted one: a later ticket for it replaces it, and its pull request
+    # shows what changed since.
+    result.path = "%s/%s%s.json" % (FOLDER["language"], "chat/" if chat else "", code)
     result.title = ("Chat language (%s) from #%d" if chat else "Language (%s) from #%d") % (code, number)
+    result.ticket_title = title_with_code(issue.get("title"), "Chat language" if chat else "Language", code, name)
 
     coverage = ("%d of %d texts" % (covered, len(en_keys))) if en_keys else "an unknown number of texts"
     lines = [
@@ -777,6 +807,11 @@ def build_language(issue, values, root):
         "Covers %s from the published `%s`. Anything short of that stays in English until "
         "someone fills it in, the same as any string a translated language is still missing." % (coverage, published),
     ]
+    if chat != said_chat:
+        lines += ["", "The form said *%s*, but the file's texts are %s, so it is filed as %s." % (
+            CHAT_FILE if said_chat else "The settings window",
+            "the chat messages" if chat else "the settings window's",
+            "a chat language" if chat else "a language for the settings window")]
     result.summary = "\n".join(lines)
     return result
 
@@ -883,17 +918,34 @@ def stored_comment(address, repo, result):
     ])
 
 
-def accepted_comment(kind, number, pull, repo):
-    address = "https://github.com/%s/blob/%s/%s/%d.json" % (repo, SUBMISSION_BRANCH, FOLDER[kind], number)
+def accepted_comment(kind, number, pull, repo, path=None):
+    path = path or "%s/%d.json" % (FOLDER[kind], number)
+    address = "https://github.com/%s/blob/%s/%s" % (repo, SUBMISSION_BRANCH, path)
     merged = "#%d" % pull["number"] if isinstance(pull.get("number"), int) else "The pull request"
     if kind == "spam":
         next_step = ("The entries are weighed together with what other streamers sent, and the ones that hold up "
                      "go into the spam feed every TwitchSentry install receives.")
     elif kind == "language":
-        next_step = "The file is brought into the shipped language files with the next language update."
+        next_step = ("Every install can download it once it is published into the language files on `main`. The "
+                     "pull request that does that mentions this ticket.")
     else:
-        next_step = "The fix goes into the language files with the next language update."
+        next_step = ("The fix reaches every install once it is published into the language files on `main`, "
+                     "together with the other fixes for the language. The pull request that does that mentions "
+                     "this ticket.")
     return "\n".join(["Thank you! %s was merged, so this is accepted: %s" % (merged, address), "", next_step])
+
+
+def accepted_path(pull, repo, kind):
+    """Where the merged pull request put the submission. A language file is named after its language, not its
+    ticket, so only the pull request can say."""
+    if kind == "spam" or not isinstance(pull.get("number"), int):
+        return None
+    viewed = run(["gh", "pr", "view", str(pull["number"]), "--repo", repo, "--json", "files"], check=False)
+    try:
+        files = [f.get("path") or "" for f in json.loads(viewed.stdout or "{}").get("files") or []]
+    except (ValueError, AttributeError):
+        return None
+    return next((f for f in files if f.startswith(FOLDER[kind] + "/") and f.endswith(".json")), None)
 
 
 def same_as_comment(ticket):
@@ -990,11 +1042,22 @@ def publish(result, issue, repo):
         finally:
             run(["git", "worktree", "remove", "--force", work], check=False)
 
+    listed = run(["gh", "pr", "list", "--repo", repo, "--state", "open", "--base", SUBMISSION_BRANCH,
+                  "--limit", "1000", "--json", "number,url,headRefName,title"])
+    pulls = json.loads(listed.stdout or "[]")
+    existing = [p for p in pulls if p.get("headRefName") == branch]
     # No "Closes #N": GitHub ignores it in a pull request into any branch but main. close_accepted() does
     # that part once this is merged.
-    body = "\n".join(["Merging this accepts the submission and closes #%d." % number, "", result.summary])
-    listed = run(["gh", "pr", "list", "--repo", repo, "--head", branch, "--state", "open", "--json", "number,url"])
-    existing = json.loads(listed.stdout or "[]")
+    lines = ["Merging this accepts the submission and closes #%d." % number, "", result.summary]
+    # A language keeps one file, so two open pull requests for it cannot both be merged.
+    same_file = result.title.rsplit(" from #", 1)[0] + " from #"
+    rivals = sorted(p["number"] for p in pulls if p.get("headRefName") != branch and isinstance(p.get("number"), int)
+                    and TICKET_BRANCH.match(p.get("headRefName") or "") and (p.get("title") or "").startswith(same_file)
+                    and result.kind == "language")
+    if rivals:
+        lines += ["", "**%s brings a file for the same language too.** Only one of them can be merged; close the "
+                      "other." % ", ".join("#%d" % n for n in rivals)]
+    body = "\n".join(lines)
     if existing:
         run(["gh", "pr", "edit", str(existing[0]["number"]), "--repo", repo,
              "--title", result.title, "--body-file", write_temp(body)])
@@ -1142,18 +1205,19 @@ def submissions_readme(repo):
     script's wording does."""
     lines = [
         "# Submissions", "",
-        "Spam wording, translation fixes and complete language files streamers shared from TwitchSentry, one file "
-        "per ticket, waiting to be taken up. Accepted here is not shipped: nothing in this branch reaches an "
-        "installation.", "",
+        "Spam wording, translation fixes and complete language files streamers shared from TwitchSentry, waiting "
+        "to be taken up. Accepted here is not shipped: nothing in this branch reaches an installation.", "",
         "| Folder | Shared through | Where it goes from here |",
         "|---|---|---|",
         "| `spam/` | ☰ → *Share With Others...*, spam wording from your lists | Weighed against what other streamers sent. "
         "What holds up is published in the [spam feed](https://github.com/%s/blob/main/Feed/README.md), which every "
         "installation receives within hours. |" % repo,
-        "| `translations/` | ☰ → *Report...*, *A translation* | Into the language files, with the next "
-        "language update. |",
-        "| `languages/` | ☰ → *Share With Others...*, a complete translation file | Brought into `Language/`, with the next "
-        "language update. |", "",
+        "| `translations/<code>/` | ☰ → *Report...*, *A translation* | One file per ticket, a folder per language. "
+        "Published into `Language/` on `main` together with the other fixes for that language. |",
+        "| `languages/<code>.json`, `languages/chat/<code>.json` | ☰ → *Share With Others...*, a complete translation "
+        "file | One file per language, the newest accepted one. Published into `Language/` on `main`. |", "",
+        "**Published** means a pull request into `main` that brings the accepted text into the language files every "
+        "installation downloads. It mentions the tickets it carries, and merging it is what makes them available.", "",
         "**How a file gets here:** the share form fills a ticket in, the ticket becomes a pull request into this "
         "branch, and merging it takes the submission up and closes the ticket. Editing the ticket updates its pull "
         "request; a ticket with a mistake in it is answered with what to correct instead.", "",
@@ -1193,7 +1257,7 @@ def close_accepted(pull, repo):
     if ticket.get("state") != "OPEN" or kind not in FOLDER:
         print("#%d is not an open spam, translation or language ticket - left as it is." % number)
         return 0
-    comment(repo, number, accepted_comment(kind, number, pull, repo))
+    comment(repo, number, accepted_comment(kind, number, pull, repo, accepted_path(pull, repo, kind)))
     run(["gh", "issue", "close", str(number), "--repo", repo, "--reason", "completed"])
     print("Ticket #%d is accepted and closed." % number)
     return 0
@@ -1250,6 +1314,9 @@ def main():
             comment(repo, number, "Thank you! This is now a pull request: %s\n\n"
                                   "Merging it accepts the submission and closes this ticket. Editing the ticket "
                                   "updates the pull request." % url)
+        # A title GitHub's token changes starts no new run, so this cannot loop.
+        if result.ticket_title and result.ticket_title != (issue.get("title") or "").strip():
+            run(["gh", "issue", "edit", str(number), "--repo", repo, "--title", result.ticket_title], check=False)
         return 0
     except subprocess.CalledProcessError as ex:
         print("Failed: %s\n%s" % (" ".join(ex.cmd[:3]), (ex.stderr or "").strip()), file=sys.stderr)

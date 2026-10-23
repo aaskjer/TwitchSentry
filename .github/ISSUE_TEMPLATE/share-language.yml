@@ -8,7 +8,7 @@ body:
       value: |
         **For a language TwitchSentry does not have yet, or to catch an existing one up** after an update added new English text. A single line that reads badly is a smaller fix - use *Suggest a better translation* for that instead.
 
-        **A pull request is opened for this automatically,** into the [`submissions` branch](https://github.com/aaskjer/TwitchSentry/tree/submissions), and once it is merged this ticket is closed and the file is brought into `Language/` with the next language update.
+        **A pull request is opened for this automatically,** into the [`submissions` branch](https://github.com/aaskjer/TwitchSentry/tree/submissions), and once it is merged this ticket is closed. Every install can download the language once it is published into `Language/` on `main`; the pull request that does that mentions this ticket.
 
         **The settings window and the chat messages are two separate files,** each language in both. A chat language is written against [`Language/Chat/en.json`](https://github.com/aaskjer/TwitchSentry/blob/main/Language/Chat/en.json) and keeps every placeholder such as `{user}` exactly as it is.
 
@@ -18,9 +18,11 @@ body:
     id: translates
     attributes:
       label: What does the file translate?
+      description: The check also tells the two apart by the texts in the file, so a wrong pick here is put right.
       options:
         - The settings window
         - Chat messages
+      default: 0
     validations:
       required: true
 
