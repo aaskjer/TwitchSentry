@@ -59,6 +59,8 @@ jobs:
     permissions:
       contents: read
       issues: write
+      # Which file the pull request added: a language file is named after its language.
+      pull-requests: read
     steps:
       # main as it is, never the pull request.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

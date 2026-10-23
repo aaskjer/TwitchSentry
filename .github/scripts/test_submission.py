@@ -388,7 +388,7 @@ class Translations(unittest.TestCase):
         self.assertEqual(r.document["language"], "de")
         self.assertEqual(r.document["suggestion"], "Speichern")
         self.assertIn("is in the published", r.summary)
-        self.assertEqual(r.path, "translations/42.json")
+        self.assertEqual(r.path, "translations/de/42.json")
 
     def test_english_is_a_language_like_the_others(self):
         r = self.build(language="English (en)", english="Save", current="Save", suggestion="Save changes")
@@ -459,7 +459,7 @@ class Languages(unittest.TestCase):
         self.assertEqual(r.document["languageCode"], "nl")
         self.assertEqual(r.document["languageName"], "Nederlands")
         self.assertTrue(r.document["isNewLanguage"])
-        self.assertEqual(r.path, "languages/42.json")
+        self.assertEqual(r.path, "languages/nl.json")
         self.assertEqual(r.title, "Language (nl) from #42")
         self.fetch.assert_called_once()
         self.assertIn("https://github.com/user-attachments/files/9999999/language.json", self.fetch.call_args[0][0])
@@ -666,7 +666,7 @@ class TheWorkflowRun(WorkflowHarness):
             "git fetch origin", "git show origin/submissions:README.md", "git worktree add", "git add --all",
             "git -c user.name=github-actions[bot]", "git push origin", "git worktree remove",
             "git fetch origin", "git fetch origin", "git worktree add", "git add --all", "git -c user.name=github-actions[bot]",
-            "git push --force", "git worktree remove", "gh pr list", "gh pr create", "gh issue comment"])
+            "git push --force", "git worktree remove", "gh pr list", "gh pr create", "gh issue comment", "gh issue edit"])
         self.assertIn("commit-tree", rec.calls[3])
         self.assertIn(s.EMPTY_TREE, rec.calls[3], "it shares nothing with main")
         self.assertEqual(rec.calls[4][-1], "0123abcd:refs/heads/submissions")
@@ -727,7 +727,7 @@ class TheWorkflowRun(WorkflowHarness):
             ("git fetch origin", (0, "")),
             ("git show origin/submissions:README.md", (0, README)),
             ("git show origin/submission/42:spam/42.json", (0, content)),
-            ("gh pr list", (0, '[{"number": 7, "url": "https://github.com/aaskjer/TwitchSentry/pull/7"}]')),
+            ("gh pr list", (0, '[{"number": 7, "url": "https://github.com/aaskjer/TwitchSentry/pull/7", "headRefName": "submission/42"}]')),
         ], root)
         self.assertEqual(rec.commands(), LOOKED_AROUND + ["git fetch origin", "git show origin/submissions:README.md",
                                           "git fetch origin", "git show origin/submission/42:spam/42.json",
@@ -908,7 +908,7 @@ class TheWorkflowRun(WorkflowHarness):
         self.assertIn("https://github.com/aaskjer/TwitchSentry/tree/profiles", README)
         self.assertNotIn("](../", README)
         for folder in s.FOLDER.values():
-            self.assertIn("| `%s/` |" % folder, README)
+            self.assertIn("| `%s/" % folder, README)
 
 
 class NothingIsProposedTwice(WorkflowHarness):
@@ -1009,6 +1009,58 @@ class NothingIsProposedTwice(WorkflowHarness):
         self.assertTrue(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls))
 
 
+class TheLanguageCode(WorkflowHarness):
+    """A translation or language ticket names its language by code: in its title, and in where its file goes."""
+
+    def test_the_title_gets_the_code(self):
+        self.assertEqual(s.title_with_code("Language: ", "Language", "nl", "Nederlands"), "Language (nl): Nederlands")
+        self.assertEqual(s.title_with_code("Translation: Save", "Translation", "de", "x"), "Translation (de): Save")
+        self.assertEqual(s.title_with_code("chat language: Nederlands", "Chat language", "nl", "x"), "Chat language (nl): Nederlands")
+        self.assertEqual(s.title_with_code("Translation (fr): Save", "Translation", "de", "x"), "Translation (de): Save",
+                         "a wrong code is replaced")
+        self.assertEqual(s.title_with_code("My Dutch file (nl)", "Language", "nl", "x"), "My Dutch file (nl)",
+                         "a title naming the code already stays")
+        self.assertEqual(s.title_with_code(None, "Language", "nl", "Neder\nlands"), "Language (nl): Neder lands")
+
+    def test_a_chat_language_has_its_own_folder(self):
+        root = workspace(chat_en={"__version": 1, "Hi": "Hi"})
+        with mock.patch.object(s, "fetch_attachment", return_value=json.dumps(sample_language_file()).encode("utf-8")):
+            r = s.build("language", ticket("language", language_pairs(translates="Chat messages")), root)
+        self.assertEqual(r.path, "languages/chat/nl.json")
+        self.assertEqual(r.ticket_title, "Chat language (nl): Nederlands")
+
+    def test_the_ticket_is_retitled_after_its_pull_request(self):
+        issue = ticket("translation", translation_pairs())
+        issue["title"] = "Translation: Save"
+        _, rec, _ = self.run_main(issue, [("gh pr create", (0, "https://github.com/aaskjer/TwitchSentry/pull/8\n"))],
+                                  workspace(en={"Save": "Save"}))
+        edit = rec.calls[-1]
+        self.assertEqual(edit[:4], ["gh", "issue", "edit", "42"])
+        self.assertEqual(edit[edit.index("--title") + 1], "Translation (de): Save")
+
+    def test_a_title_with_the_code_is_left_alone(self):
+        issue = ticket("translation", translation_pairs())
+        issue["title"] = "Translation (de): Save"
+        _, rec, _ = self.run_main(issue, [("gh pr create", (0, "https://github.com/aaskjer/TwitchSentry/pull/8\n"))],
+                                  workspace(en={"Save": "Save"}))
+        self.assertNotIn("gh issue edit", rec.commands())
+
+    def test_a_second_open_file_for_the_same_language_is_pointed_out(self):
+        others = json.dumps([{"number": 60, "url": "u", "headRefName": "submission/41", "title": "Language (nl) from #41"},
+                             {"number": 61, "url": "u", "headRefName": "submission/40", "title": "Chat language (nl) from #40"},
+                             {"number": 62, "url": "u", "headRefName": "submission/39", "title": "Language (nl-BE) from #39"}])
+        with mock.patch.object(s, "fetch_attachment", return_value=json.dumps(sample_language_file()).encode("utf-8")):
+            _, rec, _ = self.run_main(ticket("language", language_pairs()), [
+                ("gh pr list", (0, others)),
+                ("gh pr create", (0, "https://github.com/aaskjer/TwitchSentry/pull/8\n"))])
+        created = next(c for c in rec.calls if c[:3] == ["gh", "pr", "create"])
+        with open(created[created.index("--body-file") + 1], encoding="utf-8") as f:
+            body = f.read()
+        self.assertIn("**#60 brings a file for the same language too.**", body)
+        self.assertNotIn("#61", body, "the chat messages are another file")
+        self.assertNotIn("#62", body)
+
+
 OPEN_SPAM_TICKET = '{"state": "OPEN", "labels": [{"name": "share: spam list"}]}'
 
 
@@ -1037,11 +1089,23 @@ class AMergedSubmission(WorkflowHarness):
 
     def test_a_translation_is_told_where_it_goes_next(self):
         answer = '{"state": "OPEN", "labels": [{"name": "share: translation"}]}'
-        _, rec, _ = self.closed(self.pull(), [("gh issue view", (0, answer))])
-        with open(rec.calls[1][rec.calls[1].index("--body-file") + 1], encoding="utf-8") as f:
+        files = '{"files": [{"path": "translations/de/42.json"}]}'
+        _, rec, _ = self.closed(self.pull(), [("gh issue view", (0, answer)), ("gh pr view", (0, files))])
+        self.assertEqual(rec.commands(), ["gh issue view", "gh pr view", "gh issue comment", "gh issue close"])
+        self.assertEqual(rec.calls[1][3], "50", "the merged pull request says which file it added")
+        with open(rec.calls[2][rec.calls[2].index("--body-file") + 1], encoding="utf-8") as f:
             body = f.read()
-        self.assertIn("/blob/submissions/translations/42.json", body)
-        self.assertIn("next language update", body)
+        self.assertIn("/blob/submissions/translations/de/42.json", body)
+        self.assertIn("published into the language files on `main`", body)
+
+    def test_a_language_file_is_found_under_its_language_code(self):
+        answer = '{"state": "OPEN", "labels": [{"name": "share: language"}]}'
+        files = '{"files": [{"path": "languages/chat/nl.json"}]}'
+        _, rec, _ = self.closed(self.pull(), [("gh issue view", (0, answer)), ("gh pr view", (0, files))])
+        with open(rec.calls[2][rec.calls[2].index("--body-file") + 1], encoding="utf-8") as f:
+            body = f.read()
+        self.assertIn("/blob/submissions/languages/chat/nl.json", body)
+        self.assertIn("The pull request that does that mentions this ticket.", body)
 
     def test_closing_it_without_merging_leaves_the_ticket_open(self):
         code, rec, _ = self.closed(self.pull(merged=False), [])
