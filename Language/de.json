@@ -1,7 +1,7 @@
 {
   "__languageName": "Deutsch",
   "__languageCode": "de",
-  "__version": 12,
+  "__version": 13,
   "__dateFormat": "dd.MM.yyyy",
   "Use Bot Account": "Bot-Account verwenden",
   "Send As Action": "Als Aktion senden",
@@ -1305,7 +1305,6 @@
   "When To Notify": "Wann benachrichtigen",
   "Updates Notify": "Updates melden",
   "On New Releases": "Bei neuen Versionen",
-  "A notification when a new TwitchSentry release is out, once per release.\n(The settings window looks for one each time it opens)": "Eine Benachrichtigung, sobald eine neue TwitchSentry-Version erschienen ist, einmal pro Version.\n(Das Einstellungsfenster sucht bei jedem Öffnen danach)",
   "Deck Buttons Notify": "Deck-Buttons melden",
   "On Deck Button Actions": "Bei Aktionen eines Deck-Buttons",
   "A notification for what a deck button just did: the profile it switched to, the module it switched on or off, test mode, Raid Protection or an undo.": "Eine Benachrichtigung darüber, was ein Deck-Button gerade getan hat: das Profil, auf das er umgeschaltet hat, das Modul, das er ein- oder ausgeschaltet hat, Testmodus, Raid Protection oder ein Rückgängigmachen.",
@@ -2526,5 +2525,12 @@
   "The page is not set up yet.": "Die Seite ist noch nicht eingerichtet.",
   "The page is written and its address is on the clipboard.": "Die Seite ist geschrieben, ihre Adresse liegt in der Zwischenablage.",
   "The page is written, but the clipboard could not be reached: copy the address above by hand.": "Die Seite ist geschrieben, aber die Zwischenablage war nicht erreichbar: Kopiere die Adresse oben von Hand.",
-  "Test mode, for as long as '{setting}' under ☰ → Options says.": "Der Testmodus, so lange, wie '{setting}' unter ☰ → Optionen sagt."
+  "Test mode, for as long as '{setting}' under ☰ → Options says.": "Der Testmodus, so lange, wie '{setting}' unter ☰ → Optionen sagt.",
+  "A notification when a new TwitchSentry release is out, once per release, and when the window's or the chat's language gets a newer translation.\n(TwitchSentry looks when Streamer.bot starts, and for a release also each time the settings window opens)": "Eine Benachrichtigung, sobald eine neue TwitchSentry-Version erschienen ist, einmal pro Version, und wenn die Sprache des Fensters oder des Chats eine neuere Übersetzung bekommt.\n(TwitchSentry sucht beim Start von Streamer.bot danach, nach einer neuen Version auch bei jedem Öffnen des Einstellungsfensters)",
+  "Chat messages: '{name}' v{version}": "Chat-Nachrichten: '{name}' v{version}",
+  "Settings window: '{name}' v{version}": "Einstellungsfenster: '{name}' v{version}",
+  "TwitchSentry language update": "TwitchSentry-Sprachupdate",
+  "Opening the settings window installs it.": "Wenn du das Einstellungsfenster öffnest, wird es installiert.",
+  "Chat language '{name}' updated to v{version}. Messages you wrote yourself stay as they are.": "Chat-Sprache '{name}' wurde auf v{version} aktualisiert. Nachrichten, die du selbst geschrieben hast, bleiben, wie sie sind.",
+  "Window language '{name}' updated to v{version}.": "Fenstersprache '{name}' wurde auf v{version} aktualisiert."
 }

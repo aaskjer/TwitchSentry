@@ -481,7 +481,7 @@ it is one switch per kind:
 
 | Switch | Default | When |
 |---|---|---|
-| **On New Releases** | on | A new TwitchSentry release is out. Once per release; the settings window looks for one each time it opens. |
+| **On New Releases** | on | A new TwitchSentry release is out, or the window's or the chat's language has a newer translation. Once per release and per language version; TwitchSentry looks when Streamer.bot starts, and for a release also each time the settings window opens. Opening the window installs a newer language. |
 | **On Deck Button Actions** | off | A [deck button](#deck-buttons) just did something: switched a profile, a module or an exemption, test mode, Raid Protection, an undo. |
 | **On Deck Button Problems** | on | A deck button could not do what it was asked, and why: a profile that no longer exists, a name that matches nothing, a `configs.json` that cannot be read. |
 | **On LurkBots Found** | on | [LurkBot Filter](#lurkbot-filter) found bot accounts sitting in chat, once per round, naming them. |
