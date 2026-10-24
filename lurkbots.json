@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 11,
- "updated": "2026-10-23T17:12:38Z",
+ "version": 12,
+ "updated": "2026-10-24T16:50:39Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -61,6 +61,16 @@
    "reports": 1,
    "first": "2026-10-17",
    "last": "2026-10-17",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076702730",
+   "login": "nppvg54",
+   "reports": 1,
+   "first": "2026-10-24",
+   "last": "2026-10-24",
    "reasons": [
     "known_day"
    ]

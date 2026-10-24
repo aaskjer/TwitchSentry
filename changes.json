@@ -1,44 +1,8 @@
 {
  "schema": 1,
- "version": 11,
- "since": 0,
+ "version": 12,
+ "since": 4,
  "changes": [
-  {
-   "v": 1,
-   "at": "2026-10-17T09:50:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076701184",
-   "login": "cqrgv60",
-   "reports": 1
-  },
-  {
-   "v": 2,
-   "at": "2026-10-17T10:26:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076702674",
-   "login": "mqkhx50",
-   "reports": 1
-  },
-  {
-   "v": 3,
-   "at": "2026-10-17T12:46:39Z",
-   "op": "add",
-   "category": "spam",
-   "id": "1208229893",
-   "login": "cggbot___",
-   "reports": 1
-  },
-  {
-   "v": 4,
-   "at": "2026-10-17T13:32:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076702689",
-   "login": "vspdm68",
-   "reports": 1
-  },
   {
    "v": 5,
    "at": "2026-10-17T20:38:38Z",
@@ -99,6 +63,15 @@
    "category": "lurkbot",
    "id": "1076701169",
    "login": "yfekr43",
+   "reports": 1
+  },
+  {
+   "v": 12,
+   "at": "2026-10-24T16:50:39Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076702730",
+   "login": "nppvg54",
    "reports": 1
   }
  ]
