@@ -1,34 +1,8 @@
 {
  "schema": 1,
- "version": 13,
- "since": 4,
+ "version": 14,
+ "since": 7,
  "changes": [
-  {
-   "v": 5,
-   "at": "2026-10-17T20:38:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076702658",
-   "login": "kdyow75",
-   "reports": 1
-  },
-  {
-   "v": 6,
-   "at": "2026-10-19T16:14:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076699867",
-   "login": "ctyhu56",
-   "reports": 1
-  },
-  {
-   "v": 7,
-   "at": "2026-10-20T22:38:39Z",
-   "op": "remove",
-   "category": "spam",
-   "id": "1208229893",
-   "why": "protected"
-  },
   {
    "v": 8,
    "at": "2026-10-21T16:24:39Z",
@@ -81,6 +55,24 @@
    "category": "lurkbot",
    "id": "1076704586",
    "login": "itdsk86",
+   "reports": 1
+  },
+  {
+   "v": 14,
+   "at": "2026-10-28T16:04:39Z",
+   "op": "add",
+   "category": "spam",
+   "id": "1531549444",
+   "login": "soakedwerowanceogm7",
+   "reports": 1
+  },
+  {
+   "v": 14,
+   "at": "2026-10-28T16:04:39Z",
+   "op": "add",
+   "category": "spam",
+   "id": "1534309639",
+   "login": "imperiousgamblingj",
    "reports": 1
   }
  ]
