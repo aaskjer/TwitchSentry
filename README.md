@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Assets/TwitchSentry-Named-Favicon.png?raw=true" alt="TwitchSentry" width="300" height="300">
+  <img src="https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Assets/TwitchSentry-Favicon.png?raw=true" alt="TwitchSentry" width="180" height="200">
 </p>
+
+<h1 align="center">TwitchSentry</h1>
 
 <p align="center">
   <b>Your smart chat bodyguard. Built for Streamer.bot.</b><br>
