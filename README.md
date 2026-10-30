@@ -2,8 +2,6 @@
   <img src="https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Assets/TwitchSentry-Named-Favicon.png?raw=true" alt="TwitchSentry" width="300" height="300">
 </p>
 
-<h1 align="center">TwitchSentry</h1>
-
 <p align="center">
   <b>Your smart chat bodyguard. Built for Streamer.bot.</b><br>
   Removes scams, spam and bot waves from your Twitch chat and tells you what each message said, who sent it and why it was removed.
