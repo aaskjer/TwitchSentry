@@ -66,7 +66,7 @@ every decision. It runs entirely inside Streamer.bot, with nothing to pay for an
 - 🎛️ **Control from anywhere.** [Deck Buttons](Manual.md#deck-buttons) on a Stream Deck, a Streamer.bot Deck or
   the OBS dock switch profiles and modules. [Notifications](Manual.md#notifications) go to Discord, Stoat or
   GameVox webhooks, ntfy or Windows. [Offline Protection](Manual.md#offline-protection) sets chat modes when
-  the stream ends.
+  the stream ends. *Work in Progress*
 - 🌍 **Five languages.** The window and the chat messages come in English, German, Spanish, French and
   Brazilian Portuguese, with community translations on top. Messages can use the pronouns viewers set on
   pronouns.alejo.io.
