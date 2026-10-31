@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 15,
- "updated": "2026-10-30T17:10:39Z",
+ "version": 16,
+ "updated": "2026-10-31T11:12:38Z",
  "category": "spam",
  "banFrom": 2,
  "accounts": [

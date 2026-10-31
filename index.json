@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 15,
- "updated": "2026-10-30T17:10:39Z",
+ "version": 16,
+ "updated": "2026-10-31T11:12:38Z",
  "banFrom": 2,
  "lists": {
   "spam": {
@@ -13,7 +13,7 @@
   "lurkbot": {
    "file": "lurkbots.json",
    "text": "lurkbots.txt",
-   "count": 12,
+   "count": 13,
    "confirmed": 0
   },
   "botwave": {
@@ -25,7 +25,7 @@
  },
  "changes": {
   "file": "changes.json",
-  "since": 10
+  "since": 11
  },
  "removed": {
   "file": "removed.json",

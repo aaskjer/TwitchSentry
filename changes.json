@@ -1,17 +1,8 @@
 {
  "schema": 1,
- "version": 15,
- "since": 10,
+ "version": 16,
+ "since": 11,
  "changes": [
-  {
-   "v": 11,
-   "at": "2026-10-23T17:12:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076701169",
-   "login": "yfekr43",
-   "reports": 1
-  },
   {
    "v": 12,
    "at": "2026-10-24T16:50:39Z",
@@ -55,6 +46,15 @@
    "category": "lurkbot",
    "id": "1076701171",
    "login": "axhkg47",
+   "reports": 1
+  },
+  {
+   "v": 16,
+   "at": "2026-10-31T11:12:38Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076701156",
+   "login": "andka70",
    "reports": 1
   }
  ]
