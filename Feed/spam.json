@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "version": 6,
-  "updated": "2026-10-23",
+  "version": 7,
+  "updated": "2026-10-31",
   "about": "Block-list entries TwitchSentry hands to every install's Machine Learning/spam.json, each exactly once. \"shipped\" names what releases shipped as built-in defaults: those are never handed over, and a share ticket does not offer them.",
   "lists": {
     "spamDomains": [
@@ -15,7 +15,8 @@
       "smmgen",
       "smmmega",
       "stream-promotion",
-      "streamfollowers"
+      "streamfollowers",
+      "dovie"
     ],
     "strongKeywords": [
       "streamboo",
@@ -42,7 +43,18 @@
       "hi ! upgrade your stream on",
       "i want to offer promotion of your channel",
       "wanna become famous",
-      "stream promotion bot"
+      "stream promotion bot",
+      "dovie",
+      "big streaming energy",
+      "netflix has competition",
+      "movie lover's radar",
+      "watchlist get boring",
+      "streaming routine deserves",
+      "next favourite film",
+      "next favorite film",
+      "destination for your movie nights",
+      "think you've seen everything",
+      "limit your entertainment options"
     ],
     "beatSolution": [
       "logo",
