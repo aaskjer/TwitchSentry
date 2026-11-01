@@ -47,7 +47,7 @@ export const REASONS = new Set([
   "offer", "search_redirect", "offer_quantity", "offer_repeated", "offer_catalogue", "campaign_tag",
   "assembly_instruction", "redemption_code", "voucher_code", "voucher_pattern",
   "known_day", "same_day",
-  "follow_wave", "raid_swarm", "hate_raid",
+  "follow_wave", "raid_swarm", "hate_raid", "bot_wave",
 ]);
 
 // Accounts channels rely on; a misreport must never put one of them on everybody's ban list.
