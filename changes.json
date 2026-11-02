@@ -1,26 +1,8 @@
 {
  "schema": 1,
- "version": 17,
- "since": 11,
+ "version": 18,
+ "since": 13,
  "changes": [
-  {
-   "v": 12,
-   "at": "2026-10-24T16:50:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076702730",
-   "login": "nppvg54",
-   "reports": 1
-  },
-  {
-   "v": 13,
-   "at": "2026-10-24T18:28:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076704586",
-   "login": "itdsk86",
-   "reports": 1
-  },
   {
    "v": 14,
    "at": "2026-10-28T16:04:39Z",
@@ -64,6 +46,15 @@
    "category": "lurkbot",
    "id": "1076699856",
    "login": "nokgp43",
+   "reports": 1
+  },
+  {
+   "v": 18,
+   "at": "2026-11-02T17:20:39Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076702697",
+   "login": "reihh35",
    "reports": 1
   }
  ]
