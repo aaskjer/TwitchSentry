@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 18,
- "updated": "2026-11-02T17:20:39Z",
+ "version": 19,
+ "updated": "2026-11-02T19:02:38Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -128,6 +128,16 @@
   {
    "id": "1076702697",
    "login": "reihh35",
+   "reports": 1,
+   "first": "2026-11-02",
+   "last": "2026-11-02",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076701139",
+   "login": "vhlbq66",
    "reports": 1,
    "first": "2026-11-02",
    "last": "2026-11-02",
