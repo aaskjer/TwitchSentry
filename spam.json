@@ -1,10 +1,30 @@
 {
  "schema": 1,
- "version": 19,
- "updated": "2026-11-02T19:02:38Z",
+ "version": 20,
+ "updated": "2026-11-03T17:00:38Z",
  "category": "spam",
  "banFrom": 2,
  "accounts": [
+  {
+   "id": "1596411136",
+   "login": "codedtrovetspdxsa9qzlbz8i",
+   "reports": 1,
+   "first": "2026-11-03",
+   "last": "2026-11-03",
+   "reasons": [
+    "strong_keyword"
+   ]
+  },
+  {
+   "id": "1596411456",
+   "login": "correctivetributetyjhz",
+   "reports": 1,
+   "first": "2026-11-03",
+   "last": "2026-11-03",
+   "reasons": [
+    "strong_keyword"
+   ]
+  },
   {
    "id": "1534309639",
    "login": "imperiousgamblingj",

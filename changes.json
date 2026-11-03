@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 19,
+ "version": 20,
  "since": 13,
  "changes": [
   {
@@ -64,6 +64,24 @@
    "category": "lurkbot",
    "id": "1076701139",
    "login": "vhlbq66",
+   "reports": 1
+  },
+  {
+   "v": 20,
+   "at": "2026-11-03T17:00:38Z",
+   "op": "add",
+   "category": "spam",
+   "id": "1596411136",
+   "login": "codedtrovetspdxsa9qzlbz8i",
+   "reports": 1
+  },
+  {
+   "v": 20,
+   "at": "2026-11-03T17:00:38Z",
+   "op": "add",
+   "category": "spam",
+   "id": "1596411456",
+   "login": "correctivetributetyjhz",
    "reports": 1
   }
  ]
