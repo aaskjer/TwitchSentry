@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 20,
+ "version": 21,
  "since": 13,
  "changes": [
   {
@@ -82,6 +82,15 @@
    "category": "spam",
    "id": "1596411456",
    "login": "correctivetributetyjhz",
+   "reports": 1
+  },
+  {
+   "v": 21,
+   "at": "2026-11-03T17:18:39Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076704562",
+   "login": "ufduk43",
    "reports": 1
   }
  ]
