@@ -1,26 +1,8 @@
 {
  "schema": 1,
- "version": 22,
- "since": 13,
+ "version": 23,
+ "since": 14,
  "changes": [
-  {
-   "v": 14,
-   "at": "2026-10-28T16:04:39Z",
-   "op": "add",
-   "category": "spam",
-   "id": "1531549444",
-   "login": "soakedwerowanceogm7",
-   "reports": 1
-  },
-  {
-   "v": 14,
-   "at": "2026-10-28T16:04:39Z",
-   "op": "add",
-   "category": "spam",
-   "id": "1534309639",
-   "login": "imperiousgamblingj",
-   "reports": 1
-  },
   {
    "v": 15,
    "at": "2026-10-30T17:10:39Z",
@@ -108,6 +90,15 @@
    "category": "spam",
    "id": "1534309639",
    "why": "gone"
+  },
+  {
+   "v": 23,
+   "at": "2026-11-04T17:14:39Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076704576",
+   "login": "gnztm47",
+   "reports": 1
   }
  ]
 }
