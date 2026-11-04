@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 21,
+ "version": 22,
  "since": 13,
  "changes": [
   {
@@ -92,6 +92,22 @@
    "id": "1076704562",
    "login": "ufduk43",
    "reports": 1
+  },
+  {
+   "v": 22,
+   "at": "2026-11-04T16:06:38Z",
+   "op": "remove",
+   "category": "spam",
+   "id": "1531549444",
+   "why": "gone"
+  },
+  {
+   "v": 22,
+   "at": "2026-11-04T16:06:38Z",
+   "op": "remove",
+   "category": "spam",
+   "id": "1534309639",
+   "why": "gone"
   }
  ]
 }

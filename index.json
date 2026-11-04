@@ -1,13 +1,13 @@
 {
  "schema": 1,
- "version": 21,
- "updated": "2026-11-03T17:18:39Z",
+ "version": 22,
+ "updated": "2026-11-04T16:06:38Z",
  "banFrom": 2,
  "lists": {
   "spam": {
    "file": "spam.json",
    "text": "spam.txt",
-   "count": 4,
+   "count": 2,
    "confirmed": 0
   },
   "lurkbot": {

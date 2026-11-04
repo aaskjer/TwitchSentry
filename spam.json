@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 21,
- "updated": "2026-11-03T17:18:39Z",
+ "version": 22,
+ "updated": "2026-11-04T16:06:38Z",
  "category": "spam",
  "banFrom": 2,
  "accounts": [
@@ -21,26 +21,6 @@
    "reports": 1,
    "first": "2026-11-03",
    "last": "2026-11-03",
-   "reasons": [
-    "strong_keyword"
-   ]
-  },
-  {
-   "id": "1534309639",
-   "login": "imperiousgamblingj",
-   "reports": 1,
-   "first": "2026-10-28",
-   "last": "2026-10-28",
-   "reasons": [
-    "strong_keyword"
-   ]
-  },
-  {
-   "id": "1531549444",
-   "login": "soakedwerowanceogm7",
-   "reports": 1,
-   "first": "2026-10-28",
-   "last": "2026-10-28",
    "reasons": [
     "strong_keyword"
    ]
