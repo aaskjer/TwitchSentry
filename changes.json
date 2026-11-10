@@ -1,53 +1,8 @@
 {
  "schema": 1,
- "version": 25,
- "since": 14,
+ "version": 26,
+ "since": 19,
  "changes": [
-  {
-   "v": 15,
-   "at": "2026-10-30T17:10:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076701171",
-   "login": "axhkg47",
-   "reports": 1
-  },
-  {
-   "v": 16,
-   "at": "2026-10-31T11:12:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076701156",
-   "login": "andka70",
-   "reports": 1
-  },
-  {
-   "v": 17,
-   "at": "2026-10-31T12:56:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076699856",
-   "login": "nokgp43",
-   "reports": 1
-  },
-  {
-   "v": 18,
-   "at": "2026-11-02T17:20:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076702697",
-   "login": "reihh35",
-   "reports": 1
-  },
-  {
-   "v": 19,
-   "at": "2026-11-02T19:02:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076701139",
-   "login": "vhlbq66",
-   "reports": 1
-  },
   {
    "v": 20,
    "at": "2026-11-03T17:00:38Z",
@@ -116,6 +71,15 @@
    "category": "lurkbot",
    "id": "1076701196",
    "login": "fflih72",
+   "reports": 1
+  },
+  {
+   "v": 26,
+   "at": "2026-11-10T16:24:39Z",
+   "op": "add",
+   "category": "spam",
+   "id": "1597582655",
+   "login": "paralyzedsponsorn",
    "reports": 1
   }
  ]

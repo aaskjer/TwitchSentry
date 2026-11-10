@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 25,
- "updated": "2026-11-05T18:22:39Z",
+ "version": 26,
+ "updated": "2026-11-10T16:24:39Z",
  "category": "spam",
  "banFrom": 2,
  "accounts": [
@@ -23,6 +23,16 @@
    "last": "2026-11-03",
    "reasons": [
     "strong_keyword"
+   ]
+  },
+  {
+   "id": "1597582655",
+   "login": "paralyzedsponsorn",
+   "reports": 1,
+   "first": "2026-11-10",
+   "last": "2026-11-10",
+   "reasons": [
+    "assembly_instruction"
    ]
   }
  ]
