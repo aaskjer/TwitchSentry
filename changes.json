@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 26,
+ "version": 27,
  "since": 19,
  "changes": [
   {
@@ -81,6 +81,22 @@
    "id": "1597582655",
    "login": "paralyzedsponsorn",
    "reports": 1
+  },
+  {
+   "v": 27,
+   "at": "2026-11-10T17:02:38Z",
+   "op": "remove",
+   "category": "spam",
+   "id": "1596411136",
+   "why": "gone"
+  },
+  {
+   "v": 27,
+   "at": "2026-11-10T17:02:38Z",
+   "op": "remove",
+   "category": "spam",
+   "id": "1596411456",
+   "why": "gone"
   }
  ]
 }

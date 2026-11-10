@@ -1,30 +1,10 @@
 {
  "schema": 1,
- "version": 26,
- "updated": "2026-11-10T16:24:39Z",
+ "version": 27,
+ "updated": "2026-11-10T17:02:38Z",
  "category": "spam",
  "banFrom": 2,
  "accounts": [
-  {
-   "id": "1596411136",
-   "login": "codedtrovetspdxsa9qzlbz8i",
-   "reports": 1,
-   "first": "2026-11-03",
-   "last": "2026-11-03",
-   "reasons": [
-    "strong_keyword"
-   ]
-  },
-  {
-   "id": "1596411456",
-   "login": "correctivetributetyjhz",
-   "reports": 1,
-   "first": "2026-11-03",
-   "last": "2026-11-03",
-   "reasons": [
-    "strong_keyword"
-   ]
-  },
   {
    "id": "1597582655",
    "login": "paralyzedsponsorn",
