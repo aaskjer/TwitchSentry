@@ -26,7 +26,7 @@ Here it stands next to eleven other moderation tools that streamers commonly use
 | **Mix It Up** | all-round bot as a desktop app | locally (Windows) | the Mix It Up app | Twitch, YouTube, Kick and more | free |
 | **PhantomBot** | open-source bot with a web panel | self-hosted | a PC or server that keeps it running; Java comes bundled on most systems, Docker images exist | Twitch | free |
 
-> ¹ **Streamer.bot is built for Windows.** It may also run with Linux or Mac, but neither are officially supported.
+> ¹ **Streamer.bot is built for Windows.** It may also run on Linux or Mac, but neither is officially supported.
 
 ---
 
@@ -108,7 +108,7 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 - **It recognises spam by how it is built, not just by a word list**, so it keeps catching spam even when the wording changes from one wave to the next.
 - **The Spam Learner learns from what was removed** and reads spam lists that arrive through a community feed.
 - **Bots are shared between channels.** The Shared Bot List bans accounts that at least two channels reported, and only the account leaves the PC, never a chat message or the channel.
-- **Lurking bots are found too.** The LurkBot Filter looks up silent accounts in the viewer list that have a bot wave's shape, which Sery_Bot leaves to the streamer.
+- **Lurking bots are found too.** Silent Bot Protection looks up silent accounts in the viewer list that have a bot wave's shape, which Sery_Bot leaves to the streamer.
 - **Hate raids lock themselves down.** Hate Raid Protection switches Shield Mode on, clears the chat and can ban the whole wave as one `!tsundo` entry, then lifts itself after a quiet spell.
 - **Links can be checked for malware**, as an option, with VirusTotal and IPQualityScore.
 - **It answers AutoMod's queue and acts on ban evasion.** Unban requests arrive in Discord with the account's history from the logs beside them.

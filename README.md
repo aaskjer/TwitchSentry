@@ -49,7 +49,7 @@ every decision. It runs entirely inside Streamer.bot, with nothing to pay for an
 - 🌊 **Protection against waves.** [Raid Protection](Manual.md#raid-protection) arms itself after an incoming
   raid and watches for accounts posting the same line. [Hate Raid Protection](Manual.md#hate-raid-protection)
   locks chat down and lifts the lock again. [Follow Wave Protection](Manual.md#follow-wave-protection) judges
-  every account in a burst of follows, and the [LurkBot Filter](Manual.md#lurkbot-filter) catches silent
+  every account in a burst of follows, and the [Silent Bot Protection](Manual.md#silent-bot-protection) catches silent
   accounts from known bot waves.
 - 🧠 **Learns from your channel and others.** The [Shared Bot List](Manual.md#shared-bot-list) bans accounts
   other TwitchSentry channels identified as bots. The [Spam Learner](Manual.md#spam-learner) mines removed

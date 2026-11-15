@@ -19,7 +19,7 @@ not have**. Create these, or the area survives only as the `**Area:**` line in t
 - `raid-protection` - Raid Protection
 - `hate-raid-protection` - Hate Raid Protection
 - `follow-wave-protection` - Follow Wave Protection
-- `lurkbot-filter` - LurkBot Filter
+- `silent-bot-protection` - Silent Bot Protection
 - `word-filter` - Word Filter
 - `bot-list` - Shared Bot List
 - `links` - Link Filter and Check Link
