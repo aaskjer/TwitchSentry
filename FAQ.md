@@ -60,6 +60,7 @@ Commands are never scanned as ordinary chat. **Allow Chat Commands** and **Allow
 | `!tsundo @user` | Moderators | Takes back the last one for that viewer |
 | `!permit @user [seconds]` | Moderators | Grants a temporary link permit |
 | `!endpermit [@user]` | Moderators | Ends that viewer's permit, or all of them |
+| `!permitme` | Anyone | Asks for a link permit, while **Accept !permitme** is on |
 | `!checklink <url>` / `!linkcheck <url>` | Anyone | Scans a link with Check Link |
 | `!vote @user` | Anyone | Starts or joins a vote-kick |
 | `!endvote` | Moderators | Ends the running vote early |
@@ -148,7 +149,7 @@ Yes. No webhook URL or API key is ever written into one, and the same filter run
 
 **Q: What does it check?**
 
-*How* someone chats: account age, caps, repeated characters and words, emote spam, flooding or repeated messages, symbol spam, long messages, mass mentions, ASCII art and Zalgo text. Each check has its own switch; untick all of them to switch the filter off. A list of words you do not want in chat is the [Word Filter](Manual.md#word-filter)'s job.
+*How* someone chats: account age, caps, repeated characters and words, emote spam, flooding or repeated messages, symbol spam, long messages, mass mentions, ASCII art, Zalgo text and code injection. Each check has its own switch; untick all of them to switch the filter off. A list of words you do not want in chat is the [Word Filter](Manual.md#word-filter)'s job.
 
 People shout and spam emotes when something good happens, so someone who has chatted here before needs two signals on the same message; a newcomer to the channel can be acted on for one. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance.
 
@@ -156,7 +157,13 @@ People shout and spam emotes when something good happens, so someone who has cha
 
 **Q: Can it remove ASCII art?**
 
-Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of Braille dots (⣿⠄) or block and box characters (█▀═), whether a raid, a bot wave or an ordinary viewer pastes them. A message with at least **Min. Art Characters** of them (20, in Expert mode) is acted on as **Action On Violation** on General Settings says. It is a rule rather than a score, so **Require Two Signals** and the regular's discount do not apply and regulars are caught too. Exempted viewers and anyone with a permit are not.
+Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of Braille dots (⣿⠄) or block and box characters (█▀═), whether a raid, a bot wave or an ordinary viewer pastes them. A message with at least **Min. Art Characters** of them (20, in Expert mode) is acted on as **Action On Violation** on General Settings says. It is a rule rather than a score, so **Require Two Signals** and the regular's discount do not apply and regulars are caught too. Exempted viewers and anyone with a permit are not. It sits in the **Flood** card and only works while the Flood check is on, because pictures are mostly spammed.
+
+---
+
+**Q: Can someone run harmful code through chat?**
+
+Not through Twitch: it only ever shows a message. A chat overlay, a TTS voice or a Streamer.bot action that hands `%rawInput%` on to a program, a file path or a web page can run it, though. **Code Injection Check** (off by default) acts on the usual shapes of that: HTML and script tags, TTS tags, shell and PowerShell commands, Log4Shell's `${jndi:…}`, SQL, and paths like `../../` or `\\server\share`. Such a message is usually sent once rather than spammed, so it is scored like caps or emotes: with **Require Two Signals** on, a newcomer can be acted on for it alone and a regular needs more. It does not make a weak overlay or action safe, which only escaping the text there can, and in a chat that talks about programming it also catches ordinary code. Links to malware are Check Link's job.
 
 ---
 
@@ -373,6 +380,12 @@ Yes, with **Allow Self-Permit** and a Channel Points reward: point the reward's 
 
 ---
 
+**Q: Can viewers ask for one in chat?**
+
+Yes, with **Accept !permitme** on the Permit page: `!permitme` puts the request on the OBS dock's Permit list and on a `tsPermit` key, where you let it through or refuse it. A moderator's `!permit` for that viewer answers it too.
+
+---
+
 ## 🗳️ Voting
 
 **Q: How does vote-kick work?**
@@ -391,7 +404,7 @@ Yes: subscribers and VIPs globally, plus users and Streamer.bot groups on the ex
 
 **Q: What can it post?**
 
-Thirty-one kinds of event, each with its own switch: deletions, timeouts and bans; Word Filter catches, nukes and changes from the Twitch sync; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions, blocks and unban requests; malicious and suspicious scans; permits granted, expired and revoked; Spam Learner auto-applies; follow waves and blocked followers; LurkBots found; accounts banned from the Shared Bot List; hate raid lockdowns and listed accounts; Shield Mode; Offline Protection's chat modes; settings changed by chat command; and undos with `!tsundo`.
+Thirty-one kinds of event, each with its own switch: deletions, timeouts and bans; Word Filter catches, nukes and changes from the Twitch sync; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions, blocks and unban requests; malicious and suspicious scans; permits granted, expired and revoked; Spam Learner auto-applies; follow waves and blocked followers; Silent Bots found; accounts banned from the Shared Bot List; hate raid lockdowns and listed accounts; Shield Mode; Offline Protection's chat modes; settings changed by chat command; and undos with `!tsundo`.
 
 ---
 
