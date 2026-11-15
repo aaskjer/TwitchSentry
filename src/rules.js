@@ -47,7 +47,7 @@ export const REASONS = new Set([
   "offer", "search_redirect", "offer_quantity", "offer_repeated", "offer_catalogue", "campaign_tag",
   "assembly_instruction", "redemption_code", "voucher_code", "voucher_pattern",
   "known_day", "same_day",
-  "follow_wave", "raid_swarm", "hate_raid", "bot_wave",
+  "follow_wave", "raid_swarm", "hate_raid", "bot_wave", "text_wave",
 ]);
 
 // Accounts channels rely on; a misreport must never put one of them on everybody's ban list.
@@ -381,7 +381,7 @@ Twitch accounts that [TwitchSentry](https://github.com/${repo}) installations id
 | List | What put an account there |
 |---|---|
 | \`spam.json\` / \`spam.txt\` | Spam Filter: a decisive hit (known spam domain, spam keyword, conversation scam, ...) |
-| \`lurkbots.json\` / \`lurkbots.txt\` | LurkBot Filter: a bot-shaped name created on a known bot day, or with others the same day |
+| \`lurkbots.json\` / \`lurkbots.txt\` | Silent Bot Protection: a bot-shaped name created on a known bot day, or with others the same day |
 | \`botwaves.json\` / \`botwaves.txt\` | Follow Wave Protection follow waves, Raid Protection spam swarms and Hate Raid Protection waves |
 
 This branch is written automatically every few minutes and holds nothing else. Use it freely: the data is
