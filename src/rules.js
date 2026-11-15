@@ -381,7 +381,7 @@ Twitch accounts that [TwitchSentry](https://github.com/${repo}) installations id
 | List | What put an account there |
 |---|---|
 | \`spam.json\` / \`spam.txt\` | Spam Filter: a decisive hit (known spam domain, spam keyword, conversation scam, ...) |
-| \`lurkbots.json\` / \`lurkbots.txt\` | LurkBot Filter: a bot-shaped name created on a known bot day, or with others the same day |
+| \`lurkbots.json\` / \`lurkbots.txt\` | Silent Bot Protection: a bot-shaped name created on a known bot day, or with others the same day |
 | \`botwaves.json\` / \`botwaves.txt\` | Follow Wave Protection follow waves, Raid Protection spam swarms and Hate Raid Protection waves |
 
 This branch is written automatically every few minutes and holds nothing else. Use it freely: the data is
