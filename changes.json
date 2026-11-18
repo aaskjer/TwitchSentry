@@ -1,33 +1,8 @@
 {
  "schema": 1,
- "version": 28,
- "since": 25,
+ "version": 29,
+ "since": 27,
  "changes": [
-  {
-   "v": 26,
-   "at": "2026-11-10T16:24:39Z",
-   "op": "add",
-   "category": "spam",
-   "id": "1597582655",
-   "login": "paralyzedsponsorn",
-   "reports": 1
-  },
-  {
-   "v": 27,
-   "at": "2026-11-10T17:02:38Z",
-   "op": "remove",
-   "category": "spam",
-   "id": "1596411136",
-   "why": "gone"
-  },
-  {
-   "v": 27,
-   "at": "2026-11-10T17:02:38Z",
-   "op": "remove",
-   "category": "spam",
-   "id": "1596411456",
-   "why": "gone"
-  },
   {
    "v": 28,
    "at": "2026-11-17T16:26:39Z",
@@ -35,6 +10,15 @@
    "category": "spam",
    "id": "1597582655",
    "why": "gone"
+  },
+  {
+   "v": 29,
+   "at": "2026-11-18T17:42:38Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076701179",
+   "login": "hbdzs13",
+   "reports": 1
   }
  ]
 }
