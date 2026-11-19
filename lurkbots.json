@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 31,
- "updated": "2026-11-18T19:20:38Z",
+ "version": 32,
+ "updated": "2026-11-19T17:18:39Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -191,6 +191,16 @@
    "reports": 1,
    "first": "2026-11-18",
    "last": "2026-11-18",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076704608",
+   "login": "ubxtf50",
+   "reports": 1,
+   "first": "2026-11-19",
+   "last": "2026-11-19",
    "reasons": [
     "known_day"
    ]
