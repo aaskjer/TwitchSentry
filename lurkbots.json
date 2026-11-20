@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 32,
- "updated": "2026-11-19T17:18:39Z",
+ "version": 33,
+ "updated": "2026-11-20T17:14:38Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -211,6 +211,16 @@
    "reports": 1,
    "first": "2026-11-03",
    "last": "2026-11-03",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076699858",
+   "login": "urnay72",
+   "reports": 1,
+   "first": "2026-11-20",
+   "last": "2026-11-20",
    "reasons": [
     "known_day"
    ]
