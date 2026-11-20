@@ -33,7 +33,7 @@ body:
     attributes:
       label: TwitchSentry version
       description: Optional.
-      placeholder: v4.0.1
+      placeholder: v4.1.0-beta.1
 
   - type: checkboxes
     id: privacy
