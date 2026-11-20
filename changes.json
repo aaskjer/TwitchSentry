@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "version": 35,
+ "version": 36,
  "since": 27,
  "changes": [
   {
@@ -72,6 +72,15 @@
    "category": "lurkbot",
    "id": "1076699850",
    "login": "ejzts33",
+   "reports": 1
+  },
+  {
+   "v": 36,
+   "at": "2026-11-20T19:44:38Z",
+   "op": "add",
+   "category": "lurkbot",
+   "id": "1076704591",
+   "login": "yhlfm83",
    "reports": 1
   }
  ]
