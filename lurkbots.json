@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": 36,
- "updated": "2026-11-20T19:44:38Z",
+ "version": 37,
+ "updated": "2026-11-21T17:06:38Z",
  "category": "lurkbot",
  "banFrom": 2,
  "accounts": [
@@ -181,6 +181,16 @@
    "reports": 1,
    "first": "2026-10-22",
    "last": "2026-10-22",
+   "reasons": [
+    "known_day"
+   ]
+  },
+  {
+   "id": "1076701152",
+   "login": "qkopl44",
+   "reports": 1,
+   "first": "2026-11-21",
+   "last": "2026-11-21",
    "reasons": [
     "known_day"
    ]
