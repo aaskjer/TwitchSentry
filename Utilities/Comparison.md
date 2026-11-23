@@ -5,7 +5,7 @@ Here it stands next to eleven other moderation tools that streamers commonly use
 
 **[Overview](https://github.com/aaskjer/TwitchSentry/tree/main)** · **[Manual](../Manual.md)** · **[FAQ](../FAQ.md)** · **[Report a problem](https://github.com/aaskjer/TwitchSentry/issues)**
 
-> Compiled in October 2026 from each tool's public documentation, last checked on 17 October 2026. This page comes from the TwitchSentry project, so its weak spots are listed on purpose. Something wrong or out of date? [Open an issue](https://github.com/aaskjer/TwitchSentry/issues) and it gets corrected.
+> Compiled in October 2026 from each tool's public documentation, last checked on 23 November 2026. This page comes from the TwitchSentry project, so its weak spots are listed on purpose. Something wrong or out of date? [Open an issue](https://github.com/aaskjer/TwitchSentry/issues) and it gets corrected.
 
 ---
 
@@ -17,7 +17,7 @@ Here it stands next to eleven other moderation tools that streamers commonly use
 | **tawmae MODERATION TOOLS** | a toolkit for Streamer.bot, successor of MOD TOOLS | locally in Streamer.bot (Windows) ¹ | Streamer.bot, `TawmaeUI.dll`, SB's WebSocket server | Twitch | free |
 | **Moobot** | all-round chat bot | cloud | nothing; make its bot account a moderator | Twitch | free, paid tier |
 | **Fossabot** | all-round chat bot, common on large channels | cloud | nothing; make its bot account a moderator | Twitch, YouTube, Kick, X | free |
-| **Nightbot** | all-round chat bot, the classic | cloud | nothing; make its bot account a moderator | Twitch, YouTube, Trovo, SOOP | free |
+| **Nightbot** | all-round chat bot, the classic | cloud | nothing; make its bot account a moderator | Twitch, YouTube, SOOP | free |
 | **Sery_Bot** | protection bot against spam bots, hate raids and follow bots, with community extras | cloud | nothing; make its bot account a moderator | Twitch | free |
 | **StreamElements** | chat bot inside an overlay platform | cloud | an account on their site; make its bot account a moderator | Twitch, YouTube, Kick | free |
 | **Streamlabs Cloudbot** | chat bot inside the Streamlabs platform | cloud | a Streamlabs account; make its bot account a moderator | Twitch, YouTube, Kick, X | free |
@@ -36,7 +36,7 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 
 | | TS | taw | Moo | Fos | Ngt | Sery | SE | SL | Wize | Bloop | MIU | Pha |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Blocked words and phrases | ✓ ² | ✓ | ✓ | ✓ ³ | ✓ | – | ✓ ³ | ✓ ³ | ✓ | ✓ ³ | ✓ | ✓ ³ |
+| Blocked words and phrases | ✓ ² | ✓ | ✓ | ✓ ³ | ✓ ³ | – | ✓ ³ | ✓ ³ | ✓ | ✓ ³ | ✓ | ✓ ³ |
 | Link filter with allow list and permits | ✓ | ✓ | ✓ | ✓ | ✓ | ~ ⁶ | ✓ | ✓ | ✓ | ✓ | ~ | ✓ |
 | Caps, emotes, symbols | ✓ | ✓ | ✓ | ✓ | ✓ | – | ✓ | ✓ | ? | ✓ | ✓ | ✓ |
 | Repetition and flooding | ✓ | – | ✓ | ✓ | ✓ | – | ✓ | – | ? | ✓ | – | ✓ |
@@ -44,20 +44,22 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 | Fancy fonts, Zalgo, lookalike letters | ✓ | ~ ¹⁰ | ✓ | ✓ | – | – | ~ ⁸ | ~ ⁸ | ? | ✓ | – | – |
 | ASCII art | ✓ | ✓ | ~ ⁹ | – | – | ✓ | – | – | ? | – | – | – |
 | Ads and scams recognised by content, learning | ✓ | ~ ⁴ | – | – | – | ✓ ⁷ | – | – | – | ~ ¹¹ | – | – |
+| Bot waves: the same link or words from many new accounts | ✓ | – | – | – | – | – | – | – | – | – | – | – |
 | Raid and hate-raid protection | ✓ | ~ ⁵ | – | ~ ⁵ | – | ✓ | – | ~ ⁵ | ~ ⁵ | – | ~ | – |
 | Follow-bot protection | ✓ | ✓ | – | – | – | ✓ | – | – | ~ ¹² | ✓ | ~ | – |
 | Lurking bots in the viewer list | ✓ | – | – | – | – | – | – | – | – | – | – | – |
-| Bot list shared across channels | ✓ | – | ~ ¹³ | – | – | ✓ ⁷ | – | – | ✓ | – | – | – |
+| Viewbot alarm | ✓ ¹⁶ | – | – | – | – | – | – | – | – | – | – | – |
+| Bot list shared across channels | ✓ | – | ~ ¹³ | – | – | ✓ ⁷ | ~ ¹³ | – | ✓ | – | – | – |
 | Shield Mode switched for you | ✓ | ~ ⁵ | – | – | – | ✓ | – | – | – | ✓ | – | – |
 | Chat modes while offline | ✓ | ✓ | – | – | – | ✓ | – | – | – | – | – | – |
 | Account age | ✓ | ~ | – | – | – | – | – | – | – | ✓ | ✓ | – |
-| Nuke (one action on many messages) | ✓ | – | ~ ¹⁴ | ✓ | – | – | – | – | – | ✓ | – | – |
+| Nuke (one action on many messages) | ✓ | – | ~ ¹⁴ | ✓ | – | – | ✓ | – | – | ✓ | – | – |
 | Links scanned for malware (VirusTotal, IPQS) | ✓ | – | – | – | – | – | – | – | – | – | – | – |
 | AutoMod queue and ban evasion handled | ✓ | – | – | – | – | – | – | – | – | – | – | – |
-| Warnings and escalation | ✓ | ✓ | ✓ | ? | ✓ | – | ✓ | – | ✓ | ✓ | ✓ | ✓ |
+| Warnings and escalation | ✓ | ~ | ✓ | ? | ✓ | – | ✓ | – | ✓ | ✓ | ✓ | ✓ |
 | Undo (`!tsundo`) | ✓ | – | – | ~ ¹⁵ | – | – | – | – | – | ~ ¹⁵ | – | – |
-| Vote for action | ✓ | – | – | ✓ | – | – | – | – | – | – | – | – |
-| Fun Commands, timers, points, song requests | – | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Vote for action | ✓ | – | – | ✓ | – | – | ✓ | – | – | – | – | – |
+| Fun Commands, timers, points, song requests | – | ~ ¹⁷ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
  **✓** yes · **~** partly · **–** not found · **?** not documented.
 
@@ -66,7 +68,7 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 > **⁴** Sale and scam bots on their first message, through built-in rules.   
 > **⁵** Switched on by hand: tawmae from its dock, Fossabot through nukes, Streamlabs as Safe Mode, WizeBot as its emergency mode.   
 > **⁶** Removes scam and malicious links; no allow list or permits of your own.   
-> **⁷** On from the start: common spam and scam messages, through a known-bot list and pattern detection across its whole network.   
+> **⁷** On from the start: common spam and scam messages, through a central known-bot list and pattern detection.   
 > **⁸** Zalgo only.   
 > **⁹** Block characters, through its symbols filter.   
 > **¹⁰** Disguised spellings and stretched letters in blocked words and links.   
@@ -75,6 +77,8 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 > **¹³** Ban lists you share by hand, as a file or a link.   
 > **¹⁴** A newly blocked phrase is also applied to recent messages.   
 > **¹⁵** A nuke can be rolled back.   
+> **¹⁶** It tells you, sets a stream marker and logs every count for a report to Twitch; only Twitch can remove viewbots.   
+> **¹⁷** As separate tawmae extensions for Streamer.bot.   
 
 ---
 
@@ -82,15 +86,15 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 
 - **tawmae MODERATION TOOLS** replaced MOD TOOLS in October 2026 and is the closest relative, also built on Streamer.bot. It is stronger when an attack is on: beside queues it can pause channel point rewards, Speaker.bot and browser sources, and one OBS dock holds stream info, filters, polls, rewards, custom commands, a chat log and a list of suspicious users. Its spam filters are simpler, its hate raid protection is switched on by hand, and it needs an extra DLL.
 - **Moobot** has the most polished classic filters: twelve of them, intensity presets from Lenient to Strict, and warnings a viewer has to acknowledge. A batch tool bans, blocks or flags long lists of accounts, and those lists can be shared by link. Nothing documented against follow bots or raids.
-- **Fossabot** stays solid even on very large channels. Blocked terms with lookalike handling and regex nukes are its strong points, beside filters for links, caps, symbols, emotes, repeated messages and message height. A nuke can be rolled back, `!votekick` lets chat vote someone out, audit logs show what each moderator did, and custom roles decide who may do what. Nothing documented against follow bots or raids.
+- **Fossabot** stays solid even on very large channels. Blocked terms with lookalike handling and regex nukes are its strong points, beside filters for links, caps, symbols, emotes, repeated messages and message height. A nuke can be rolled back, `!votekick` lets chat vote someone out, and audit logs show what each moderator did. Nothing documented against follow bots or raids.
 - **Nightbot** is simple and dependable, with six basic filters. Enough for a small, calm chat.
-- **Sery_Bot** is protection first, used by more than 250,000 streamers since 2018, and its protection is on from the moment it joins: it removes spam bots, scam and malicious links and suspect ASCII art, stops hate raids, and silently blocks follow bots and removes their follows. `!offlinelock` switches Shield Mode on after the stream; lurker bots it leaves to you. Behind it sit a known-bot list and pattern detection across its whole network, which no tool running on one PC can match.
-- **StreamElements** has ten filters: banned words (groups, regex), caps, emotes, links (allow and block lists, `!permit`), one-man spam, paragraph length, repetition, symbols, Zalgo and even a language filter, with warnings and longer timeouts for repeat offenders. Nothing documented against follow bots or raids; moderation is one part of a bigger platform.
+- **Sery_Bot** is protection first, used by more than 250,000 streamers since 2018, and most of its protection is on from the moment it joins: it removes spam bots, scam and malicious links and suspect ASCII art, and stops hate raids. Switched on with `!followbots`, it also blocks follow bots and removes their follows after the stream. `!offlinelock` switches Shield Mode on after the stream; lurker bots it leaves to you. Behind it sit a central known-bot list and pattern detection, kept up to date as new threats appear, which no tool running on one PC can match.
+- **StreamElements** has ten filters: banned words (groups, regex), caps, emotes, links (allow and block lists, `!permit`), one-man spam, paragraph length, repetition, symbols, Zalgo and even a language filter, with warnings and longer timeouts for repeat offenders. `!nuke` acts on a phrase or pattern from the last five minutes, and a votekick lets chat time someone out. Nothing documented against follow bots or raids; moderation is one part of a bigger platform.
 - **Streamlabs Cloudbot** comes with Streamlabs and has seven mod tools: caps, symbols, links (allow and block lists, `!permit`), words (a default slur filter plus your own, regex), paragraphs, emotes and Zalgo, set all at once through presets from Minimum to Maximum. Against a hate raid there is Safe Mode, switched on by hand: it clears chat and the alert queue and puts chat into emote-, follower- and sub-only mode. Nothing documented against follow bots.
 - **WizeBot** is an all-round cloud bot that, by its own count, more than a million streamers use. On the protection side it lists anti-spam filters, banned words, link control with `!permit`, warning levels, ban lists shared within communities of channels, a FollowBots Checker that finds and removes bot follows, and an emergency mode for malicious raids, switched on by hand. Its documentation does not break the spam filters down, hence the question marks.
-- **Bloopbot** is a newer cloud bot for Twitch and Kick whose commands are built as flows. Its six filters (blocked words with regex, links, caps, symbols, emotes, repetition) see through spaced-out and lookalike letters, nukes can be rolled back, and a follow-bot pack switches Shield Mode on when a burst of follows comes mostly from accounts less than a week old. An AI moderation step comes with its Pro plan.
+- **Bloopbot** is a newer cloud bot for Twitch and Kick whose commands are built as flows. It has six filters (blocked words with regex, links, caps, symbols, emotes, repetition), on by default for new channels; the blocked-word and link filters see through spaced-out and lookalike letters. Nukes can be rolled back, and a follow-bot pack switches Shield Mode on when a burst of follows comes mostly from accounts less than a week old. An AI moderation step comes with its Pro plan.
 - **Mix It Up** runs locally like TwitchSentry, but across several platforms, with strikes, a minimum account age and a community word list. Its content filters are fairly basic.
-- **PhantomBot** is open source with a web panel and twelve filters, including a spam tracker and fake-purge detection. Its latest GitHub release is v3.23.0.3 from 16 October 2026.
+- **PhantomBot** is open source with a web panel and ten filters, including a spam tracker and fake-purge detection. Its latest GitHub release is v3.24.3.0 from 17 November 2026.
 
 **Not in the table:** Firebot, an open-source desktop bot, names chat moderation among its features but does not document it. BotRix is built around Kick first and documents no filters. Twitch's own AutoMod, Blocked Terms, Shield Mode and suspicious-user detection are on every channel already; the tools above work on top of them.
 
@@ -109,12 +113,15 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 - **The Spam Learner learns from what was removed** and reads spam lists that arrive through a community feed.
 - **Bots are shared between channels.** The Shared Bot List bans accounts that at least two channels reported, and only the account leaves the PC, never a chat message or the channel.
 - **Lurking bots are found too.** Silent Bot Protection looks up silent accounts in the viewer list that have a bot wave's shape, which Sery_Bot leaves to the streamer.
+- **Bot waves give themselves away.** When brand-new accounts send people to the same address, or accounts that are not regulars here post the very same words, that alone decides, however each message is worded. A single account cycling through a list of lines is caught too.
+- **Viewbots leave a record.** When the viewer count jumps without anybody new in chat and no raid explains it, you get an alert, a stream marker and every count in a log for a report to Twitch.
 - **Hate raids lock themselves down.** Hate Raid Protection switches Shield Mode on, clears the chat and can ban the whole wave as one `!tsundo` entry, then lifts itself after a quiet spell.
 - **Links can be checked for malware**, as an option, with VirusTotal and IPQualityScore.
+- **Code aimed at overlays and TTS can be stopped**, also as an option: HTML and script tags, TTS tags and shell commands are caught before a chat overlay or an action passes them on.
 - **It answers AutoMod's queue and acts on ban evasion.** Unban requests arrive in Discord with the account's history from the logs beside them.
 - **It builds on Twitch's own warning system**, with escalation steps such as a three-strikes rule that ends in a restriction, a timeout or a ban.
 - **Every timeout, ban and restriction can be taken back** with `!tsundo`, whole nukes included.
-- **Around it:** a handy test mode, Discord alerts, Windows notifications, shareable profiles, backup, restore and profile import, with no extra bot account and no external .dll needed.
+- **Around it:** a handy test mode, alerts through Discord, Stoat, GameVox, ntfy or Windows notifications, shareable profiles, backup, restore and profile import, with no extra bot account and no external .dll needed.
 - **Streamer.bot Deck, Elgato Stream Deck and OBS dock support** to switch profiles, modules, exemptions and test mode, arm Raid or Follow Wave Protection, start a hate raid lockdown or take the last action back.
 - **Chat can vote.** Viewers can get a rule breaker timed out or banned together, with every viewer counted once.
 
@@ -129,12 +136,12 @@ Columns: **TS** TwitchSentry · **taw** tawmae MODERATION TOOLS · **Moo** Moobo
 
 ### Sources
 
-- [tawmae MODERATION TOOLS](https://tawmae.xyz/moderation-tools), [MOD TOOLS (deprecated)](https://tawmae.xyz/mod-tools)
+- [tawmae MODERATION TOOLS](https://tawmae.xyz/moderation-tools), [extensions](https://tawmae.xyz/), [MOD TOOLS (deprecated)](https://tawmae.xyz/mod-tools)
 - [Moobot message filters](https://moo.bot/docs/twitch-chat-auto-mod-bot-message-filters), [batch banning, blocking and flagging](https://moo.bot/docs/banning-blocking-and-flagging-large-numbers-of-twitch-users)
 - [Fossabot](https://fossabot.com/), [docs](https://fossabot.com/docs), [nukes](https://fossabot.com/docs/nukes), [lookalikes](https://fossabot.com/docs/lookalikes), [!votekick](https://fossabot.com/docs/commands/default/votekick), [filter list in Bloopbot's migration guide](https://bloopbot.com/docs/coming-from-fossabot)
-- [Nightbot filters](https://docs.nightbot.tv/commands/filters), [Nightbot setup](https://docs.nightbot.tv/setup)
-- [Sery_Bot docs](https://docs.sery.bot/), [understanding protection](https://docs.sery.bot/understanding-protection/), [spam protection](https://docs.sery.bot/commands/spam/), [all commands](https://docs.sery.bot/commands/all-commands-az/), [FAQ](https://docs.sery.bot/faq/)
-- [StreamElements spam filters](https://docs.streamelements.com/chatbot/filters), [on Kick](https://support.streamelements.com/hc/en-us/articles/25794373983122-StreamElements-Chatbot-on-Kick), [on YouTube](https://support.streamelements.com/hc/en-us/articles/18486326016402-StreamElements-Chatbot-on-YouTube)
+- [Nightbot filters](https://docs.nightbot.tv/commands/filters), [blacklist](https://docs.nightbot.tv/spam-protection/blacklist), [Nightbot setup](https://docs.nightbot.tv/setup)
+- [Sery_Bot docs](https://docs.sery.bot/), [understanding protection](https://docs.sery.bot/understanding-protection/), [spam protection](https://docs.sery.bot/commands/spam/), [follow bots](https://docs.sery.bot/commands/removefollows/), [all commands](https://docs.sery.bot/commands/all-commands-az/), [FAQ](https://docs.sery.bot/faq/)
+- [StreamElements spam filters](https://docs.streamelements.com/chatbot/filters), [!nuke](https://docs.streamelements.com/chatbot/commands/default/nuke), [votekick](https://docs.streamelements.com/chatbot/modules/votekick), [platforms](https://docs.streamelements.com/chatbot/platforms)
 - [Streamlabs Cloudbot](https://streamlabs.com/cloudbot), [mod tools](https://streamlabs.com/content-hub/post/mod-tools-cloudbot-101), [Safe Mode](https://streamlabs.com/content-hub/post/introducing-safe-mode)
 - [WizeBot features](https://wizebot.tv/en/services), [commands](https://support.wizebot.tv/docs/commands)
 - [Bloopbot moderation](https://bloopbot.com/docs/moderation), [plans](https://bloopbot.com/docs/what-your-plan-includes)
