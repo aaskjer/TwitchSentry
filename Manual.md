@@ -36,7 +36,7 @@ The defaults are meant to be a working configuration, not a starting point you h
 
 | Dark Mode | White Mode |
 |:---:|:---:|
-| ![Dark mode](docs/screenshots/home.png) | ![White mode](docs/screenshots/home-light.png) |
+| ![Dark mode](Utilities/screenshots/home.png) | ![White mode](Utilities/screenshots/home-light.png) |
 
 Pages are grouped down the left: **Setup**, **Chat**, **Spam Filter**, **Bots & Raids**, **Moderation**, **Results** and **Help**. Click a group heading to collapse it.
 
@@ -138,7 +138,7 @@ to put on a key under *Switch From A Deck*.
 
 | Test Mode | Notices | OBS Dock |
 |:---:|:---:|:---:|
-| ![Test Mode](docs/screenshots/options.png) | ![Notices](docs/screenshots/options-notices.png) | ![OBS Dock](docs/screenshots/options-dock.png) |
+| ![Test Mode](Utilities/screenshots/options.png) | ![Notices](Utilities/screenshots/options-notices.png) | ![OBS Dock](Utilities/screenshots/options-dock.png) |
 
 ### Test mode
 
@@ -148,7 +148,7 @@ Switched on from the ☰ menu, from Home or under ☰ → *Options...* → *Test
 
 | Easy Mode | Expert Mode |
 |:---:|:---:|
-| ![Easy mode](docs/screenshots/spam-scoring.png) | ![Expert mode](docs/screenshots/spam-scoring-expert.png) |
+| ![Easy mode](Utilities/screenshots/spam-scoring.png) | ![Expert mode](Utilities/screenshots/spam-scoring-expert.png) |
 
 
 `Easy Mode` is active by default and meant for anyone new to TwitchSentry or to this kind of tool. It shows simplified settings with a **sensitivity slider**, from `Very relaxed` to `Very strict`, and a line under it that says what each step does. The Spam Learner's slider runs from `Very cautious` to `Very eager` instead.
@@ -163,7 +163,7 @@ Switched on from the ☰ menu, from Home or under ☰ → *Options...* → *Test
 
 ## General Settings
 
-<img width="926" alt="General Settings" src="docs/screenshots/general-settings.png" />
+<img width="926" alt="General Settings" src="Utilities/screenshots/general-settings.png" />
 
 Behaviour shared by every module: whether to speak through your bot account, whether to reply in chat, and whether a message may refer to a viewer by [their pronouns](#speaking-of-a-viewer-by-their-pronouns).
 
@@ -196,7 +196,7 @@ The notice strip speaks up when the badge is on but *Client ID* or *Client Secre
 
 The second tab of General Settings.
 
-<img width="926" alt="General Settings → Command Replies" src="docs/screenshots/general-settings-command-replies.png" />
+<img width="926" alt="General Settings → Command Replies" src="Utilities/screenshots/general-settings-command-replies.png" />
 
 What TwitchSentry answers when a moderator uses a [chat command](#chat-commands): confirmations, what `!tsundo` says, rejections and replies to input it could not read. The placeholders each reply accepts are listed under its box.
 
@@ -223,7 +223,7 @@ Alerts are queued and sent on a background thread, so moderation never waits on 
 alert goes out immediately; a burst arrives as one message carrying up to ten of them, from whichever
 modules raised them.
 
-<img width="926" alt="Notifications → Discord" src="docs/screenshots/notifications.png" />
+<img width="926" alt="Notifications → Discord" src="Utilities/screenshots/notifications.png" />
 
 Off by default: Discord, and under it one switch per kind of alert. The alerts go out through webhooks, through a bot of your own, or both: the *Discord Webhook* card has **Post Through Webhooks**, the *Discord Bot* card **Use The Bot**, so either way can be switched off without emptying its fields. A pasted webhook is covered with dots straight away, so the window is safe to show on stream; the eye beside it uncovers it.
 
@@ -363,7 +363,7 @@ Webhook* card; to keep the token but leave the bot unused, switch **Use The Bot*
 
 ### Stoat
 
-<img width="926" alt="Notifications → Stoat" src="docs/screenshots/notifications-stoat.png" />
+<img width="926" alt="Notifications → Stoat" src="Utilities/screenshots/notifications-stoat.png" />
 
 The same thirty-one alerts as on the Discord tab, each with a switch of its own for Stoat, starting as the
 Discord ones do. Stoat's messages have no fields, so an alert arrives as one block: the title, then
@@ -377,7 +377,7 @@ name of up to 32 characters, and the window warns you when you save a longer one
 
 ### GameVox
 
-<img width="926" alt="Notifications → GameVox" src="docs/screenshots/notifications-gamevox.png" />
+<img width="926" alt="Notifications → GameVox" src="Utilities/screenshots/notifications-gamevox.png" />
 
 The same thirty-one alerts again, with switches of their own for GameVox. An alert looks as it does in
 Discord, except that the date and time it came in on this PC are in its footer, since GameVox shows no timestamp of an
@@ -389,7 +389,7 @@ this tab has no name or picture to set. GameVox may only show a new post once th
 
 ### ntfy
 
-<img width="926" alt="Notifications → ntfy" src="docs/screenshots/notifications-ntfy.png" />
+<img width="926" alt="Notifications → ntfy" src="Utilities/screenshots/notifications-ntfy.png" />
 
 [ntfy](https://ntfy.sh) delivers a push notification to the ntfy app on a phone (Android or iOS) or to a
 browser tab, without an account. You send to a *topic*, and every device subscribed to it shows the alert. The
@@ -472,7 +472,7 @@ meanwhile, without holding up Discord or the other platforms; the Status Log say
 
 ### Windows
 
-<img width="926" alt="Notifications → Windows" src="docs/screenshots/notifications-windows.png" />
+<img width="926" alt="Notifications → Windows" src="Utilities/screenshots/notifications-windows.png" />
 
 A small Windows notification in the corner of the screen, kept afterwards in Windows' notification
 centre. It works while the settings window is closed, and carries TwitchSentry's icon once the window
@@ -504,7 +504,7 @@ Notifications*, where Streamer.bot has to be allowed to send notifications.
 
 | Easy Mode | Expert Mode |
 |:---:|:---:|
-| ![Easy mode](docs/screenshots/message-filter.png) | ![Expert mode](docs/screenshots/message-filter-expert.png) |
+| ![Easy mode](Utilities/screenshots/message-filter.png) | ![Expert mode](Utilities/screenshots/message-filter-expert.png) |
 
 
 Three tabs: **Checks**, **Chat Modes** and **Messages**. The checks look at how someone is chatting rather than at particular words: account age, ALL CAPS, emote spam, posting too fast or repeating yourself, and, if you switch them on, repeated words, symbol spam, walls of text, mass mentions, ASCII art, Zalgo text and code injection.
@@ -534,13 +534,13 @@ In expert mode every check's card also carries its **Score Hit**, the weight tha
 - **How Long It Stays On**: *Lift After*, counted from the last violation, so the mode lasts as long as the wave.
 - **What Happens**: a table with one row per kind of wave, showing which mode comes first and, with *Step Up If The Wave Continues* on, what is added if the wave keeps going. It redraws as you tick and names the modes it skips.
 
-<img width="926" alt="Message Filter, Chat Modes tab" src="docs/screenshots/message-filter-chat-modes.png" />
+<img width="926" alt="Message Filter, Chat Modes tab" src="Utilities/screenshots/message-filter-chat-modes.png" />
 
 The third tab, **Messages**, holds what the Message Filter says in chat, including the two chat mode notices.
 
 ## Link Filter
 
-<img width="926" alt="Link Filter" src="docs/screenshots/link-filter.png" />
+<img width="926" alt="Link Filter" src="Utilities/screenshots/link-filter.png" />
 
 Always on. A link from a viewer who is not exempt and holds no [permit](#permit) is removed the way **Default Action** on General Settings says, unless this page allows it. Two tabs: **Settings** and **Messages**.
 
@@ -559,7 +559,7 @@ They sit here rather than on the Permit page because they are not a permit: they
 
 ## Word Filter
 
-<img width="926" alt="Word Filter" src="docs/screenshots/word-filter.png" />
+<img width="926" alt="Word Filter" src="Utilities/screenshots/word-filter.png" />
 
 Your own list of words and phrases that are not welcome in your chat. It is its own action, **[TS] - Word Filter**, with the triggers *Twitch > Chat > Chat Message*, *Twitch > Moderation > Blocked Terms Added* and *Blocked Terms Deleted*, and the `!nuke` command.
 
@@ -579,7 +579,7 @@ Your own list of words and phrases that are not welcome in your chat. It is its 
 
 | Easy Mode | Expert Mode |
 |:---:|:---:|
-| ![Easy mode](docs/screenshots/spam-scoring.png) | ![Expert mode](docs/screenshots/spam-scoring-expert.png) |
+| ![Easy mode](Utilities/screenshots/spam-scoring.png) | ![Expert mode](Utilities/screenshots/spam-scoring-expert.png) |
 
 This does not judge a message by how many red flags it trips. It asks whether the message is built like an advert. An advert has parts: somewhere to go (**Destination**), something being sold (**Offer**), a way to redeem it (**Instrument**), the random `@handle` a spam bot signs with (**Tag**), and wording this channel has seen from spam before (**Signature**).
 
@@ -597,7 +597,7 @@ One part on its own is a coincidence — plenty of ordinary messages have one. T
 
 ## Known Patterns
 
-<img width="926" alt="Known Patterns" src="docs/screenshots/known-patterns.png" />
+<img width="926" alt="Known Patterns" src="Utilities/screenshots/known-patterns.png" />
 
 The actual active rules every module checks against — `spam.json`, editable in place. Spam domains, keywords, strong keywords, domain endings, custom patterns and voucher-code patterns, plus the four **conversation beats** the scam detector matches on, and the **hand-off phrases** and **service offers** it acts on for accounts new to your chat. Add your own here, or approve what the Learner suggests. Don't forget **Save**. Easy mode shows the spam domains, the keywords and the hand-off and service lists; strong keywords, domain endings, both pattern lists and the conversation beats are in expert mode.
 
@@ -609,7 +609,7 @@ A shared profile is too long for the link, so it goes onto your clipboard to pas
 
 ## Spam Learner
 
-<img width="926" alt="Spam Learner" src="docs/screenshots/spam-learner.png" />
+<img width="926" alt="Spam Learner" src="Utilities/screenshots/spam-learner.png" />
 
 Watches what actually got removed and works out which words, phrases and domain endings keep showing up in it, scoring each candidate by how much more often it appears in spam than in ordinary chat. New finds start as suggestions for you to review; they are promoted into the real rule list only once they have built a track record — either because you approve them, or automatically if **Auto Promote Trusted Rules** is on.
 
@@ -619,7 +619,7 @@ Only *content* violations feed it. The fact that somebody typed too fast tells y
 
 ## Suggestions
 
-<img width="926" alt="Suggestions" src="docs/screenshots/suggestions.png" />
+<img width="926" alt="Suggestions" src="Utilities/screenshots/suggestions.png" />
 
 Everything the Learner has proposed but not applied. Read the **Would hit** column first: that is how many messages from your own clean chat log the rule would have matched. Zero is what you want, and anything above zero is never auto-promoted. **Users** counts how many different people posted it, so one spammer repeating themselves counts once. Expert mode adds the statistics columns, among them **Discrim.**: how much more often it shows up in spam than in ordinary chat.
 
@@ -633,14 +633,14 @@ Everything the Learner has proposed but not applied. Read the **Would hit** colu
 
 | Easy Mode | Expert Mode |
 |:---:|:---:|
-| ![Easy mode](docs/screenshots/raid-protection.png) | ![Expert mode](docs/screenshots/raid-protection-expert.png) |
+| ![Easy mode](Utilities/screenshots/raid-protection.png) | ![Expert mode](Utilities/screenshots/raid-protection-expert.png) |
 
 The same idea as the Message Filter, but stricter, and only armed for a limited window right after an incoming raid. It adds **swarm detection**, which spots several different accounts posting near-identical messages at once and checks that line against your spam lists.
 Three tabs: **Detection** (sensitivity, the **Action** for a message it catches, what counts as a raid worth stopping and, in expert mode, the raid window, velocity, duplicate and swarm numbers), **Chat Modes** and **Messages**.
 
 **Chat Modes** works like the [Message Filter's](#message-filter), with three differences: **When It Starts** is one switch, *As Soon As A Raid Arrives* (otherwise the first mode goes on when a raid message crosses the score threshold); **Shield Mode** has its own card; and everything is lifted when the raid window ends rather than after a set time. A second wave of the same pattern moves up a step instead of re-picking the mode that is already running.
 
-<img width="926" alt="Raid Protection, Chat Modes tab" src="docs/screenshots/raid-protection-chat-modes.png" />
+<img width="926" alt="Raid Protection, Chat Modes tab" src="Utilities/screenshots/raid-protection-chat-modes.png" />
 
 **Pause Queues**, at the bottom of the Chat Modes tab, holds Streamer.bot action queues while a harmful raid is being stopped, so its spam never
 reaches text-to-speech or alerts. Tick **Pause Queues During A Raid** and enter the queue names, one per
@@ -659,7 +659,7 @@ starts the window over without adding a chat mode; `off` lifts what arming put o
 
 ## Hate Raid Protection
 
-<img width="926" alt="Hate Raid Protection" src="docs/screenshots/hate-raid-protection.png" />
+<img width="926" alt="Hate Raid Protection" src="Utilities/screenshots/hate-raid-protection.png" />
 
 **Off by default.** A hate raid is many accounts arriving at once to post harassment, through a Twitch raid or
 simply by typing into chat. Hate Raid Protection watches who writes in your chat for the first time, who follows,
@@ -726,7 +726,7 @@ lockdown again by itself. Three tabs: **Detection**, **Lockdown** and **Known Ha
 
 | Easy Mode | Expert Mode |
 |:---:|:---:|
-| ![Easy mode](docs/screenshots/follow-wave-protection.png) | ![Expert mode](docs/screenshots/follow-wave-protection-expert.png) |
+| ![Easy mode](Utilities/screenshots/follow-wave-protection.png) | ![Expert mode](Utilities/screenshots/follow-wave-protection-expert.png) |
 
 **Off by default.** It counts how many **different** accounts follow inside **Window (Seconds)**. Only once
 **Accounts Needed** is crossed does it look them up and compare their account data with your settings. An account
@@ -759,7 +759,7 @@ the window over; `off` ends it.
 
 ## Silent Bot Protection
 
-<img width="926" alt="Silent Bot Protection" src="docs/screenshots/silent-bot-protection.png" />
+<img width="926" alt="Silent Bot Protection" src="Utilities/screenshots/silent-bot-protection.png" />
 
 **Off by default, and on Report Only when switched on.** Bot networks keep accounts sitting in thousands
 of channels without ever writing, most likely to log the chat for keys or to build up history and aging. They are made in batches: the same day, the
@@ -806,7 +806,7 @@ Alarm** tab of Silent Bot Protection has its own switch and works with Silent Bo
 
 ## Shared Bot List
 
-<img width="926" alt="Shared Bot List" src="docs/screenshots/shared-bot-list.png" />
+<img width="926" alt="Shared Bot List" src="Utilities/screenshots/shared-bot-list.png" />
 
 **On by default.** Every TwitchSentry install reports the bots it is sure of to a shared, public list on
 GitHub ([the `botlist` branch](https://github.com/aaskjer/TwitchSentry/tree/botlist)), and bans what other
@@ -836,7 +836,7 @@ channels reported there.
 
 ## Offline Protection
 
-<img width="926" alt="Offline Protection" src="docs/screenshots/offline-protection.png" />
+<img width="926" alt="Offline Protection" src="Utilities/screenshots/offline-protection.png" />
 
 **Off by default.** Nothing in TwitchSentry runs once Streamer.bot is closed, but Twitch keeps chat modes on
 by itself. So the moment Twitch reports the stream offline, the modes ticked here go on: **Emote-Only**
@@ -862,7 +862,7 @@ These are off by default, except Permit. Each one is optional: the chat filters 
 
 ## AutoMod
 
-<img width="926" alt="AutoMod" src="docs/screenshots/automod.png" />
+<img width="926" alt="AutoMod" src="Utilities/screenshots/automod.png" />
 
 **Off by default**. Twitch's own AutoMod holds suspicious messages back and waits for a moderator to approve or deny each one. This answers them for you, by level and by category. Leave **AutoMod Categories** empty to act on everything Twitch holds, or list only the categories you care about.
 
@@ -872,7 +872,7 @@ These are off by default, except Permit. Each one is optional: the chat filters 
 
 ## Twitch Warn
 
-<img width="926" alt="Twitch Warn" src="docs/screenshots/twitch-warn.png" />
+<img width="926" alt="Twitch Warn" src="Utilities/screenshots/twitch-warn.png" />
 
 A warned viewer has to read and click through a warning screen before they can chat again, and Twitch keeps the count in their moderation history. **Warning Escalation** adds steps on top: warns accumulate, the last one before the threshold is a final warning, and the violation after that becomes a timeout, a ban or a **restriction**. A restricted viewer stays in chat, but everything they write from then on reaches only the moderators. Counts reset on their own after a quiet period.
 
@@ -885,7 +885,7 @@ A restriction and a monitoring are both lifted with `!tsundo`, from a deck butto
 
 ## Permit
 
-<img width="926" alt="Permit" src="docs/screenshots/permit.png" />
+<img width="926" alt="Permit" src="Utilities/screenshots/permit.png" />
 
 A time-limited exception for a viewer, so they can post a link without it getting deleted. `!permit @user [seconds]` grants one, `!endpermit @user` ends it, `!endpermit` on its own ends every active permit. Several people can hold one at the same time, each with its own countdown; a permit that is already running is never extended. They are deliberately forgotten on restart.
 **Max Permit Duration (Seconds)** caps whatever a moderator types, with a hard ceiling of 24 hours.
@@ -895,7 +895,7 @@ With **Accept !permitme** on (card *Chat Requests*), viewers can ask in chat as 
 
 ## Check Link
 
-<img width="926" alt="Check Link" src="docs/screenshots/check-link.png" />
+<img width="926" alt="Check Link" src="Utilities/screenshots/check-link.png" />
 
 
 Two jobs. Anyone can scan a URL on demand with `!checklink <url>`, and the second job scans every link posted in chat automatically, on top of the Link Filter's own rules.
@@ -903,7 +903,7 @@ It uses VirusTotal (required, free key) and, for a second opinion, IPQualityScor
 
 ## Voting
 
-<img width="926" alt="Voting" src="docs/screenshots/voting.png" />
+<img width="926" alt="Voting" src="Utilities/screenshots/voting.png" />
 
 Lets chat decide! `!vote @user` starts or joins a vote, and if enough *different* viewers vote within the time window, that person is timed out, or banned if you allow it. When the window runs out, the vote resets. Subscribers and VIPs can be exempted, there are separate exclusion lists for users and Streamer.bot groups, and **nobody above VIP can ever be voted out**.
 
@@ -917,15 +917,15 @@ The messages come in English, German, Spanish, French and Brazilian Portuguese: 
 
 | General Settings → Command Replies | Message Filter → Messages | Raid Protection → Messages |
 |:---:|:---:|:---:|
-| ![General Settings → Command Replies](docs/screenshots/general-settings-command-replies.png) | ![Message Filter → Messages](docs/screenshots/message-filter-messages.png) | ![Raid Protection → Messages](docs/screenshots/raid-protection-messages.png) |
+| ![General Settings → Command Replies](Utilities/screenshots/general-settings-command-replies.png) | ![Message Filter → Messages](Utilities/screenshots/message-filter-messages.png) | ![Raid Protection → Messages](Utilities/screenshots/raid-protection-messages.png) |
 | Link Filter → Messages | Spam Scoring → Messages | Spam Learner → Messages |
-| ![Link Filter → Messages](docs/screenshots/link-filter-messages.png) | ![Spam Scoring → Messages](docs/screenshots/spam-scoring-messages.png) | ![Spam Learner → Messages](docs/screenshots/spam-learner-messages.png) |
+| ![Link Filter → Messages](Utilities/screenshots/link-filter-messages.png) | ![Spam Scoring → Messages](Utilities/screenshots/spam-scoring-messages.png) | ![Spam Learner → Messages](Utilities/screenshots/spam-learner-messages.png) |
 | AutoMod → Messages | Twitch Warn → Messages | Permit → Messages |
-| ![AutoMod → Messages](docs/screenshots/automod-messages.png) | ![Twitch Warn → Messages](docs/screenshots/twitch-warn-messages.png) | ![Permit → Messages](docs/screenshots/permit-messages.png) |
+| ![AutoMod → Messages](Utilities/screenshots/automod-messages.png) | ![Twitch Warn → Messages](Utilities/screenshots/twitch-warn-messages.png) | ![Permit → Messages](Utilities/screenshots/permit-messages.png) |
 | Check Link → Messages | Voting → Messages | Word Filter → Messages |
-| ![Check Link → Messages](docs/screenshots/check-link-messages.png) | ![Voting → Messages](docs/screenshots/voting-messages.png) | ![Word Filter → Messages](docs/screenshots/word-filter-messages.png) |
+| ![Check Link → Messages](Utilities/screenshots/check-link-messages.png) | ![Voting → Messages](Utilities/screenshots/voting-messages.png) | ![Word Filter → Messages](Utilities/screenshots/word-filter-messages.png) |
 | Follow Wave Protection → Messages |  |  |
-| ![Follow Wave Protection → Messages](docs/screenshots/follow-wave-protection-messages.png) |  |  |
+| ![Follow Wave Protection → Messages](Utilities/screenshots/follow-wave-protection-messages.png) |  |  |
 
 ## Speaking of a viewer by their pronouns
 
@@ -963,7 +963,7 @@ word to change, so these viewers get the third form instead.
 
 ## Action Log
 
-<img width="926" alt="Action Log" src="docs/screenshots/action-log.png" />
+<img width="926" alt="Action Log" src="Utilities/screenshots/action-log.png" />
 
 Every action involving a viewer this month, filterable by module and by result, with the raw line underneath. This is the page for *what happened*. Each module brings its own columns, and **Details** holds whatever a line says that has no column of its own, such as the changes of a Word Filter sync. A removed message has a **Message** column, so you can judge the removal without opening another page.
 
@@ -971,19 +971,19 @@ Each month starts a new `action-log.txt` (and a new `spam-log.txt`). The month b
 
 ## Status Log
 
-<img width="926" alt="Status Log" src="docs/screenshots/status-log.png" />
+<img width="926" alt="Status Log" src="Utilities/screenshots/status-log.png" />
 
 What TwitchSentry has been saying about *itself*, pulled out of the Streamer.bot log: an API key still on its placeholder, a download that failed, an action Twitch refused. None of that is announced in chat, so this is the page to open when something quietly did not happen.
 
 ## Spam Log
 
-<img width="926" alt="Spam Log" src="docs/screenshots/spam-log.png" />
+<img width="926" alt="Spam Log" src="Utilities/screenshots/spam-log.png" />
 
 The **Spam Log** is every message the Spam Filter and the Link Filter removed this month, exactly as it was posted. The Spam Learner learns from it, and it is the page to open when you disagree with one of those removals. Earlier months are in `spam-log-2026-09.txt` and so on, beside it in the `Logs` folder.
 
 ## Clean Chat Log
 
-<img width="926" alt="Clean Chat Log" src="docs/screenshots/clean-chat-log.png" />
+<img width="926" alt="Clean Chat Log" src="Utilities/screenshots/clean-chat-log.png" />
 
 The **Clean Chat Log** is the opposite of the Spam Log: a sample of ordinary chat that was deliberately left alone, roughly one message in ten. The Spam Learner measures its candidates against it, which is what stops an everyday word from becoming a rule. Both pages have a search box and a per-account filter, and both show the full line under the list, because chat messages are usually wider than the row.
 
@@ -993,11 +993,11 @@ The **Clean Chat Log** is the opposite of the Spam Log: a sample of ordinary cha
 
 ## Manual
 
-<img width="926" alt="Manual" src="docs/screenshots/manual.png" />
+<img width="926" alt="Manual" src="Utilities/screenshots/manual.png" />
 
 Five tabs. **Getting Started** has five first steps, each with a link to its page, and what to do when something goes wrong. **Pages** holds the longer explanation behind every card with a **?** in its corner, page by page in the order of the sidebar. **Terms** explains the words the window uses, from *Score* to *Shield Mode*, A to Z with a filter, and links each one to the page and card it belongs to. **Commands** lists every [chat command](#chat-commands). **Deck Buttons** lists every argument a [deck key](#deck-buttons) or the OBS dock can send, each with the values it takes: the modules, the profiles (yours as well), the exemptions, the Always Allowed switches, where alerts go and the placeholders for a key's title.
 
-<img width="926" alt="Manual, Terms tab" src="docs/screenshots/manual-terms.png" />
+<img width="926" alt="Manual, Terms tab" src="Utilities/screenshots/manual-terms.png" />
 
 A **?** opens the Manual at its card's section on the Pages tab and lights it up for a moment; **← Back to …** at the top takes you back to the page you came from, scrolled to where you left it. Opened from the sidebar or from Home, the Manual has no back button.
 
@@ -1005,7 +1005,7 @@ The cards themselves stay short: an explanation of a sentence or two lives only 
 
 ## Backup & Restore
 
-<img width="926" alt="Backup & Restore" src="docs/screenshots/backup-restore.png" />
+<img width="926" alt="Backup & Restore" src="Utilities/screenshots/backup-restore.png" />
 
 Everything TwitchSentry knows about your channel is a handful of files in one folder, and two of those
 files are things nothing can give back: your settings and the replies you have written, and the
@@ -1052,7 +1052,7 @@ so it does not matter whether the settings window is open.
 The settings window lists the same on the [Manual page](#manual), tab **Deck Buttons**: every argument with the
 values it takes, your saved profiles included.
 
-<img width="926" alt="Manual, Deck Buttons tab" src="docs/screenshots/manual-deck-buttons.png" />
+<img width="926" alt="Manual, Deck Buttons tab" src="Utilities/screenshots/manual-deck-buttons.png" />
 
 ## Setting up a key
 
@@ -1154,7 +1154,7 @@ pure status key, give it `tsState` and `tsTitle` only.
 
 ## The OBS dock
 
-<img width="462" alt="The OBS dock" src="docs/screenshots/obs-dock.png" />
+<img width="462" alt="The OBS dock" src="Utilities/screenshots/obs-dock.png" />
 
 The same buttons inside OBS. **Set Up OBS Dock**, under ☰ → *Options...* → *OBS Dock* in the settings window,
 writes the dock's page into the TwitchSentry folder (`Dock\TwitchSentry-Dock.html`) and puts its address on the
@@ -1183,7 +1183,7 @@ runs, `[TS] - Deck` unless yours has another name.
   Permit** turns green while a viewer asks for a permit through Channel Points. The dock keeps them in OBS's own
   browser storage, so each dock has its own.
 
-  <img width="462" alt="The OBS dock's button list" src="docs/screenshots/obs-dock-buttons.png" />
+  <img width="462" alt="The OBS dock's button list" src="Utilities/screenshots/obs-dock-buttons.png" />
 - **Modules** (with **AutoMod Action**, Deny or Allow, **Silent Bot Action**, Report Only or Ban, and **Hate Raid Lockdown**, each on a
   rail in its page's colour under its module and faded while that module is off), **Notifications** (the main
   switch of each tab: Discord, Stoat, GameVox, ntfy and Windows), **Exemptions**, **Always Allowed**, **Recent
@@ -1287,7 +1287,7 @@ Moderator-only unless noted. TwitchSentry recognises each command by its Streame
 
 | Window | Chat Messages |
 |:---:|:---:|
-| ![Languages → Window](docs/screenshots/languages.png) | ![Languages → Chat Messages](docs/screenshots/chat-languages.png) |
+| ![Languages → Window](Utilities/screenshots/languages.png) | ![Languages → Chat Messages](Utilities/screenshots/chat-languages.png) |
 
 ☰ → **Change Language** has two tabs, and each language is chosen on its own: a channel can run the window in English and talk to its chat in German.
 
