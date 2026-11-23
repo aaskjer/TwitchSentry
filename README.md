@@ -14,6 +14,7 @@
   <img src="https://img.shields.io/badge/tool-streamer.bot-0b73ff" alt="Streamer.bot">
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow" alt="License: MIT"></a>
   <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://img.shields.io/badge/data-CC0_1.0-lightgrey?logo=creativecommons" alt="Data: CC0 1.0"></a>
+  <br>
   <img src="https://img.shields.io/github/v/release/aaskjer/TwitchSentry?label=stable" alt="Latest stable release">
   <img src="https://img.shields.io/github/v/release/aaskjer/TwitchSentry?include_prereleases&filter=*-beta*&label=pre-release" alt="Latest pre-release">
   <img src="https://img.shields.io/github/downloads/aaskjer/TwitchSentry/total" alt="Downloads">
