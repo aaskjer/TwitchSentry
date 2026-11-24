@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "generated": "2026-11-24T18:00:57Z",
+  "files": {
+    "spam.json": {
+      "version": 8,
+      "sha256": "c9e90a30a97de5d3a59b00d46aae13f1ae2fa19f45f5c9e995624767c7bc24ff",
+      "size": 7660
+    }
+  }
+}
