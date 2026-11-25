@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": 9,
+  "version": 10,
   "updated": "2026-11-25",
   "about": "Block-list entries TwitchSentry hands to every install's Machine Learning/spam.json, each exactly once. \"shipped\" names what releases shipped as built-in defaults: those are never handed over, and a share ticket does not offer them.",
   "lists": {
@@ -17,7 +17,9 @@
       "stream-promotion",
       "streamfollowers",
       "dovie",
-      "twltch"
+      "twltch",
+      "twitchstar",
+      "twitchmax"
     ],
     "strongKeywords": [
       "streamboo",
