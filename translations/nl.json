@@ -1,4 +1,5 @@
 {
+  "__example": "Test data: a complete Dutch file uploaded by hand while sharing was being set up, kept as an example. Fixes from tickets go into translations/<code>/<ticket>.json, and the accepted Dutch file is languages/nl.json.",
   "__languageName": "Nederlands",
   "__languageCode": "nl",
   "__version": 1,
