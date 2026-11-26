@@ -1,6 +1,7 @@
 {
+  "__example": "Test data: stored while the share form was being tried out, and kept as an example of a shared profile file. Its settings are not a recommendation.",
   "twitchSentryProfile": 1,
-  "name": "Test-Profil",
+  "name": "Test-Profil (example)",
   "twitchSentry": "v2.1.0",
   "purpose": "Test-Profil",
   "issue": 14,
