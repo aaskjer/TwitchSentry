@@ -24,10 +24,5 @@ the spam feed and the language files. Nothing here needs to be imported or copie
 
 ## How it gets here
 
-Only `tools\publish-feed.ps1` writes this branch, without a review in between, so it checks everything first: the
-spam feed against the spam corpus, each language file against its index. The files go up in one commit and the
-manifest in a second one that names it. The branch is only ever added to, so every commit a manifest named stays
-reachable.
-
 Translations reach this branch after they are accepted on `main`. To share one, use ☰ → *Share With Others...* in
 the settings window.
