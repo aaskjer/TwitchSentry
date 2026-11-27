@@ -1,0 +1,33 @@
+[
+  {
+    "code": "en",
+    "name": "English",
+    "version": 16
+  },
+  {
+    "code": "de",
+    "name": "Deutsch",
+    "version": 15
+  },
+  {
+    "code": "es",
+    "name": "Español",
+    "version": 14
+  },
+  {
+    "code": "fr",
+    "name": "Français",
+    "version": 14
+  },
+  {
+    "code": "pt-BR",
+    "name": "Português (Brasil)",
+    "version": 14
+  },
+  {
+    "code": "nl",
+    "name": "Nederlands",
+    "version": 6,
+    "by": "dutchyray"
+  }
+]

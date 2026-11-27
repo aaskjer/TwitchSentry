@@ -1,0 +1,27 @@
+[
+  {
+    "code": "en",
+    "name": "English",
+    "version": 3
+  },
+  {
+    "code": "de",
+    "name": "Deutsch",
+    "version": 3
+  },
+  {
+    "code": "es",
+    "name": "Español",
+    "version": 3
+  },
+  {
+    "code": "fr",
+    "name": "Français",
+    "version": 3
+  },
+  {
+    "code": "pt-BR",
+    "name": "Português (Brasil)",
+    "version": 3
+  }
+]
