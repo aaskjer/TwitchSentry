@@ -1,12 +1,78 @@
 {
   "schema": 1,
-  "generated": "2026-11-26T22:59:10Z",
-  "commit": "6cea387c4e4da243139900cd8af1174f04a2bffb",
+  "generated": "2026-11-27T07:29:20Z",
+  "commit": "4b27cd2a0b5bee8fac5a2d7584266c18acd3430b",
   "files": {
     "spam.json": {
       "version": 10,
       "sha256": "19bc55d442d502d722220d7ca1f0c049d74be058ed85c12de5d8814022700e9f",
       "size": 8216
+    },
+    "Language/de.json": {
+      "version": 15,
+      "sha256": "efdf376167b47932b86c66e4264012091908a81d1da546c0ff2a6865d6d032c6",
+      "size": 495390,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/en.json": {
+      "version": 16,
+      "sha256": "5066050705abd21d10849c493202dea3d4a5ed0425856aa66d0d0e2d923ee995",
+      "size": 460690,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/es.json": {
+      "version": 14,
+      "sha256": "ee170957aea32b7c0785b2e5e6f730b3637753be779278dec723213d32bb8b68",
+      "size": 491176,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/fr.json": {
+      "version": 14,
+      "sha256": "c0ec26e352b20714400239bd4915ad65171a82837fb6112da5b107409f70c53a",
+      "size": 501826,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/nl.json": {
+      "version": 6,
+      "sha256": "fabd4408d7a8668017153d0a9b5d381d38129457e6ba4ab41647039430803ace",
+      "size": 518220,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/pt-BR.json": {
+      "version": 14,
+      "sha256": "907637c5725dfcf440cabd34fc64a65bdf0001f105b2a6974aa5f209a43b8b8c",
+      "size": 486107,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/Chat/de.json": {
+      "version": 3,
+      "sha256": "677291266b8c0f44344effc1939b64054fa5d5a447ec3ba9b4d421175af611fb",
+      "size": 18724,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/Chat/en.json": {
+      "version": 3,
+      "sha256": "c523c287400112345f9adf2e653d29cbce6c62df8b03c004827650c88b63b14a",
+      "size": 17581,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/Chat/es.json": {
+      "version": 3,
+      "sha256": "3a62c5d778b540fe0507b879844b820d95ddaf02c866bf60a55238284f52ce01",
+      "size": 18523,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/Chat/fr.json": {
+      "version": 3,
+      "sha256": "52b99115fa5ae798d65d5a18b12673dd28430d88b29e845dde7c4fed3469e38a",
+      "size": 18958,
+      "minClient": "v4.1.0-beta.2"
+    },
+    "Language/Chat/pt-BR.json": {
+      "version": 3,
+      "sha256": "142a5ddc4ed44707365f2cf1d956bb990e3c04448f1e22d4a169ad37cbea9ed6",
+      "size": 18401,
+      "minClient": "v4.1.0-beta.2"
     }
   }
 }
