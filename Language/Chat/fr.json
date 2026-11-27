@@ -1,7 +1,7 @@
 {
   "__languageName": "Français",
   "__languageCode": "fr",
-  "__version": 2,
+  "__version": 3,
   "🧪 [TEST] {module} would {action} @{user} {duration} - {reason}": "🧪 [TEST] {module} : {action} pour @{user} {duration} - {reason}",
   "@{user}, your message was removed. Reason: Unauthorized link": "@{user}, ton message a été supprimé. Raison : lien non autorisé",
   "Posting unauthorized links": "Publication de liens non autorisés",
@@ -77,6 +77,7 @@
   "@{user}, that link is harmful. Please don't open it. Link check: ({scores} / {fraudscore})": "@{user}, ce lien est dangereux. Ne l'ouvre pas. Vérification du lien : ({scores} / {fraudscore})",
   "@{user}, that link looks suspicious, so be careful with it. Link check: ({scores} / {fraudscore})": "@{user}, ce lien semble suspect, alors fais attention. Vérification du lien : ({scores} / {fraudscore})",
   "@{user}, there is no link in that message to check.": "@{user}, il n'y a aucun lien à vérifier dans ce message.",
+  "@{user}, that message holds more than just a link, so it was not checked. Send the command with one link and nothing else.": "@{user}, ce message contient plus qu'un simple lien, il n'a donc pas été vérifié. Envoie la commande avec un seul lien et rien d'autre.",
   "@{user}, link check: Safe! ({scores})": "@{user}, vérification du lien : sûr ! ({scores})",
   "@{user}, link check: Unknown! ({scores})": "@{user}, vérification du lien : inconnu ! ({scores})",
   "@{user}, link check timed out — analysis did not complete in time. Please try again later": "@{user}, la vérification du lien a pris trop de temps et n'a pas abouti. Réessaie plus tard",

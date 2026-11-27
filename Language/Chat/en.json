@@ -1,7 +1,7 @@
 {
   "__languageName": "English",
   "__languageCode": "en",
-  "__version": 2,
+  "__version": 3,
   "🧪 [TEST] {module} would {action} @{user} {duration} - {reason}": "🧪 [TEST] {module} would {action} @{user} {duration} - {reason}",
   "@{user}, your message was removed. Reason: Unauthorized link": "@{user}, your message was removed. Reason: Unauthorized link",
   "Posting unauthorized links": "Posting unauthorized links",
@@ -77,6 +77,7 @@
   "@{user}, that link is harmful. Please don't open it. Link check: ({scores} / {fraudscore})": "@{user}, that link is harmful. Please don't open it. Link check: ({scores} / {fraudscore})",
   "@{user}, that link looks suspicious, so be careful with it. Link check: ({scores} / {fraudscore})": "@{user}, that link looks suspicious, so be careful with it. Link check: ({scores} / {fraudscore})",
   "@{user}, there is no link in that message to check.": "@{user}, there is no link in that message to check.",
+  "@{user}, that message holds more than just a link, so it was not checked. Send the command with one link and nothing else.": "@{user}, that message holds more than just a link, so it was not checked. Send the command with one link and nothing else.",
   "@{user}, link check: Safe! ({scores})": "@{user}, link check: Safe! ({scores})",
   "@{user}, link check: Unknown! ({scores})": "@{user}, link check: Unknown! ({scores})",
   "@{user}, link check timed out — analysis did not complete in time. Please try again later": "@{user}, link check timed out — analysis did not complete in time. Please try again later",

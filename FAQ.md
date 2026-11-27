@@ -52,16 +52,16 @@ The **?** in a card's corner opens the **Manual** page (under Help) at that card
 
 ## 🧭 Commands
 
-Commands are never scanned as ordinary chat. **Allow Chat Commands** and **Allow Whisper Commands** on General Settings decide where they are accepted. `!tsundo` in chat works even with **Allow Chat Commands** off: that switch is about editing the lists.
+A moderator's command is never scanned as ordinary chat, because moderators are exempt from the filters; for a viewer's, see *Can a command be flagged as a violation?* under Message Filter. **Allow Chat Commands** and **Allow Whisper Commands** on General Settings decide where they are accepted. `!tsundo` in chat works even with **Allow Chat Commands** off: that switch is about editing the lists.
 
 | Command | Who | What it does |
 |---|---|---|
-| `!tsundo` | Moderators | Takes back TwitchSentry's last timeout, ban, restriction, monitoring or follow block, whichever module did it |
+| `!tsundo` | Moderators | Takes back TwitchSentry's last timeout, ban, restriction, monitoring or block, whichever module did it, or its last batch: a whole nuke, a wave, a Silent Bot round, up to 40 accounts of a lockdown |
 | `!tsundo @user` | Moderators | Takes back the last one for that viewer |
 | `!permit @user [seconds]` | Moderators | Grants a temporary link permit |
 | `!endpermit [@user]` | Moderators | Ends that viewer's permit, or all of them |
 | `!permitme` | Anyone | Asks for a link permit, while **Accept !permitme** is on |
-| `!checklink <url>` / `!linkcheck <url>` | Anyone | Scans a link with Check Link |
+| `!checklink <url>` | Anyone | Scans a link with Check Link |
 | `!vote @user` | Anyone | Starts or joins a vote-kick |
 | `!endvote` | Moderators | Ends the running vote early |
 | `!wladd` / `!wlremove` / `!wllist` | Moderators | Whitelisted Domains |
@@ -72,6 +72,11 @@ Commands are never scanned as ordinary chat. **Allow Chat Commands** and **Allow
 | `!vegadd` / `!vegremove` / `!veglist` | Moderators | Vote-Excluded Groups |
 | `!kwadd` / `!kwremove` / `!kwlist` | Moderators | Spam Keywords |
 | `!tldadd` / `!tldremove` / `!tldlist` | Moderators | Spaced-URL TLDs |
+| `!bwadd <word> [2h] [twitch] [delete\|timeout\|ban]` / `!bwremove` / `!bwlist` | Moderators | Blocked Words on the Word Filter page; `!bwlist` says only how many there are, unless whispered |
+| `!nuke <phrase> [seconds]` | Moderators | Removes every message with that phrase from the last stretch of chat, by default with a timeout for each sender |
+| `!hateraid [on\|off]` | Moderators | Starts or lifts a Hate Raid Protection lockdown; without on or off it toggles |
+| `!antiraid [on\|off]` | Moderators | Arms or disarms Raid Protection as an incoming raid does; without on or off it toggles |
+| `!followwave [on\|off]` | Moderators | Arms or disarms Follow Wave Protection as a follow wave does; without on or off it toggles |
 
 ---
 
@@ -103,7 +108,7 @@ Yes, it shows the name and **On** or **Off** after every press, or words of your
 
 **Q: Can I use the buttons inside OBS?**
 
-Yes. ☰ → **Options...** → *OBS Dock* → **Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**, with *TwitchSentry* as the name. OBS takes a dock only from that menu, so TwitchSentry cannot add it for you. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has six big buttons you set up yourself with ✎: a profile, a module, an exemption, an Always Allowed link, AutoMod Action, Test Mode, Raid Protection or Undo each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
+Yes. ☰ → **Options...** → *OBS Dock* → **Set Up OBS Dock** writes a dock page and puts its address on the clipboard; in OBS paste it under **Docks → Custom Browser Docks**, with *TwitchSentry* as the name. OBS takes a dock only from that menu, so TwitchSentry cannot add it for you. It needs Streamer.bot's **WebSocket Server** (Servers/Clients) running. Besides the panic button and every switch it has up to 24 buttons you set up yourself with ✎ (six until you change **Buttons Shown**): Test Mode, the panic button, Undo, a profile, a module's switch or one of its functions (arming Raid or Follow Wave Protection, a hate raid lockdown, AutoMod's or Silent Bot Protection's action, granting, refusing or revoking permits), a Notifications tab, an exemption or an Always Allowed switch each. Details: [Manual → The OBS dock](Manual.md#the-obs-dock).
 
 ---
 
@@ -151,7 +156,7 @@ Yes. No webhook URL or API key is ever written into one, and the same filter run
 
 *How* someone chats: account age, caps, repeated characters and words, emote spam, flooding or repeated messages, symbol spam, long messages, mass mentions, ASCII art, Zalgo text and code injection. Each check has its own switch; untick all of them to switch the filter off. A list of words you do not want in chat is the [Word Filter](Manual.md#word-filter)'s job.
 
-People shout and spam emotes when something good happens, so someone who has chatted here before needs two signals on the same message; a newcomer to the channel can be acted on for one. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance.
+People shout and spam emotes when something good happens, so someone who has chatted here before needs two signals on the same message; a newcomer to the channel can be acted on for one. A young account only makes the other signals weigh more, and regulars need more against them than strangers. **Require Two Signals** and **Act On Account Age Alone** under Expert Tuning change that balance; with the latter on, a young account can be acted on by itself from the *Strict* step of the slider up.
 
 ---
 
@@ -163,19 +168,19 @@ Yes, with **ASCII Art Check** on (it is off by default): pictures drawn out of B
 
 **Q: Can someone run harmful code through chat?**
 
-Not through Twitch: it only ever shows a message. A chat overlay, a TTS voice or a Streamer.bot action that hands `%rawInput%` on to a program, a file path or a web page can run it, though. **Code Injection Check** (off by default) acts on the usual shapes of that: HTML and script tags, TTS tags, shell and PowerShell commands, Log4Shell's `${jndi:…}`, SQL, and paths like `../../` or `\\server\share`. Such a message is usually sent once rather than spammed, so it is scored like caps or emotes: with **Require Two Signals** on, a newcomer can be acted on for it alone and a regular needs more. It does not make a weak overlay or action safe, which only escaping the text there can, and in a chat that talks about programming it also catches ordinary code. Links to malware are Check Link's job.
+Not through Twitch: it only ever shows a message. A chat overlay, a TTS voice or a Streamer.bot action that hands `%rawInput%` on to a program, a file path or a web page can run it, though. **Code Injection Check** (on by default) acts on the usual shapes of that: HTML and script tags, TTS tags, shell and PowerShell commands, Log4Shell's `${jndi:…}`, SQL, and paths like `../../` or `\\server\share`. Such a message is usually sent once rather than spammed, so it is scored like caps or emotes: with **Require Two Signals** on, a newcomer can be acted on for it alone and a regular needs more. It does not make a weak overlay or action safe, which only escaping the text there can, and in a chat that talks about programming it also catches ordinary code. Links to malware are Check Link's job.
 
 ---
 
 **Q: Can a command be flagged as a violation?**
 
-A moderator's or the broadcaster's never: they are exempt from every filter. A viewer's `!checklink <link>` is left to Check Link while Check Link is on, and a malicious or suspicious result removes it. Any other message is checked whatever word it starts with, so a command in front of a link is not a way past the filters.
+A moderator's or the broadcaster's never: they are exempt from every filter. A viewer's `!checklink <link>` is left to Check Link while Check Link is on, as long as everything after the command is exactly one valid link, and a malicious or suspicious result removes it. With anything else after it, TwitchSentry answers that the message holds more than a link, scans nothing, and every filter checks the message as usual. Any other message is checked whatever word it starts with, so a command in front of a link is not a way past the filters.
 
 ---
 
 **Q: What are chat modes?**
 
-A chat-wide safety net on the Message Filter's **Chat Modes** tab: when enough *different* viewers trigger violations in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What Happens** table shows the order for the boxes you have ticked. Emote-only and sub-only are opt-in.
+A chat-wide safety net on the Message Filter's **Chat Modes** tab: when the Message Filter acts on enough *different* viewers in a short time, a Twitch chat mode (slow, follower-only, emote-only or sub-only) is switched on and lifted again once things calm down. The mode depends on the kind of wave, and the **What Happens** table shows the order for the boxes you have ticked. Emote-only and sub-only are opt-in.
 
 ---
 
@@ -201,7 +206,7 @@ The "sales chat": friendly questions, then "your channel looks empty", then a su
 
 **Q: Where do the block lists come from, and do they update?**
 
-From the Spam Learner, the public Stop The Bots list, and the **spam feed**: with **Receive New Entries** on (Known Patterns page), new entries arrive every three hours. Each arrives once, so an entry you delete stays deleted, and the feed only touches the plain-text lists, never your custom or voucher patterns. **Share With Other Streamers...** on the same card offers your own entries for everyone.
+From the Spam Learner, the public Stop The Bots list, and the **spam feed**: with **Receive New Entries** on (Known Patterns page), new entries arrive within about a quarter of an hour, each file checked against its published SHA256 first. Each arrives once, so an entry you delete stays deleted, and the feed never touches your custom or voucher patterns. New detection patterns from the feed watch for a day before they count, and never act on their own. **Share With Other Streamers...** on the same card offers your own entries for everyone.
 
 ---
 
@@ -239,19 +244,19 @@ New suggestions start on probation and become trusted after **Probation Runs Req
 
 **Q: What is Decay?**
 
-Cleanup of rules and suggestions that no longer turn up in recent violations. Entries starting with `!` are protected.
+Cleanup of rules and suggestions that no longer turn up in recent violations. With **Decay Enabled** on, suggestions are always cleaned up, active rules in `spam.json` only while **Auto Promote Trusted Rules** is on as well, and never a rule the spam feed brought or TwitchSentry shipped. Entries starting with `!` are protected too, while **Protect Manual Rules** is on (the default).
 
 ---
 
 **Q: Where can I see what was removed?**
 
-Under Results: the **Action Log** shows each action with the message it was taken on, and the **Spam Log** lists every message the Spam Filter and the Link Filter removed this month; **Clean Chat Log** is the sample of normal chat the learner compares against. The two message logs have search and a per-account filter.
+Under Results: the **Action Log** shows each action with the message it was taken on, and the **Spam Log** lists every message the Spam Filter and the Link Filter removed; **Clean Chat Log** is the sample of normal chat the learner compares against. Every log page has a day list at the top, and the two message logs have search and a per-account filter.
 
 ---
 
-**Q: Where did last month's log go?**
+**Q: Where did yesterday's log go?**
 
-Each month starts a new `action-log.txt` and `spam-log.txt`. The previous month is moved aside in the same `Logs` folder as `action-log-2026-09.txt` / `spam-log-2026-09.txt` and so on. Nothing is deleted, so you can remove old months by hand whenever you like.
+Each day starts a new `action-log.txt` and `spam-log.txt` at midnight. The day before is moved aside in the same `Logs` folder as `action-log-2026-11-24.txt` / `spam-log-2026-11-24.txt` and so on, and the day list at the top of each log page reads them. Nothing is deleted, so you can remove old days by hand whenever you like.
 
 ---
 
@@ -298,13 +303,13 @@ It gets your configured action. With **Check Every Posted Link** on, it is also 
 
 **Q: How is it different from the Message Filter?**
 
-It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once. By default a swarm only counts when that line matches your spam lists, and then it is enough to act. It has its own slider and its own **Chat Modes** tab, with *Step Up If The Wave Continues*. A deck button (`tsRaid`) arms it without a raid.
+It arms itself for a while after an incoming raid, is stricter, and adds **swarm detection**: several accounts posting near-identical messages at once. By default a swarm only counts when that line matches your spam lists or carries a link that is not whitelisted, and then it is enough to act. It has its own slider and its own **Chat Modes** tab, with *Step Up If The Wave Continues*. A deck button (`tsRaid`) arms it without a raid.
 
 ---
 
 **Q: Which chat mode does a raid get?**
 
-The dominant pattern decides: emote spam prefers slow mode, fresh accounts follower-only, caps spam emote-only. Only modes you enabled are used.
+The dominant pattern decides: emote spam prefers slow mode, the same text from many accounts follower-only, caps or character spam emote-only, and a mix slow mode. Only modes you enabled are used; with *Step Up If The Wave Continues* on, the next one is added if the wave keeps going. The **What Happens** table on the Chat Modes tab shows the order.
 
 ---
 
@@ -320,13 +325,13 @@ It watches follows. When enough different accounts follow within a short window 
 
 **Q: What does it do?**
 
-It answers the messages Twitch's AutoMod holds back, by the level and categories you set, so nobody has to sit in the queue. **AutoMod Categories** limits it to certain categories; empty means all.
+It answers the messages Twitch's AutoMod holds back, by the level and categories you set. **AutoMod Categories** limits it to certain categories; empty means all.
 
 ---
 
 **Q: Held messages are still waiting. What did I miss?**
 
-The switch in the AutoMod page header. It ships off.
+The switch in the AutoMod page header. It ships off, and with it on, a message rated below **AutoMod Min Level** or outside **AutoMod Categories** still waits. Some held messages wait for your moderators on purpose, whatever that switch says: a held link the Link Filter allows, one under a permit and an exempt viewer's link, and a message held for one of your Blocked Terms that no Word Filter entry matches, or that comes from an exempt viewer. TwitchSentry never approves a held link or a held Blocked Term.
 
 ---
 
@@ -334,7 +339,7 @@ The switch in the AutoMod page header. It ships off.
 
 **Q: Which services does it use?**
 
-VirusTotal (required, free key) and optionally IPQualityScore. IPQS flags links from a fraud score of 75, or from 40 for recently registered domains, which are a common phishing sign.
+VirusTotal (free key) and, with **Use IPQS**, IPQualityScore; either of the two on its own is enough, both together give a second opinion. IPQS flags links from a fraud score of 75, or from 40 for recently registered domains, which are a common phishing sign.
 
 ---
 
@@ -348,9 +353,9 @@ Twitch's own warning screen: the viewer has to click through it before they can 
 
 **Q: How does escalation work?**
 
-On the **Warning Escalation** card: after **Warns Before Final Warning** warnings the viewer gets a final warning, and the next violation gets the **Escalation Action**: Timeout, Ban or **Restrict** (they stay in chat, but only moderators see their messages). Counts reset after **Warn Count Reset (Hours)** without a violation.
+On the **Warning Escalation** card: each violation gets a warning, the one that reaches **Warns Before Final Warning** is the final warning, and the next violation gets the **Escalation Action**: Timeout, Ban or **Restrict** (they stay in chat, but only moderators see their messages). Counts reset after **Warn Count Reset (Hours)** without a violation.
 
-**Monitor From The Final Warning** also flags the viewer as monitored on Twitch with the final warning. **Count Warnings From Moderators** counts a `/warn` from your mods towards the same ladder; it needs the trigger *Twitch > Moderation > Warned User* on the TwitchWarn action. Restrictions and monitoring are lifted with `!tsundo`.
+**Monitor From The Final Warning** also flags the viewer as monitored on Twitch with the final warning. **Count Warnings From Moderators** counts a `/warn` from your mods towards the same ladder. Restrictions and monitoring are lifted with `!tsundo`.
 
 ---
 
@@ -376,7 +381,7 @@ Yes, each with its own countdown. A running permit is never extended: end it wit
 
 **Q: Can viewers grant themselves one?**
 
-Yes, with **Allow Self-Permit** and a Channel Points reward: point the reward's trigger at the Permit action and put its ID in **Self-Permit Reward ID**. Turn the reward's **Skip Reward Requests Queue** OFF, or TwitchSentry can't refund points when a redemption can't become a permit.
+Yes, with **Allow Self-Permit** and a Channel Points reward: put its ID in **Self-Permit Reward ID**. Turn the reward's **Skip Reward Requests Queue** OFF, or TwitchSentry can't refund points when a redemption can't become a permit.
 
 ---
 
@@ -404,7 +409,7 @@ Yes: subscribers and VIPs globally, plus users and Streamer.bot groups on the ex
 
 **Q: What can it post?**
 
-Thirty-one kinds of event, each with its own switch: deletions, timeouts and bans; Word Filter catches, nukes and changes from the Twitch sync; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions, blocks and unban requests; malicious and suspicious scans; permits granted, expired and revoked; Spam Learner auto-applies; follow waves and blocked followers; Silent Bots found; accounts banned from the Shared Bot List; hate raid lockdowns and listed accounts; Shield Mode; Offline Protection's chat modes; settings changed by chat command; and undos with `!tsundo`.
+Each kind of event has its own switch: deletions, timeouts and bans; Word Filter catches, nukes and changes from the Twitch sync; warnings and escalations; raid arming and raid actions; AutoMod denials, allows, restrictions, blocks and unban requests; malicious and suspicious scans; permits granted, expired and revoked; Spam Learner auto-applies; new spam feed patterns; follow waves and blocked followers; Silent Bots found and viewer spikes; hate raid lockdowns and listed accounts; accounts banned from the Shared Bot List; Offline Protection's chat modes; the summary at stream end; Shield Mode; settings changed by chat command; and undos, from `!tsundo` or a deck button.
 
 ---
 
@@ -428,7 +433,7 @@ No. Alerts are queued, and a burst is merged into messages of up to ten.
 
 **Q: Can TwitchSentry tell me things on the desktop?**
 
-Yes, on the **Windows** tab of the **Notifications** page (Setup): a new TwitchSentry release and a deck button that could not do what it was asked (both on by default), and what a deck button just did (off by default). They show while the settings window is closed too. A profile never carries these switches.
+Yes, on the **Windows** tab of the **Notifications** page (Setup). Its own switches cover a new TwitchSentry release or translation, a deck button that could not do what it was asked, and what a deck button just did; below them come the same switches as on the Discord tab, which work without Discord. On by default: new releases, deck button problems, Silent Bots found, new feed patterns and the summary at stream end; the rest start off. They show while the settings window is closed too. A profile never carries these switches.
 
 ---
 
@@ -448,7 +453,7 @@ No setting lives there: it reports, and a click on a module's chip or a line ope
 
 **Q: What do the numbers count?**
 
-*Activity* counts lines in `action-log.txt` (today, the last seven days, all time; all time includes the earlier months' `action-log-<yyyy-MM>.txt` files); the details below it cover the last seven days. *What It Knows* counts the active block lists and waiting suggestions.
+*Activity* counts lines in `action-log.txt` (today, the last seven days, all time; all time includes the earlier days' `action-log-<yyyy-MM-dd>.txt` files); the details below it cover the last seven days. *What It Knows* counts the active block lists and waiting suggestions.
 
 ---
 
