@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "version": 8,
-  "updated": "2026-11-15",
+  "version": 10,
+  "updated": "2026-11-25",
   "about": "Block-list entries TwitchSentry hands to every install's Machine Learning/spam.json, each exactly once. \"shipped\" names what releases shipped as built-in defaults: those are never handed over, and a share ticket does not offer them.",
   "lists": {
     "spamDomains": [
@@ -16,7 +16,10 @@
       "smmmega",
       "stream-promotion",
       "streamfollowers",
-      "dovie"
+      "dovie",
+      "twltch",
+      "twitchstar",
+      "twitchmax"
     ],
     "strongKeywords": [
       "streamboo",
@@ -56,11 +59,18 @@
       "think you've seen everything",
       "limit your entertainment options"
     ],
+    "beatRapport": [
+      "genuinely got crazy potential",
+      "real love for your stream"
+    ],
     "beatSolution": [
       "logo",
       "emotes",
       "sub badges",
       "overlay"
+    ],
+    "beatPitch": [
+      "would you like to see my work"
     ],
     "handoffPhrases": [
       "add me on discord",
@@ -80,7 +90,13 @@
       "schreib mir auf discord",
       "melde dich bei mir",
       "connect you with",
-      "link up on discord"
+      "link up on discord",
+      "add him on discord",
+      "add me up on discord",
+      "connecting on discord",
+      "for us to chat on discord",
+      "add me on insta",
+      "please sent me a message"
     ],
     "serviceOffers": [
       "custom art animation",
@@ -96,7 +112,11 @@
       "i design overlays",
       "i make logos",
       "i make emotes",
-      "professional logo designer"
+      "professional logo designer",
+      "i do work for streamers and youtubers",
+      "creative and eye catchy stuff",
+      "professional custom artist",
+      "i do artistic things"
     ]
   },
   "retracted": {},

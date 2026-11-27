@@ -912,6 +912,12 @@ class TheWorkflowRun(WorkflowHarness):
         for folder in s.FOLDER.values():
             self.assertIn("| `%s/" % folder, README)
 
+    def test_the_submissions_front_page_says_installs_read_the_feed_branch_and_what_an_example_is(self):
+        self.assertIn("https://github.com/aaskjer/TwitchSentry/tree/feed", README)
+        self.assertIn("within about a quarter of an hour", README)
+        self.assertNotIn("within hours", README)
+        self.assertIn("opens with an `%s` field" % s.EXAMPLE_FIELD, README)
+
 
 class NothingIsProposedTwice(WorkflowHarness):
     """A second ticket for wording or a text somebody else already put forward. Two files for one decision is
@@ -972,6 +978,26 @@ class NothingIsProposedTwice(WorkflowHarness):
             ("gh pr list", (0, "[]")),
         ])
         self.assertFalse(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls), "already on the branch is enough")
+
+    def test_an_example_on_the_branch_has_nothing_in_hand(self):
+        # Test data kept on the branch to show the format is not a ticket, whatever entries it carries.
+        issue = ticket("spam", spam_pairs("spamDomains: newsite"))
+        example = self.spam_waiting({"spamDomains": ["newsite"]}, issue=18)
+        example["body"] = dict({s.EXAMPLE_FIELD: "Test data."}, **example["body"])
+        _, rec, _ = self.run_main(issue, [
+            ("git fetch origin", [(0, ""), (0, ""), (1, "")]),
+            ("git ls-tree -r", (0, "README.md\nspam/18.json\n")),
+            ("git show origin/submissions:spam/18.json", (0, json.dumps(example["body"]))),
+            ("git show origin/submissions:README.md", (0, README)),
+            ("gh pr list", (0, "[]")),
+            ("gh pr create", (0, "https://example/pull/9")),
+        ])
+        self.assertTrue(any(c[:3] == ["gh", "pr", "create"] for c in rec.calls), "the example is passed over")
+        elsewhere = s.Elsewhere()
+        elsewhere.add(example["body"])
+        elsewhere.add({s.EXAMPLE_FIELD: "Test data.", "type": "translation", "issue": 7, "language": "de",
+                       "english": "Save", "suggestion": "Speichern"})
+        self.assertEqual((elsewhere.spam, elsewhere.translations), ({}, []))
 
     def test_the_ticket_is_not_compared_with_its_own_branch(self):
         # An edited ticket must not find itself waiting and end up proposing nothing.
@@ -1137,7 +1163,8 @@ class AMergedSubmission(WorkflowHarness):
         with open(rec.calls[2][rec.calls[2].index("--body-file") + 1], encoding="utf-8") as f:
             body = f.read()
         self.assertIn("/blob/submissions/languages/chat/nl.json", body)
-        self.assertIn("The pull request that does that mentions this ticket.", body)
+        self.assertIn("by a pull request that mentions this ticket.", body)
+        self.assertIn("publishes the language files to the `feed` branch", body, "merging into main alone reaches no install")
 
     def test_closing_it_without_merging_leaves_the_ticket_open(self):
         code, rec, _ = self.closed(self.pull(merged=False), [])

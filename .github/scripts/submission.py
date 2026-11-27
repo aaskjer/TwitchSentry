@@ -8,15 +8,15 @@ share-translation, share-language), typed in by hand or prefilled by the setting
 Spam wording and translations become one file in a pull request into the submissions branch. Merging it
 accepts the submission, and this script closes the ticket then, because GitHub only acts on "Closes #N"
 in a pull request into main. Accepting does not ship anything: no install reads that branch. Spam
-wording only gets into Feed/spam.json through a deliberate promotion step, because the feed reaches
-every channel within hours.
+wording only gets into Feed/spam.json through a deliberate promotion step, because installs read the
+feed from the feed branch, and every channel has a change within about a quarter of an hour.
 
 A profile is not a change to TwitchSentry, so nobody has to accept it: once it passes the check it is
 committed straight to the profiles branch as <ticket number>.json, a file the Profiles dialog imports
 as it is, and the ticket is closed.
 
 Both branches start from a commit of their own and share no history with main, so nothing shared ever
-lands on the branch every install reads.
+lands on main, or on the feed branch every install reads.
 
 Anyone with a GitHub account can open these tickets, so everything in one is untrusted. It is read
 from the event file here rather than handed over on a command line, git and gh are called with
@@ -81,6 +81,8 @@ CHAT_FILE = "Chat messages"
 
 # Where each kind that goes through a pull request keeps its files on the submissions branch.
 FOLDER = {"spam": "spam", "translation": "translations", "language": "languages"}
+# Opens a file on a branch that is test data kept as an example: it never counts as a submission.
+EXAMPLE_FIELD = "__example"
 NO_RESPONSE = "_No response_"
 
 LANGUAGE_CODE = re.compile(r"^[a-z]{2,3}(-[A-Za-z]{2,4})?$")
@@ -121,7 +123,7 @@ PROFILE_EXCLUDED = [
     "backupLearned", "backupLanguages", "backupLogs", "backupCache",
     "dryRunEnabled", "dryRunMinutes", "easterEggs",
     "useToastNotifications", "toastNotifyUpdates", "toastNotifyDeckActions", "toastNotifyDeckProblems",
-    "toastNotifySilentBots", "toastNotifyViewbotAlarm", "spamFeedEnabled",
+    "toastNotifySilentBots", "toastNotifyViewbotAlarm", "toastNotifyFeedPatterns", "toastNotifyStreamSummary", "autoArmFeedPatterns", "spamFeedEnabled",
     "toastNotifyDeletions", "toastNotifyTimeouts", "toastNotifyBans", "toastNotifyWordFilter", "toastNotifyNuke",
     "toastNotifyWordSync", "toastNotifyWarns", "toastNotifyWarnActions", "toastNotifyRaids",
     "toastNotifyRaidActions", "toastNotifyAutoModDenied", "toastNotifyAutoModAllowed",
@@ -136,7 +138,7 @@ PROFILE_EXCLUDED = [
     "stoatNotifyAutoModDenied", "stoatNotifyAutoModAllowed", "stoatNotifyAutoModRestricted",
     "stoatNotifyAutoModBlocked", "stoatNotifyUnbanRequests", "stoatNotifyMalicious", "stoatNotifySuspicious",
     "stoatNotifyPermitGranted", "stoatNotifyPermitExpired", "stoatNotifyPermitRevoked", "stoatNotifyLearner",
-    "stoatNotifyFollowArmed", "stoatNotifyFollowBlocked", "stoatNotifySilentBots", "stoatNotifyViewbotAlarm", "stoatNotifyHateRaid",
+    "stoatNotifyFollowArmed", "stoatNotifyFollowBlocked", "stoatNotifySilentBots", "stoatNotifyViewbotAlarm", "stoatNotifyFeedPatterns", "stoatNotifyStreamSummary", "stoatNotifyHateRaid",
     "stoatNotifyHateListed", "stoatNotifyBotList", "stoatNotifyOffline", "stoatNotifyShieldMode",
     "stoatNotifyConfigChanges", "stoatNotifyUndo", "gameVoxWebhookEnabled", "gameVoxWebhookUrl",
     "gameVoxNotifyDeletions", "gameVoxNotifyTimeouts", "gameVoxNotifyBans", "gameVoxNotifyWordFilter",
@@ -145,7 +147,7 @@ PROFILE_EXCLUDED = [
     "gameVoxNotifyAutoModRestricted", "gameVoxNotifyAutoModBlocked", "gameVoxNotifyUnbanRequests",
     "gameVoxNotifyMalicious", "gameVoxNotifySuspicious", "gameVoxNotifyPermitGranted", "gameVoxNotifyPermitExpired",
     "gameVoxNotifyPermitRevoked", "gameVoxNotifyLearner", "gameVoxNotifyFollowArmed", "gameVoxNotifyFollowBlocked",
-    "gameVoxNotifySilentBots", "gameVoxNotifyViewbotAlarm", "gameVoxNotifyHateRaid", "gameVoxNotifyHateListed", "gameVoxNotifyBotList",
+    "gameVoxNotifySilentBots", "gameVoxNotifyViewbotAlarm", "gameVoxNotifyFeedPatterns", "gameVoxNotifyStreamSummary", "gameVoxNotifyHateRaid", "gameVoxNotifyHateListed", "gameVoxNotifyBotList",
     "gameVoxNotifyOffline", "gameVoxNotifyShieldMode", "gameVoxNotifyConfigChanges", "gameVoxNotifyUndo",
     "ntfyWebhookEnabled", "ntfyWebhookUrl", "ntfyToken", "ntfyMinPriority",
     "ntfyNotifyDeletions", "ntfyNotifyTimeouts", "ntfyNotifyBans", "ntfyNotifyWordFilter",
@@ -154,7 +156,7 @@ PROFILE_EXCLUDED = [
     "ntfyNotifyAutoModRestricted", "ntfyNotifyAutoModBlocked", "ntfyNotifyUnbanRequests",
     "ntfyNotifyMalicious", "ntfyNotifySuspicious", "ntfyNotifyPermitGranted", "ntfyNotifyPermitExpired",
     "ntfyNotifyPermitRevoked", "ntfyNotifyLearner", "ntfyNotifyFollowArmed", "ntfyNotifyFollowBlocked",
-    "ntfyNotifySilentBots", "ntfyNotifyViewbotAlarm", "ntfyNotifyHateRaid", "ntfyNotifyHateListed", "ntfyNotifyBotList",
+    "ntfyNotifySilentBots", "ntfyNotifyViewbotAlarm", "ntfyNotifyFeedPatterns", "ntfyNotifyStreamSummary", "ntfyNotifyHateRaid", "ntfyNotifyHateListed", "ntfyNotifyBotList",
     "ntfyNotifyOffline", "ntfyNotifyShieldMode", "ntfyNotifyConfigChanges", "ntfyNotifyUndo",
 ]
 SECRET_NAME_PARTS = ["apikey", "webhook", "token", "secret", "password"]
@@ -828,7 +830,7 @@ class Elsewhere:
         self.translations = []
 
     def add(self, document):
-        if not isinstance(document, dict) or not isinstance(document.get("issue"), int):
+        if not isinstance(document, dict) or not isinstance(document.get("issue"), int) or EXAMPLE_FIELD in document:
             return
         if document.get("type") == "spam list":
             for name, entries in (document.get("entries") or {}).items():
@@ -926,12 +928,13 @@ def accepted_comment(kind, number, pull, repo, path=None):
         next_step = ("The entries are weighed together with what other streamers sent, and the ones that hold up "
                      "go into the spam feed every TwitchSentry install receives.")
     elif kind == "language":
-        next_step = ("Every install can download it once it is published into the language files on `main`. The "
-                     "pull request that does that mentions this ticket.")
+        next_step = ("It is published into the language files on `main` by a pull request that mentions this "
+                     "ticket. Installs download it once the maintainer then publishes the language files to the "
+                     "`feed` branch, which every install reads.")
     else:
-        next_step = ("The fix reaches every install once it is published into the language files on `main`, "
-                     "together with the other fixes for the language. The pull request that does that mentions "
-                     "this ticket.")
+        next_step = ("The fix is published into the language files on `main` together with the other fixes for "
+                     "the language, by a pull request that mentions this ticket. It reaches every install once the "
+                     "maintainer then publishes the language files to the `feed` branch, which every install reads.")
     return "\n".join(["Thank you! %s was merged, so this is accepted: %s" % (merged, address), "", next_step])
 
 
@@ -1211,16 +1214,20 @@ def submissions_readme(repo):
         "|---|---|---|",
         "| `spam/` | ☰ → *Share With Others...*, spam wording from your lists | Weighed against what other streamers sent. "
         "What holds up is published in the [spam feed](https://github.com/%s/blob/main/Feed/README.md), which every "
-        "installation receives within hours. |" % repo,
+        "installation picks up within about a quarter of an hour. |" % repo,
         "| `translations/<code>/` | ☰ → *Report...*, *A translation* | One file per ticket, a folder per language. "
         "Published into `Language/` on `main` together with the other fixes for that language. |",
         "| `languages/<code>.json`, `languages/chat/<code>.json` | ☰ → *Share With Others...*, a complete translation "
         "file | One file per language, the newest accepted one. Published into `Language/` on `main`. |", "",
-        "**Published** means a pull request into `main` that brings the accepted text into the language files every "
-        "installation downloads. It mentions the tickets it carries, and merging it is what makes them available.", "",
+        "**Published** means a pull request into `main` that brings the accepted text into the language files. It "
+        "mentions the tickets it carries. Merging it is not the last step: installations read their languages from "
+        "the [`feed` branch](https://github.com/%s/tree/feed), so the text reaches them once the maintainer has "
+        "published the language files there as well." % repo, "",
         "**How a file gets here:** the share form fills a ticket in, the ticket becomes a pull request into this "
         "branch, and merging it takes the submission up and closes the ticket. Editing the ticket updates its pull "
         "request; a ticket with a mistake in it is answered with what to correct instead.", "",
+        "**Examples:** a file that opens with an `%s` field is test data from trying the share forms out, kept as "
+        "an example. It is not a submission, and nothing takes it up." % EXAMPLE_FIELD, "",
         "**What was checked:** for spam wording, that every entry is one an installation would accept, and that "
         "TwitchSentry does not already carry it. For a translation, that the language exists, and whether the "
         "English text is one the settings window really shows. For a complete language file, that it parses and "

@@ -1,7 +1,7 @@
 {
   "__languageName": "Español",
   "__languageCode": "es",
-  "__version": 2,
+  "__version": 3,
   "🧪 [TEST] {module} would {action} @{user} {duration} - {reason}": "🧪 [PRUEBA] {module}: {action} para @{user} {duration} - {reason}",
   "@{user}, your message was removed. Reason: Unauthorized link": "@{user}, tu mensaje fue eliminado. Motivo: enlace no autorizado",
   "Posting unauthorized links": "Publicar enlaces no autorizados",
@@ -77,6 +77,7 @@
   "@{user}, that link is harmful. Please don't open it. Link check: ({scores} / {fraudscore})": "@{user}, ese enlace es dañino. Por favor, no lo abras. Revisión del enlace: ({scores} / {fraudscore})",
   "@{user}, that link looks suspicious, so be careful with it. Link check: ({scores} / {fraudscore})": "@{user}, ese enlace parece sospechoso, así que ten cuidado con él. Revisión del enlace: ({scores} / {fraudscore})",
   "@{user}, there is no link in that message to check.": "@{user}, ese mensaje no tiene ningún enlace que revisar.",
+  "@{user}, that message holds more than just a link, so it was not checked. Send the command with one link and nothing else.": "@{user}, ese mensaje lleva algo más que un enlace, así que no se revisó. Envía el comando con un solo enlace y nada más.",
   "@{user}, link check: Safe! ({scores})": "@{user}, revisión del enlace: ¡Seguro! ({scores})",
   "@{user}, link check: Unknown! ({scores})": "@{user}, revisión del enlace: ¡Desconocido! ({scores})",
   "@{user}, link check timed out — analysis did not complete in time. Please try again later": "@{user}, la revisión del enlace tardó demasiado y no terminó a tiempo. Inténtalo de nuevo más tarde",

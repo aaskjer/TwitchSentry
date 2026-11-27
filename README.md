@@ -44,7 +44,7 @@ every decision. It runs entirely inside Streamer.bot, with nothing to pay for an
   them fit together. The [Link Filter](Manual.md#link-filter) blocks links from viewers you have not trusted.
   Both are always on.
 - 💬 **How people chat, not just what.** The [Message Filter](Manual.md#message-filter) watches account age,
-  ALL CAPS, emote spam, flooding and repeats, and optionally walls of text, ASCII art and Zalgo text. The
+  ALL CAPS, emote spam, flooding, repeats and code injection, and optionally walls of text, ASCII art and Zalgo text. The
   [Word Filter](Manual.md#word-filter) finds your terms through their disguises and stays in
   step with Twitch's Blocked Terms.
 - 🌊 **Protection against waves.** [Raid Protection](Manual.md#raid-protection) arms itself after an incoming
@@ -56,7 +56,9 @@ every decision. It runs entirely inside Streamer.bot, with nothing to pay for an
   other TwitchSentry channels identified as bots. The [Spam Learner](Manual.md#spam-learner) mines removed
   messages for new keywords, phrases and domain endings and proposes them for review.
 - 🤖 **Clears the AutoMod queue.** TwitchSentry answers the messages Twitch's [AutoMod](Manual.md#automod)
-  holds back, so nobody waits there for a moderator. It also catches what AutoMod has nothing to say about:
+  holds back and denies the held links and Blocked Terms your rules would remove. Allowed links, permits, exempt
+  viewers and terms no entry matches wait for your moderators on purpose: TwitchSentry never approves a held
+  link or term. It also catches what AutoMod has nothing to say about:
   raid swarms, follow-bot waves and sales pitches that only show up in the fifth message.
 - ⚠️ **Escalation and exceptions.** [Twitch Warn](Manual.md#twitch-warn) escalates from warnings to a timeout,
   ban or restriction. [Permit](Manual.md#permit) grants a time-limited link exception, and
@@ -66,8 +68,8 @@ every decision. It runs entirely inside Streamer.bot, with nothing to pay for an
   clean-chat and status logs show what happened and why.
 - 🎛️ **Control from anywhere.** [Deck Buttons](Manual.md#deck-buttons) on a Stream Deck, a Streamer.bot Deck or
   the OBS dock switch profiles and modules. [Notifications](Manual.md#notifications) go to Discord, Stoat or
-  GameVox webhooks, ntfy or Windows. [Offline Protection](Manual.md#offline-protection) sets chat modes when
-  the stream ends. *Work in Progress*
+  GameVox webhooks, ntfy or Windows, with a summary when the stream ends. [Offline Protection](Manual.md#offline-protection)
+  sets chat modes when the stream ends. *Work in Progress*
 - 🌍 **Five languages.** The window and the chat messages come in English, German, Spanish, French and
   Brazilian Portuguese, with community translations on top. Messages can use the pronouns viewers set on
   pronouns.alejo.io.
