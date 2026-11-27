@@ -29,6 +29,10 @@
   <a href="https://github.com/aaskjer/TwitchSentry/blob/main/Utilities/Import-String.md"><b>Import String</b></a>
 </p>
 
+<p align="center">
+  <img src="Utilities/preview/TwitchSentry-preview.gif" alt="TwitchSentry at work: a scam advert, a link from a stranger, a flooder, a raid's bot swarm and a wave of fake followers" width="880">
+</p>
+
 ---
 
 ## 📖 Overview
