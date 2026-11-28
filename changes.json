@@ -1,88 +1,8 @@
 {
  "schema": 1,
- "version": 39,
- "since": 27,
+ "version": 40,
+ "since": 36,
  "changes": [
-  {
-   "v": 28,
-   "at": "2026-11-17T16:26:39Z",
-   "op": "remove",
-   "category": "spam",
-   "id": "1597582655",
-   "why": "gone"
-  },
-  {
-   "v": 29,
-   "at": "2026-11-18T17:42:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076701179",
-   "login": "hbdzs13",
-   "reports": 1
-  },
-  {
-   "v": 30,
-   "at": "2026-11-18T18:36:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076699833",
-   "login": "ckzol34",
-   "reports": 1
-  },
-  {
-   "v": 31,
-   "at": "2026-11-18T19:20:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076699861",
-   "login": "ubkqs41",
-   "reports": 1
-  },
-  {
-   "v": 32,
-   "at": "2026-11-19T17:18:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076704608",
-   "login": "ubxtf50",
-   "reports": 1
-  },
-  {
-   "v": 33,
-   "at": "2026-11-20T17:14:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076699858",
-   "login": "urnay72",
-   "reports": 1
-  },
-  {
-   "v": 34,
-   "at": "2026-11-20T17:30:39Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076704587",
-   "login": "svjxn53",
-   "reports": 1
-  },
-  {
-   "v": 35,
-   "at": "2026-11-20T19:02:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076699850",
-   "login": "ejzts33",
-   "reports": 1
-  },
-  {
-   "v": 36,
-   "at": "2026-11-20T19:44:38Z",
-   "op": "add",
-   "category": "lurkbot",
-   "id": "1076704591",
-   "login": "yhlfm83",
-   "reports": 1
-  },
   {
    "v": 37,
    "at": "2026-11-21T17:06:38Z",
@@ -108,6 +28,15 @@
    "category": "lurkbot",
    "id": "1076701155",
    "login": "siwvg17",
+   "reports": 1
+  },
+  {
+   "v": 40,
+   "at": "2026-11-28T13:50:38Z",
+   "op": "add",
+   "category": "spam",
+   "id": "1612453147",
+   "login": "breathlessmonograph3b",
    "reports": 1
   }
  ]
